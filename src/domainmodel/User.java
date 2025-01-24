@@ -6,7 +6,6 @@ public class User {
     private final String name;
     private final String surname;
 
-    //costruttore
     public User(int id, String nickname, String name, String surname) {
         this.id = id;
         this.nickname = nickname;

@@ -15,6 +15,8 @@ public class  SetDB {
         createRulesTable();
         createSubscriptionTable();
         createUserAccessTable();
+        createCommentWarningsTable();
+        createPostwarningsTable();
 
     }
 
@@ -44,7 +46,7 @@ public class  SetDB {
                 + " email TEXT PRIMARY KEY NOT NULL,"
                 + " user_id INTEGER NOT NULL,"
                 + " password TEXT NOT NULL,"
-                + " authen TEXT,"
+                + " authen INTEGER DEFAULT 0 CHECK (authen IN (0, 1)),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
                 + " UNIQUE(user_id)"
                 + ");";
@@ -82,6 +84,7 @@ public class  SetDB {
                 + " content TEXT NOT NULL,"
                 + " user_id INTEGER NOT NULL,"
                 + " community_id INTEGER NOT NULL,"
+                + " is_modified INTEGER DEFAULT 0 CHECK (is_modified IN (0, 1)),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
                 + " FOREIGN KEY (community_id) REFERENCES Community(id)"
                 + ");";
@@ -91,16 +94,17 @@ public class  SetDB {
 
     public static void createCommentTable() {
         String sql = "CREATE TABLE IF NOT EXISTS Comment ("
-                + " id INTEGER NOT NULL,"  // Use SERIAL for auto-incremented integers
-                + " post_id INTEGER NOT NULL,"  // UUID type for post_id
-                + " time TEXT,"  // Timestamp for the comment
-                + " likes INTEGER DEFAULT 0,"  // Default value for likes
-                + " dislikes INTEGER DEFAULT 0,"  // Default value for dislikes
-                + " content TEXT NOT NULL,"  // Content of the comment
-                + " user_id INTEGER NOT NULL,"  // User id for the commenter
-                + " PRIMARY KEY (id, post_id),"  // Composite primary key (id, post_id)
-                + " FOREIGN KEY (user_id) REFERENCES User(id),"  // Foreign key for user reference
-                + " FOREIGN KEY (post_id) REFERENCES Post(id)"  // Foreign key for post reference
+                + " id INTEGER NOT NULL,"
+                + " post_id INTEGER NOT NULL,"
+                + " time TEXT,"
+                + " likes INTEGER DEFAULT 0,"
+                + " dislikes INTEGER DEFAULT 0,"
+                + " content TEXT NOT NULL,"
+                + " user_id INTEGER NOT NULL,"
+                + " is_modified INTEGER DEFAULT 0 CHECK (is_modified IN (0, 1)),"
+                + " PRIMARY KEY (id, post_id),"
+                + " FOREIGN KEY (user_id) REFERENCES User(id),"
+                + " FOREIGN KEY (post_id) REFERENCES Post(id)"
                 + ");";
 
         DBConnection.query(sql);
@@ -166,10 +170,32 @@ public class  SetDB {
         String sql = "CREATE TABLE IF NOT EXISTS PostVotes ("
                 + " user_id INTEGER NOT NULL,"
                 + " post_id INTEGER NOT NULL,"
-                + " vote_type TEXT CHECK(vote_type IN ('like', 'dislike')),"
                 + " PRIMARY KEY (user_id, post_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
                 + " FOREIGN KEY (post_id) REFERENCES Post(id)"
+                + ");";
+
+        DBConnection.query(sql);
+    }
+    public static void createPostwarningsTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS PostWarnings ("
+                + " sender_id INTEGER NOT NULL,"
+                + " post_id INTEGER NOT NULL,"
+                + " PRIMARY KEY (sender_id, post_id),"
+                + " FOREIGN KEY (sender_id) REFERENCES User(id),"
+                + " FOREIGN KEY (post_id) REFERENCES Post(id)"
+                + ");";
+
+         DBConnection.query(sql);
+    }
+    public static void createCommentWarningsTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS CommentWarnings ("
+                + " sender_id INTEGER NOT NULL,"
+                + " comment_id INTEGER NOT NULL,"
+                + " post_id INTEGER NOT NULL,"
+                + " PRIMARY KEY (sender_id, comment_id,post_id),"
+                + " FOREIGN KEY (sender_id) REFERENCES User(id),"
+                + " FOREIGN KEY (comment_id,post_id) REFERENCES Comment(id,post_id)"
                 + ");";
 
         DBConnection.query(sql);
