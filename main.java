@@ -12,7 +12,6 @@ public class main {
 
         CommunityDAO communityDAO = new CommunityDAO();
         communityDAO.save(Map.of( "title", "WorldNews", "description","A place for major news from around the world" ));
-        communityDAO.findById(1).ifPresent(System.out::println);
         DBConnection.disconnect();
     }
 }
