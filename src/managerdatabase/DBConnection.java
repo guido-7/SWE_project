@@ -28,11 +28,12 @@ public class DBConnection {
         }
     }
 
-    public static Connection get_connection() {
+    public static Connection open_connection() {
         try {
             // Verifica se la connessione esiste e la restituisce
             if (conn != null && !conn.isClosed()) {
                 return conn;
+
             }
 
             // Carica il driver JDBC per SQLite

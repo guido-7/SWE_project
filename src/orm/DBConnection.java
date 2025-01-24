@@ -1,7 +1,7 @@
 package src.orm;
 
 import java.sql.*;
-
+/*
 public class DBConnection {
 
     private static Connection conn;
@@ -42,4 +42,4 @@ public class DBConnection {
         }
     }
 
-}
+}*/
