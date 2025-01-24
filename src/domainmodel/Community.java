@@ -1,9 +1,12 @@
 package src.domainmodel;
 
+import java.util.ArrayList;
+
 public class Community {
     private final int id;
     private String title;
     private String description;
+    private ArrayList<Post> posts = new ArrayList<>();
 
     public Community(int id, String title, String description) {
         this.id = id;
@@ -29,5 +32,21 @@ public class Community {
 
     public int getId() {
         return id;
+    }
+
+    public void addPostToCommunity(Post post) {
+        posts.add(post);
+    }
+
+    public void removePostFromCommunity(Post post) {
+        posts.remove(post);
+    }
+
+    public ArrayList<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(ArrayList<Post> posts) {
+        this.posts = posts;
     }
 }
