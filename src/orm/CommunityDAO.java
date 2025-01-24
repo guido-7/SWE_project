@@ -3,6 +3,7 @@ package src.orm;
 import src.domainmodel.Community;
 
 import java.sql.*;
+import java.util.Map;
 
 public class CommunityDAO extends BaseDAO<Community, Integer> {
 
