@@ -10,7 +10,7 @@ public abstract class BaseDAO<T, ID> {
 
     public Optional<T> findById(ID id) throws SQLException {
         String query = getFindByIdQuery();
-        try (Connection connection = DBConnection.get_connection();
+        try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             setFindByIdParams(statement, id);
             try (ResultSet resultSet = statement.executeQuery()) {

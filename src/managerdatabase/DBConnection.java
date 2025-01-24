@@ -33,7 +33,6 @@ public class DBConnection {
             // Verifica se la connessione esiste e la restituisce
             if (conn != null && !conn.isClosed()) {
                 return conn;
-
             }
 
             // Carica il driver JDBC per SQLite

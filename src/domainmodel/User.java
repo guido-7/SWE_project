@@ -14,7 +14,6 @@ public class User {
         this.surname = surname;
     }
 
-    //getter and setter
     public int getId() {
         return id;
     }

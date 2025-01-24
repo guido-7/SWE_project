@@ -1,26 +1,65 @@
 package src.domainmodel;
 
-import java.sql.Timestamp;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 public class Post {
-    private UUID id;
-    private Timestamp time;
-    private int likes;
-    private int dislikes;
+    private final int id;
+    private final LocalDateTime time;
+    private int likes = 0;
+    private int dislikes =0;
     private String content;
-    private int userId;
-    private int communityId;
+    private final int userId;
+    private final int communityId;
+    private boolean is_modified = false;
 
-    public Post(UUID id, Timestamp time, String content, int userId, int communityId) {
+    // Constructor for creation of object from database
+    public Post(int id, LocalDateTime time, String content, int userId, int communityId, int likes, int dislikes) {
         this.id = id;
         this.time = time;
-        this.likes = 0;
-        this.dislikes = 0;
         this.content = content;
         this.userId = userId;
         this.communityId = communityId;
+        this.likes = likes;
+        this.dislikes = dislikes;
+
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public LocalDateTime getTime() {
+        return time;
+    }
+
+    public int getLikes() {
+        return likes;
     }
 
 
+    public int getDislikes() {
+        return dislikes;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public int getCommunityId() {
+        return communityId;
+    }
+
+    // Method to call only when modifying the post
+    public void setModifyFlag(){
+        if (!is_modified)
+            is_modified = true;
+    }
 }
