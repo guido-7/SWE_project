@@ -170,6 +170,7 @@ public class  SetDB {
         String sql = "CREATE TABLE IF NOT EXISTS PostVotes ("
                 + " user_id INTEGER NOT NULL,"
                 + " post_id INTEGER NOT NULL,"
+                + " vote_type INTEGER DEFAULT 0 CHECK (vote_type IN (0,1)),"// 0-->dislike,1-->like
                 + " PRIMARY KEY (user_id, post_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
                 + " FOREIGN KEY (post_id) REFERENCES Post(id)"
