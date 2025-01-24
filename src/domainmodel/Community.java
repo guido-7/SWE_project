@@ -11,7 +11,6 @@ public class Community {
         this.description = description;
     }
 
-    //getters and setters
     public String getDescription() {
         return description;
     }
