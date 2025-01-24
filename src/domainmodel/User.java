@@ -1,4 +1,4 @@
-package src;
+package src.domainmodel;
 
 public class User {
     private final int id;
