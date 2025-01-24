@@ -1,5 +1,6 @@
 package src.orm;
 
+import src.domainmodel.Community;
 import src.domainmodel.Post;
 
 import java.sql.PreparedStatement;
@@ -24,16 +25,16 @@ public class PostDao extends BaseDAO<Post, Integer>{
         int id = resultSet.getInt("id");
         LocalDateTime time = resultSet.getTimestamp("time").toLocalDateTime();
         String content = resultSet.getString("content");
-        int userId = resultSet.getInt("user_id");
-        int communityId = resultSet.getInt("community_id");
+        int user = resultSet.getInt("user_id");
+        int community = resultSet.getInt("community_id");
         int likes = resultSet.getInt("likes");
         int dislikes = resultSet.getInt("dislikes");
-        return new Post(id, time, content, userId, communityId, likes, dislikes);
+        return new Post(id, time, content, user, community, likes, dislikes);
     }
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO Post (time, content, user_id, community_id, likes, dislikes) VALUES (?, ?, ?, ?, ?, ?)";
+        return "INSERT INTO Post (time, content, user_id, community_id) VALUES (?, ?, ?, ?)";
     }
 
     @Override
@@ -42,8 +43,6 @@ public class PostDao extends BaseDAO<Post, Integer>{
         statement.setString(2, (String) parameters.get("content"));
         statement.setInt(3, (Integer) parameters.get("user_id"));
         statement.setInt(4, (Integer) parameters.get("community_id"));
-        statement.setInt(5, (Integer) parameters.get("likes"));
-        statement.setInt(6, (Integer) parameters.get("dislikes"));
     }
 
     @Override

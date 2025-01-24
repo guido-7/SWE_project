@@ -5,23 +5,24 @@ import java.time.LocalDateTime;
 public class Post {
     private final int id;
     private final LocalDateTime time;
-    private int likes = 0;
-    private int dislikes =0;
+    private int likes;
+    private int dislikes;
     private String content;
-    private final User user;
-    private final Community community;
+    private final int userId;
+    private final int communityId;
+//    private final User user;
+//    private final Community community;
     private boolean is_modified = false;
 
     // Constructor for creation of object from database
-    public Post(int id, LocalDateTime time, String content, User user, Community community, int likes, int dislikes) {
+    public Post(int id, LocalDateTime time, String content, int userId, int communityId, int likes, int dislikes) {
         this.id = id;
         this.time = time;
         this.content = content;
-        this.user = user;
-        this.community = community;
+        this.userId = userId;
+        this.communityId = communityId;
         this.likes = likes;
         this.dislikes = dislikes;
-
     }
 
     public int getId() {
@@ -49,12 +50,12 @@ public class Post {
         this.content = content;
     }
 
-    public User getUser() {
-        return user;
+    public int getUserId() {
+        return userId;
     }
 
-    public Community getCommunity() {
-        return community;
+    public int getCommunityId() {
+        return communityId;
     }
 
     // Method to call only when modifying the post
