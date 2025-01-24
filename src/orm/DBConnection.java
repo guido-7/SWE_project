@@ -1,4 +1,4 @@
-package src.managerdatabase;
+package src.orm;
 
 import java.sql.*;
 
@@ -9,15 +9,12 @@ public class DBConnection {
 
     public static Connection connect() {
         try {
-            // Verifica se la connessione esiste e la restituisce
             if (conn != null && !conn.isClosed()) {
                 return conn;
             }
 
-            // Carica il driver JDBC per SQLite
             Class.forName("org.sqlite.JDBC");
 
-            // Apre la connessione al database SQLite
             conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
             System.out.println("Connected to database");
 
@@ -35,24 +32,12 @@ public class DBConnection {
 
     public static void disconnect() {
         try {
-            // Verifica se la connessione esiste e chiude la connessione
             if (conn != null && !conn.isClosed()) {
                 conn.close();
                 System.out.println("Disconnected from database");
             }
         } catch (SQLException e) {
             System.out.println("Failed to disconnect from database");
-            e.printStackTrace();
-        }
-    }
-
-    public static void query(String sql) {
-        try {
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-            stmt.close();
-        } catch (SQLException e) {
-            System.out.println("Failed to execute query");
             e.printStackTrace();
         }
     }
