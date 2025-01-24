@@ -56,9 +56,7 @@ public abstract class BaseDAO<T, ID> {
 
     protected abstract void setFindByIdParams(PreparedStatement statement, ID id) throws SQLException;
 
-    //protected abstract String getFindAllQuery();
-
-    //protected abstract String getInsertQuery();
+    protected abstract String getInsertQuery();
 
     //protected abstract void setInsertParams(PreparedStatement statement, T entity) throws SQLException;
 
@@ -66,9 +64,9 @@ public abstract class BaseDAO<T, ID> {
 
     //protected abstract void setUpdateParams(PreparedStatement statement, T entity) throws SQLException;
 
-    //protected abstract String getDeleteQuery();
+    protected abstract String getDeleteQuery();
 
-    //protected abstract void setDeleteParams(PreparedStatement statement, ID id) throws SQLException;
+    protected abstract void setDeleteParams(PreparedStatement statement, ID id) throws SQLException;
 
     protected abstract T mapResultSetToEntity(ResultSet resultSet) throws SQLException;
 }
