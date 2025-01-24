@@ -2,21 +2,36 @@ package src.domainmodel;
 
 public class User {
     private final int id;
+    private String nickname;
     private String name;
     private String surname;
-    private String mail;
-    private String password;
-    private int age;
 
     //costruttore
-    public User(int id, String name, String surname, String mail, String password, int age) {
+    public User(int id, String nickname, String name, String surname) {
         this.id = id;
+        this.nickname = nickname;
         this.name = name;
         this.surname = surname;
-        this.mail = mail;
-        this.password = password;
-        this.age = age;
     }
 
+    //getter and setter
+    public int getId() {
+        return id;
+    }
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
