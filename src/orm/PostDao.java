@@ -1,6 +1,5 @@
 package src.orm;
 
-import src.domainmodel.Community;
 import src.domainmodel.Post;
 
 import java.sql.PreparedStatement;
