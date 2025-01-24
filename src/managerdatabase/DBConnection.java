@@ -7,7 +7,28 @@ public class DBConnection {
     private static Connection conn;
     private static final String dbPath = "database/bigDB.db";
 
-    public static Connection connect() {
+    public static void connect() {
+        try {
+            if(conn == null || conn.isClosed()){
+
+            Class.forName("org.sqlite.JDBC");
+
+            conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+            System.out.println("Connected to database");
+            }
+
+        } catch (ClassNotFoundException e) {
+            System.out.println("JDBC driver not found");
+            e.printStackTrace();
+
+        } catch (SQLException e) {
+            System.out.println("Failed to connect to database");
+            e.printStackTrace();
+
+        }
+    }
+
+    public static Connection get_connection() {
         try {
             // Verifica se la connessione esiste e la restituisce
             if (conn != null && !conn.isClosed()) {
