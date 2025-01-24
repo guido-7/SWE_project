@@ -3,8 +3,8 @@ package src.domainmodel;
 public class User {
     private final int id;
     private String nickname;
-    private String name;
-    private String surname;
+    private final String name;
+    private final String surname;
 
     //costruttore
     public User(int id, String nickname, String name, String surname) {
