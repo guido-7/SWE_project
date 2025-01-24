@@ -8,17 +8,17 @@ public class Post {
     private int likes = 0;
     private int dislikes =0;
     private String content;
-    private final int userId;
-    private final int communityId;
+    private final User user;
+    private final Community community;
     private boolean is_modified = false;
 
     // Constructor for creation of object from database
-    public Post(int id, LocalDateTime time, String content, int userId, int communityId, int likes, int dislikes) {
+    public Post(int id, LocalDateTime time, String content, User user, Community community, int likes, int dislikes) {
         this.id = id;
         this.time = time;
         this.content = content;
-        this.userId = userId;
-        this.communityId = communityId;
+        this.user = user;
+        this.community = community;
         this.likes = likes;
         this.dislikes = dislikes;
 
@@ -49,12 +49,12 @@ public class Post {
         this.content = content;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public int getCommunityId() {
-        return communityId;
+    public Community getCommunity() {
+        return community;
     }
 
     // Method to call only when modifying the post
