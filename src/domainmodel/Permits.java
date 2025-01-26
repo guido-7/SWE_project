@@ -1,4 +1,5 @@
 package src.domainmodel;
 
-public class Permits {
+public enum Permits {
+    POST, COMMENT, DELETE, MODIFY, BAN, UNBAN,INTERACT
 }
