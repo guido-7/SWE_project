@@ -96,11 +96,12 @@ public class  SetDB {
         String sql = "CREATE TABLE IF NOT EXISTS Comment ("
                 + " id INTEGER NOT NULL,"
                 + " post_id INTEGER NOT NULL,"
-                + " time TEXT,"
+                + " level INTEGER DEFAULT 0,"
+                + " user_id INTEGER NOT NULL,"
+                + " content TEXT NOT NULL,"
                 + " likes INTEGER DEFAULT 0,"
                 + " dislikes INTEGER DEFAULT 0,"
-                + " content TEXT NOT NULL,"
-                + " user_id INTEGER NOT NULL,"
+                + " time TEXT,"
                 + " is_modified INTEGER DEFAULT 0 CHECK (is_modified IN (0, 1)),"
                 + " PRIMARY KEY (id, post_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
@@ -112,12 +113,12 @@ public class  SetDB {
 
     public static void createCommentHierarchyTable() {
         String sql = "CREATE TABLE IF NOT EXISTS CommentHierarchy ("
-                + " parent_id INTEGER NOT NULL, "
                 + " post_id INTEGER NOT NULL, "
+                + " parent_id INTEGER NOT NULL, "
                 + " child_id INTEGER NOT NULL, "
-                + " PRIMARY KEY (parent_id, child_id,post_id), "
-                + " FOREIGN KEY (parent_id) REFERENCES Comment(id), "
+                + " PRIMARY KEY (child_id, parent_id, post_id), "
                 + " FOREIGN KEY (child_id) REFERENCES Comment(id) "
+                + " FOREIGN KEY (parent_id) REFERENCES Comment(id), "
                 + " FOREIGN KEY (post_id) REFERENCES Post(id) "
                 + ");";
 
