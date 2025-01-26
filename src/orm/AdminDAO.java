@@ -3,8 +3,6 @@ package src.orm;
 import src.domainmodel.Admin;
 import src.domainmodel.Permits;
 import src.domainmodel.PermitsManager;
-import src.domainmodel.User;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -62,7 +60,7 @@ public class AdminDAO extends BaseDAO<Admin,Integer>{
         String nickname = resultSet.getString("nickname");
         String name = resultSet.getString("name");
         String surname = resultSet.getString("surname");
-        Set<Permits> permits = PermitsManager.createUserPermits();  // Assuming permits need to be fetched from another table
+        Set<Permits> permits = PermitsManager.createAdminPermits();  // Assuming permits need to be fetched from another table
         return new Admin(id, nickname, name, surname, permits);
     }
 }
