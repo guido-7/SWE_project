@@ -1,6 +1,7 @@
 package src.domainmodel;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public class Moderator extends User{
     private final int community_id;
@@ -12,6 +13,13 @@ public class Moderator extends User{
         this.community_id = community_id;
         this.assignedDate = assignedDate;
 
+    }
+
+    public Moderator(int id, String nickname, String name, String surname, Set<Permits> permits,
+                     int community_id, LocalDateTime assignedDate) {
+        super(id, nickname, name, surname, permits);
+        this.community_id = community_id;
+        this.assignedDate = assignedDate;
     }
 
     public int getCommunity_id() {
