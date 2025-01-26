@@ -38,7 +38,7 @@ public class PostDao extends BaseDAO<Post, Integer>{
 
     @Override
     protected void setInsertParams(PreparedStatement statement, Map<String, Object> parameters) throws SQLException {
-        statement.setTimestamp(1, java.sql.Timestamp.valueOf((LocalDateTime) parameters.get("time")));
+        statement.setString(1, LocalDateTime.now().toString());
         statement.setString(2, (String) parameters.get("content"));
         statement.setInt(3, (Integer) parameters.get("user_id"));
         statement.setInt(4, (Integer) parameters.get("community_id"));
@@ -51,7 +51,7 @@ public class PostDao extends BaseDAO<Post, Integer>{
 
     @Override
     protected void setUpdateParams(PreparedStatement statement, Post entity) throws SQLException {
-        statement.setTimestamp(1, java.sql.Timestamp.valueOf(entity.getTime()));
+        statement.setString(1, entity.getTime().toString());
         statement.setString(2, entity.getContent());
         statement.setInt(3, entity.getUserId());
         statement.setInt(4, entity.getCommunityId());
