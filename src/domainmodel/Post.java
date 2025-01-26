@@ -10,8 +10,8 @@ public class Post {
     private String content;
     private final int userId;
     private final int communityId;
-//    private final User user;
-//    private final Community community;
+    private User user;
+    private Community community;
     private boolean is_modified = false;
 
     // Constructor for creation of object from database
@@ -63,4 +63,21 @@ public class Post {
         if (!is_modified)
             is_modified = true;
     }
+
+    public Community getCommunity() {
+        return community;
+    }
+
+    public void setCommunity(Community community) {
+        this.community = community;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 }

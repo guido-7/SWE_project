@@ -1,6 +1,6 @@
 package src.domainmodel;
 
-public class User {
+public class User extends Guest {
     private final int id;
     private String nickname;
     private final String name;
