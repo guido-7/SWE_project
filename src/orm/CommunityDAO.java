@@ -30,6 +30,7 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
         return "INSERT INTO Community ( title, description) VALUES ( ?, ?)";
     }
     // CommunityDAO.save(Community(id,title,description))
+
     @Override
     protected void setInsertParams(PreparedStatement statement, Map<String,Object> parameters) throws SQLException {
         statement.setString(1, (String) parameters.get("title"));
