@@ -145,7 +145,6 @@ public class  SetDB {
                 + " user_id INTEGER NOT NULL,"
                 + " community_id INTEGER NOT NULL,"
                 + " assigned_date TEXT,"
-                + " permissions TEXT,"
                 + " PRIMARY KEY (user_id, community_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
                 + " FOREIGN KEY (community_id) REFERENCES Community(id)"
