@@ -1,12 +1,15 @@
 package src.domainmodel;
 
+import java.util.Set;
+
 public class User extends Guest {
     private final int id;
     private String nickname;
     private final String name;
     private final String surname;
 
-    public User(int id, String nickname, String name, String surname) {
+    public User(int id, String nickname, String name, String surname, Set<Permits> permits) {
+        super(permits);
         this.id = id;
         this.nickname = nickname;
         this.name = name;
