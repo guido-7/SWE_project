@@ -78,4 +78,8 @@ public class DBConnection {
         }
     }
 
+    public static void setConnection(Connection connection) {
+        conn = connection; // Usato solo per test unitari
+    }
+
 }
