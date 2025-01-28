@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="sqlite-jdbc-3.48.0.0" level="project" />
+    <orderEntry type="library" name="junit4" level="project" />
   </component>
 </module>
