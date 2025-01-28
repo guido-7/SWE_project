@@ -17,7 +17,6 @@ public class  SetDB {
         createUserAccessTable();
         createCommentWarningsTable();
         createPostwarningsTable();
-
     }
 
     public static  void createCommunityTable() {
@@ -72,7 +71,17 @@ public class  SetDB {
                 + " FOREIGN KEY (community_id) REFERENCES Community(id)"
                 + ");";
 
+        String sql2 = "CREATE TRIGGER IF NOT EXISTS AutoIncrementRulesId "
+                + "AFTER INSERT ON Rules "
+                + "WHEN NEW.id IS NULL "
+                + "BEGIN "
+                + "UPDATE Rules "
+                + "SET id = COALESCE((SELECT MAX(id) FROM Rules WHERE community_id = NEW.community_id), 0) + 1 "
+                + "WHERE rowid = NEW.rowid; "
+                + "END;";
+
         DBConnection.query(sql);
+        DBConnection.query(sql2);
     }
 
     public static void createPostTable() {
@@ -92,9 +101,9 @@ public class  SetDB {
         DBConnection.query(sql);
     }
 
-    public static void createCommentTable() {
+   public static void createCommentTable() {
         String sql = "CREATE TABLE IF NOT EXISTS Comment ("
-                + " id INTEGER NOT NULL,"
+                + " id INTEGER,"
                 + " post_id INTEGER NOT NULL,"
                 + " level INTEGER DEFAULT 0,"
                 + " user_id INTEGER NOT NULL,"
@@ -108,8 +117,19 @@ public class  SetDB {
                 + " FOREIGN KEY (post_id) REFERENCES Post(id)"
                 + ");";
 
-        DBConnection.query(sql);
+       String sql2 = "CREATE TRIGGER IF NOT EXISTS AutoIncrementCommentId "
+               + "AFTER INSERT ON Comment "
+               + "WHEN NEW.id IS NULL "
+               + "BEGIN "
+               + "UPDATE Comment "
+               + "SET id = COALESCE((SELECT MAX(id) FROM Comment WHERE post_id = NEW.post_id), 0) + 1 "
+               + "WHERE rowid = NEW.rowid; "
+               + "END;";
+
+          DBConnection.query(sql);
+          DBConnection.query(sql2);
     }
+
 
     public static void createCommentHierarchyTable() {
         String sql = "CREATE TABLE IF NOT EXISTS CommentHierarchy ("
