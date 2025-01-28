@@ -22,7 +22,7 @@ public class UserDAO extends BaseDAO<User,Integer> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO users (id, nickname, name, surname) VALUES (?, ?, ?)";
+        return "INSERT INTO User (nickname, name, surname) VALUES (?, ?, ?)";
     }
 
     @Override
