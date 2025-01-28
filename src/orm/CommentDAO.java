@@ -1,0 +1,104 @@
+package src.orm;
+
+import src.domainmodel.Comment;
+import src.managerdatabase.DBConnection;
+
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
+//List Integer: post_id, comment_id
+public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
+
+    @Override
+    protected String getFindByIdQuery() {
+        return "SELECT * FROM Comment WHERE post_id = ? AND id = ?";
+    }
+
+    @Override
+    protected void setFindByIdParams(PreparedStatement statement, List<Integer> id) throws SQLException {
+        statement.setInt(1, id.get(0));
+        statement.setInt(2, id.get(1));
+    }
+
+    @Override
+    protected Comment mapResultSetToEntity(ResultSet resultSet) throws SQLException {
+        int id = resultSet.getInt("id");
+        int post_id = resultSet.getInt("post_id");
+        int level = resultSet.getInt("level");
+        LocalDateTime time = LocalDateTime.parse(resultSet.getString("time"));
+        int likes = resultSet.getInt("likes");
+        int dislikes = resultSet.getInt("dislike");
+        String content = resultSet.getString("content");
+        int user_id = resultSet.getInt("user_id");
+        boolean is_modified = resultSet.getBoolean("is_modified");
+        return new Comment(id, post_id, level, user_id, content, likes, dislikes, time, is_modified);
+    }
+
+    @Override
+    protected String getInsertQuery() {
+        return "INSERT INTO Comment (post_id, level, user_id, content, time) VALUES (?, ?, ?, ?, ?)";
+        //section-->logica-->comment.save()-->commento padre e commenti figli-->commento to a child-->
+        //comment(paretent.getlevle+1,parent.)
+    }
+
+    @Override
+    protected void setInsertParams(PreparedStatement statement, Map<String, Object> parameters) throws SQLException {
+        statement.setInt(1, (int) parameters.get("post_id"));
+        statement.setInt(2, (int) parameters.get("level"));
+        statement.setInt(3, (int) parameters.get("user_id"));
+        statement.setString(4, (String) parameters.get("content"));
+        statement.setString(5, LocalDateTime.now().toString());
+    }
+
+    @Override
+    protected String getUpdateQuery() {
+        return "UPDATE Comment SET time = ?, content = ?, is_modified = 1 WHERE id = ?";
+    }
+
+    @Override
+    protected void setUpdateParams(PreparedStatement statement, Comment entity) throws SQLException {
+        statement.setTimestamp(1, java.sql.Timestamp.valueOf(entity.getTime()));
+        statement.setString(2, entity.getContent());
+        statement.setInt(3, entity.getId());
+    }
+
+    @Override
+    protected String getDeleteQuery() {
+        return  "WITH RECURSIVE descendants(id) AS ( " +
+                "SELECT ? " +
+                "UNION " +
+                "SELECT c.id FROM CommentHierarchy c " +
+                "JOIN descendants d ON c.parent_id = d.id " +
+                ")  " +
+                "DELETE FROM Comment WHERE id IN (SELECT id FROM descendants)";
+    }
+
+    @Override
+    protected void setDeleteParams(PreparedStatement statement, List<Integer> id) throws SQLException {
+        statement.setInt(1, id.get(0));
+        statement.setInt(2, id.get(1));
+    }
+
+    public void saveCommentRelation(Map<String,Object> parameters) throws SQLException {
+        String query = getInsertQueryCommentRelation();
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            setInsertParamsCommentRelation(statement, parameters);
+            statement.executeUpdate();
+        }
+    }
+
+    public String getInsertQueryCommentRelation(){
+        return "INSERT INTO CommentHierarchy (post_id, parent_id, child_id) VALUES (?, ?, ?)";
+    }
+
+    protected void setInsertParamsCommentRelation(PreparedStatement statement, Map<String,Object> parameters) throws SQLException {
+        statement.setInt(1, (int) parameters.get("post_id"));
+        statement.setInt(2, (int) parameters.get("parent_id"));
+        statement.setInt(3, (int) parameters.get("child_id"));
+    }
+
+
+}
