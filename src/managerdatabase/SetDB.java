@@ -64,7 +64,7 @@ public class  SetDB {
 
     public static void createRulesTable() {
         String sql = "CREATE TABLE IF NOT EXISTS Rules ("
-                + " id INTEGER NOT NULL,"
+                + " id INTEGER,"
                 + " community_id INTEGER NOT NULL,"
                 + " content TEXT,"
                 + " PRIMARY KEY (id, community_id),"
@@ -137,8 +137,8 @@ public class  SetDB {
                 + " parent_id INTEGER NOT NULL, "
                 + " child_id INTEGER NOT NULL, "
                 + " PRIMARY KEY (child_id, parent_id, post_id), "
-                + " FOREIGN KEY (child_id) REFERENCES Comment(id) "
-                + " FOREIGN KEY (parent_id) REFERENCES Comment(id), "
+                + " FOREIGN KEY (child_id, post_id) REFERENCES Comment(id, post_id) "
+                + " FOREIGN KEY (parent_id, post_id) REFERENCES Comment(id, post_id), "
                 + " FOREIGN KEY (post_id) REFERENCES Post(id) "
                 + ");";
 
