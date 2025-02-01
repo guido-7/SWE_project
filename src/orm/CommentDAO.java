@@ -100,5 +100,82 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         statement.setInt(3, (int) parameters.get("child_id"));
     }
 
+    public boolean save(Comment comment, Integer parentId, Integer parentLevel) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        if ((parentLevel+1) != comment.getLevel()) {
+            return false;
+        }
+
+        try {
+            conn = DBConnection.open_connection();
+            conn.prepareStatement("PRAGMA foreign_keys = ON").executeUpdate();
+            conn.setAutoCommit(false);  // Start transaction
+
+            // 1. Insert the comment
+            String insertSQL = """
+                INSERT INTO Comment (post_id, level, user_id, content)
+                VALUES (?, ?, ?, ?)
+            """;
+
+            stmt = conn.prepareStatement(insertSQL);
+            stmt.setInt(1, comment.getPost_id());
+            stmt.setInt(2, comment.getLevel());
+            stmt.setInt(3, comment.getUser_id());
+            stmt.setString(4, comment.getContent());
+            stmt.executeUpdate();
+
+            conn.commit();
+
+
+            // 2. Get the generated ID
+            String getIdSQL = """
+                SELECT id 
+                FROM Comment 
+                WHERE rowid = last_insert_rowid()
+            """;
+
+            stmt = conn.prepareStatement(getIdSQL);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                comment.setId(rs.getInt("id"));
+                System.out.println("Generated ID: " + comment.getId());
+            }
+
+            // 3. If this is a reply, add to hierarchy
+            if (parentId != null) {
+                String hierarchySQL = """
+                    INSERT INTO CommentHierarchy (post_id, parent_id, child_id)
+                    VALUES (?, ?, ?)
+                """;
+
+                stmt = conn.prepareStatement(hierarchySQL);
+                stmt.setInt(1, comment.getPost_id());
+                stmt.setInt(2, parentId);
+                stmt.setInt(3, comment.getId());
+                stmt.executeUpdate();
+            }
+
+            conn.commit();
+            return true;
+
+        } catch (SQLException e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (conn != null) {
+                conn.setAutoCommit(true);
+                conn.close();
+            }
+        }
+    }
 
 }
+
