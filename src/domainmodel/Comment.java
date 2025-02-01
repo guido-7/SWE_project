@@ -3,7 +3,7 @@ package src.domainmodel;
 import java.time.LocalDateTime;
 
 public class Comment {
-    private final int id;
+    private int id;
     private Post post;
     private User user;
     private final int  post_id;
@@ -14,6 +14,14 @@ public class Comment {
     private int dislikes = 0;
     private final LocalDateTime time;
     private boolean is_modified = false;
+
+    public Comment( int post_id,int level, int user_id, String content) {
+        this.post_id = post_id;
+        this.level = level;
+        this.user_id = user_id;
+        this.content = content;
+        this.time = LocalDateTime.now();
+    }
 
     public Comment(int id, int post_id,int level, int user_id, String content, int likes, int dislikes, LocalDateTime time, boolean is_modified) {
         this.id = id;
@@ -35,6 +43,10 @@ public class Comment {
         return user_id;
     }
 
+    public int getLevel() {
+        return level;
+    }
+
     public void setPost(Post post) {
         this.post = post;
     }
@@ -45,6 +57,10 @@ public class Comment {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Post getPost() {
@@ -70,7 +86,6 @@ public class Comment {
     public int getLikes() {
         return likes;
     }
-
 
     public int getDislikes() {
         return dislikes;
