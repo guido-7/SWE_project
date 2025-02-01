@@ -100,10 +100,14 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         statement.setInt(3, (int) parameters.get("child_id"));
     }
 
-    public Comment save(Comment comment, Integer parentId) throws SQLException {
+    public boolean save(Comment comment, Integer parentId, Integer parentLevel) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
+
+        if ((parentLevel+1) != comment.getLevel()) {
+            return false;
+        }
 
         try {
             conn = DBConnection.open_connection();
@@ -156,7 +160,7 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
             }
 
             conn.commit();
-            return comment;
+            return true;
 
         } catch (SQLException e) {
             if (conn != null) {
