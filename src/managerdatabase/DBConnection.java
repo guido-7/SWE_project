@@ -9,12 +9,10 @@ public class DBConnection {
 
     public static void connect() {
         try {
-            if(conn == null || conn.isClosed()){
-
-            Class.forName("org.sqlite.JDBC");
-
-            conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
-            System.out.println("Connected to database");
+            if (conn == null || conn.isClosed()) {
+                Class.forName("org.sqlite.JDBC");
+                conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+                System.out.println("Connected to database");
             }
 
         } catch (ClassNotFoundException e) {
@@ -54,6 +52,33 @@ public class DBConnection {
         return conn;
     }
 
+    // metodo usato per i test
+    public static Connection open_connection(String dbPathTest) {
+        try {
+            // Verifica se la connessione esiste e la restituisce
+            if (conn != null && !conn.isClosed()) {
+                return conn;
+            }
+
+            // Carica il driver JDBC per SQLite
+            Class.forName("org.sqlite.JDBC");
+
+            // Apre la connessione al database SQLite
+            conn = DriverManager.getConnection("jdbc:sqlite:" + dbPathTest);
+            System.out.println("Connected to database");
+
+        } catch (ClassNotFoundException e) {
+            System.out.println("JDBC driver not found");
+            e.printStackTrace();
+
+        } catch (SQLException e) {
+            System.out.println("Failed to connect to database");
+            e.printStackTrace();
+
+        }
+        return conn;
+    }
+
     public static void disconnect() {
         try {
             // Verifica se la connessione esiste e chiude la connessione
@@ -76,6 +101,10 @@ public class DBConnection {
             System.out.println("Failed to execute query");
             e.printStackTrace();
         }
+    }
+
+    public static void setConnection(Connection connection) {
+        conn = connection; // Usato solo per test unitari
     }
 
 }
