@@ -22,7 +22,7 @@ public class PostDao extends BaseDAO<Post, Integer>{
     @Override
     protected Post mapResultSetToEntity(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");
-        LocalDateTime time = resultSet.getTimestamp("time").toLocalDateTime();
+        LocalDateTime time = LocalDateTime.parse(resultSet.getString("time"));
         String title = resultSet.getString("title");
         String content = resultSet.getString("content");
         int user = resultSet.getInt("user_id");
