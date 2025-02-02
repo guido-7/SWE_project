@@ -37,7 +37,7 @@ public class PostController {
         content.setText("Contenuto");
     }
 
-    public Post getPost(int id) throws SQLException {;
+    public Post getPost(int id) throws SQLException {
         return postDao.findById(id).orElse(null);
     }
 }
