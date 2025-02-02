@@ -3,7 +3,8 @@ package src.domainmodel;
 import java.time.LocalDateTime;
 
 public class Post {
-    private final int id;
+    private int id;
+    private String title;
     private final LocalDateTime time;
     private int likes;
     private int dislikes;
@@ -15,9 +16,19 @@ public class Post {
     private boolean is_modified = false;
 
     // Constructor for creation of object from database
-    public Post(int id, LocalDateTime time, String content, int userId, int communityId, int likes, int dislikes) {
+
+    public Post(String title, String content, int userId) {
+        this.title = title;
+        this.content = content;
+        this.userId = userId;
+        this.communityId = 0;
+        this.time = LocalDateTime.now();
+    }
+
+    public Post(int id, LocalDateTime time, String title, String content, int userId, int communityId, int likes, int dislikes) {
         this.id = id;
         this.time = time;
+        this.title = title;
         this.content = content;
         this.userId = userId;
         this.communityId = communityId;
@@ -37,9 +48,16 @@ public class Post {
         return likes;
     }
 
-
     public int getDislikes() {
         return dislikes;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {
