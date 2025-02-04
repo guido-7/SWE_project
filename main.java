@@ -1,21 +1,34 @@
 import src.managerdatabase.DBConnection;
 import src.managerdatabase.SetDB;
 import src.orm.CommunityDAO;
+import src.orm.ModeratorDAO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
-/*
+
 public class main {
     public static void main(String[] args) throws SQLException {
-        DBConnection.connect();
-        SetDB.createDB();
-        DBConnection.disconnect();
+
+//        DBConnection.connect();
+//        SetDB.createDB();
+//        DBConnection.disconnect();
+//
+        ModeratorDAO moderatorDAO = new ModeratorDAO();
+        moderatorDAO.giveWarning(1,1);
+        moderatorDAO.giveWarning(1,1);
+        moderatorDAO.giveWarning(1,1);
+        moderatorDAO.giveWarning(1,1);
+
+
+
 
 
     }
-}*/
+}
+
+ /*
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -36,3 +49,4 @@ public class main extends Application {
         launch(args);
     }
 }
+*/

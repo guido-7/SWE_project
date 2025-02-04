@@ -3,7 +3,9 @@ package src.orm;
 import src.domainmodel.Moderator;
 import src.domainmodel.Permits;
 import src.domainmodel.PermitsManager;
+import src.managerdatabase.DBConnection;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -63,5 +65,50 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
         int community_id = resultSet.getInt("community_id");
         Set<Permits> permits =PermitsManager.createModeratorPermits();
         return new Moderator(id, nickname, name, surname,permits, community_id, assigned_date);
+    }
+    public void giveWarning(int user_id, int community_id) throws SQLException {
+        String selectQuery = "SELECT no_warnings FROM UserWarnings WHERE user_id = ? AND community_id = ?";
+        String insertOrUpdateQuery = "INSERT INTO UserWarnings (user_id, community_id, no_warnings) VALUES (?, ?, ?) " +
+                "ON CONFLICT(user_id, community_id) DO UPDATE SET no_warnings = no_warnings + 1";
+        String deleteQuery = "DELETE FROM UserWarnings WHERE user_id = ? AND community_id = ?";
+        String insertBannedQuery = "INSERT INTO BannedUsers (user_id, community_id, ban_date, reason) VALUES (?, ?, ?, ?)";
+        String checkBannedQuery = "SELECT 1 FROM BannedUsers WHERE user_id = ? AND community_id = ?";
+
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+             PreparedStatement insertOrUpdateStmt = connection.prepareStatement(insertOrUpdateQuery);
+             PreparedStatement deleteStmt = connection.prepareStatement(deleteQuery);
+             PreparedStatement insertBannedStmt = connection.prepareStatement(insertBannedQuery);
+             PreparedStatement checkBannedStmt = connection.prepareStatement(checkBannedQuery)) {
+
+            checkBannedStmt.setInt(1, user_id);
+            checkBannedStmt.setInt(2, community_id);
+            ResultSet bannedRs = checkBannedStmt.executeQuery();
+
+            if (bannedRs.next()) {
+                System.out.println("User is already banned");
+                return;
+            }
+
+            selectStmt.setInt(1, user_id);
+            selectStmt.setInt(2, community_id);
+            ResultSet rs = selectStmt.executeQuery();
+
+            if (rs.next() && rs.getInt("no_warnings") == 2) {
+                deleteStmt.setInt(1, user_id);
+                deleteStmt.setInt(2, community_id);
+                deleteStmt.executeUpdate();
+
+                insertBannedStmt.setInt(1, user_id);
+                insertBannedStmt.setInt(2, community_id);
+                insertBannedStmt.setString(3, LocalDateTime.now().toString());
+                insertBannedStmt.setString(4, "warnings threshold reached");
+                insertBannedStmt.executeUpdate();
+            } else {
+                insertOrUpdateStmt.setInt(1, user_id);
+                insertOrUpdateStmt.setInt(2, community_id);
+                insertOrUpdateStmt.executeUpdate();
+            }
+        }
     }
 }

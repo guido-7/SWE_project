@@ -6,6 +6,7 @@ public class  SetDB {
         createUserTable();
         createCommunityTable();
         createAdminTable();
+        createUserWarningsTable();
         createCommentTable();
         createPostTable();
         createBannedUsersTable();
@@ -15,8 +16,8 @@ public class  SetDB {
         createRulesTable();
         createSubscriptionTable();
         createUserAccessTable();
-        createCommentWarningsTable();
-        createPostwarningsTable();
+        createCommentReportsTable();
+        createPostReportsTable();
     }
 
     public static  void createCommunityTable() {
@@ -27,6 +28,29 @@ public class  SetDB {
                 + ");";
 
         DBConnection.query(sql);
+    }
+    public static void createUserWarningsTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS UserWarnings ("
+                + " user_id INTEGER NOT NULL,"
+                + " community_id INTEGER NOT NULL,"
+                + " no_warnings INTEGER,"
+                + " PRIMARY KEY (user_id, community_id),"
+                + " FOREIGN KEY (user_id) REFERENCES User(id)"
+                + ");";
+
+        String sql2 = "CREATE TRIGGER IF NOT EXISTS AutoIncrementWarnings "
+                + "AFTER INSERT ON UserWarnings "
+                + "WHEN NEW.no_warnings IS NULL "
+                + "BEGIN "
+                + "UPDATE UserWarnings "
+                + "SET no_warnings = COALESCE(no_warnings, 0) + 1 "
+                + "WHERE rowid = NEW.rowid; "
+                + "END;";
+
+        DBConnection.query(sql);
+        DBConnection.query(sql2);
+
+
     }
 
     public static void createUserTable() {
@@ -198,8 +222,8 @@ public class  SetDB {
 
         DBConnection.query(sql);
     }
-    public static void createPostwarningsTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS PostWarnings ("
+    public static void createPostReportsTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS PostReports ("
                 + " sender_id INTEGER NOT NULL,"
                 + " post_id INTEGER NOT NULL,"
                 + " PRIMARY KEY (sender_id, post_id),"
@@ -209,8 +233,8 @@ public class  SetDB {
 
          DBConnection.query(sql);
     }
-    public static void createCommentWarningsTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS CommentWarnings ("
+    public static void createCommentReportsTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS CommentReports ("
                 + " sender_id INTEGER NOT NULL,"
                 + " comment_id INTEGER NOT NULL,"
                 + " post_id INTEGER NOT NULL,"
