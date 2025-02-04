@@ -8,6 +8,9 @@ import src.orm.PostDao;
 import src.orm.UserDAO;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class PostController {
     @FXML
@@ -35,7 +38,7 @@ public class PostController {
         User user = userDAO.findById(post.getUserId()).orElse(null);
         username.setText(user.getNickname());
 
-        date.setText(post.getTime().toString());
+        date.setText(getFormattedTime(post.getTime()));
         title.setText(post.getTitle());
         content.setText(post.getContent());
         scoreLabel.setText(post.getLikes() - post.getDislikes() + "");
@@ -44,5 +47,26 @@ public class PostController {
 
     public Post getPost(int id) throws SQLException {
         return postDao.findById(id).orElse(null);
+    }
+
+    public static String getFormattedTime(LocalDateTime time) {
+        LocalDateTime now = LocalDateTime.now();
+
+        if (time.isAfter(now.minusHours(24))) { // Oggi
+            long hoursAgo = ChronoUnit.HOURS.between(time, now);
+            return hoursAgo + "h ago";
+        }
+        else if (time.isAfter(now.minusDays(7))) { // Ultima settimana
+            long daysAgo = ChronoUnit.DAYS.between(time, now);
+            return daysAgo + "d ago";
+        }
+        else if (time.getYear() == now.getYear()) { // Stesso anno
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM");
+            return time.format(formatter);
+        }
+        else { // Anni precedenti
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+            return time.format(formatter);
+        }
     }
 }
