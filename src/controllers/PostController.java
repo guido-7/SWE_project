@@ -1,4 +1,4 @@
-package src.businesslogic;
+package src.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -36,11 +36,6 @@ public class PostController {
         title.setText(post.getTitle());
         content.setText(post.getContent());
 
-//        this.post = post;
-//        username.setText("Ute");
-//        date.setText("2025-01-01");
-//        title.setText("Titolo");
-//        content.setText("Contenuto");
     }
 
     public Post getPost(int id) throws SQLException {

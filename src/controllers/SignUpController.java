@@ -1,4 +1,4 @@
-package src.businesslogic;
+package src.controllers;
 
 public class SignUpController {
 

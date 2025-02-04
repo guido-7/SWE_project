@@ -1,4 +1,4 @@
-package src.businesslogic;
+package src.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,7 +23,7 @@ public class HomePageController implements Initializable {
         try{
             posts = new ArrayList<>(getPosts());
             for (Post post : posts) {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/resources/fxml/Post.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Post.fxml"));
                 VBox vBox = fxmlLoader.load();
                 PostController postController = fxmlLoader.getController();
                 postController.setData(post);

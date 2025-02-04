@@ -1,14 +1,9 @@
-package src.businesslogic;
+package src.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import src.domainmodel.User;
-import src.orm.UserDAO;
-
-import java.sql.SQLException;
-import java.util.Map;
 
 public class LoginController {
 
