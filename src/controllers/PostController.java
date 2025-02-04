@@ -36,7 +36,7 @@ public class PostController {
 
         UserDAO userDAO = new UserDAO();
         User user = userDAO.findById(post.getUserId()).orElse(null);
-        username.setText(user.getNickname());
+        username.setText("by " + user.getNickname());
 
         date.setText(getFormattedTime(post.getTime()));
         title.setText(post.getTitle());
