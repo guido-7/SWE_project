@@ -1,6 +1,37 @@
 package src.managerdatabase;
+import src.domainmodel.User;
+import src.orm.PostDao;
+import src.orm.UserDAO;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class  SetDB {
+
+    public static void main(String[] args) throws SQLException {
+//        DBConnection.connect();
+//        createDB();
+//        DBConnection.disconnect();
+
+//        generatePosts();
+
+        UserDAO userDAO = new UserDAO();
+        userDAO.save(Map.of("nickname", "nick", "name", "surge","surname","tienmanen" ));
+    }
+
+    public static void generatePosts() throws SQLException {
+        PostDao postDao = new PostDao();
+        for (int i = 1; i <= 8; i++) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("title", "Post Title " + i);
+            params.put("content", "This is the content of post number " + i);
+            params.put("user_id", 1); // Assuming user_id 1 exists
+            params.put("community_id", 1); // Assuming community_id 1 exists
+            postDao.save(params);
+        }
+    }
+
     public static void createDB(){
 
         createUserTable();
