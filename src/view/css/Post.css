@@ -1,0 +1,67 @@
+/* Contenitore principale del post */
+.post-container {
+    -fx-padding: 15;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 1;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    /* Per dare un effetto card, puoi aggiungere anche un'ombra */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.5, 0, 2);
+}
+
+/* Titolo, autore e orario */
+.post-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+.post-author {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555555;
+}
+.post-time {
+    -fx-font-size: 12px;
+    -fx-text-fill: #888888;
+}
+
+/* Contenuto del post */
+.post-content {
+    -fx-font-size: 16px;
+    -fx-text-fill: #444444;
+}
+
+/* Area del punteggio */
+.score-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-min-width: 40;
+    -fx-alignment: center;
+}
+
+/* Pulsante Like: arrotondato solo a sinistra */
+.like-button {
+    -fx-padding: 5 10;
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333333;
+    -fx-background-radius: 10 0 0 10;
+    -fx-cursor: hand;
+}
+.like-button.selected {
+    -fx-background-color: #00aa00; /* Verde */
+    -fx-text-fill: #ffffff;
+}
+
+/* Pulsante Dislike: arrotondato solo a destra */
+.dislike-button {
+    -fx-padding: 5 10;
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333333;
+    -fx-background-radius: 0 10 10 0;
+    -fx-cursor: hand;
+}
+.dislike-button.selected {
+    -fx-background-color: #aa0000; /* Rosso */
+    -fx-text-fill: #ffffff;
+}

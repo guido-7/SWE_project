@@ -22,6 +22,9 @@ public class PostController {
     @FXML
     private Label title;
 
+    @FXML
+    private Label scoreLabel;
+
     private Post post;
     private PostDao postDao = new PostDao();
 
@@ -35,6 +38,7 @@ public class PostController {
         date.setText(post.getTime().toString());
         title.setText(post.getTitle());
         content.setText(post.getContent());
+        scoreLabel.setText(post.getLikes() - post.getDislikes() + "");
 
     }
 
