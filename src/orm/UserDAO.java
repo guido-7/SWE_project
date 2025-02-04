@@ -12,7 +12,7 @@ public class UserDAO extends BaseDAO<User,Integer> {
 
     @Override
     protected String getFindByIdQuery() {
-        return "SELECT * FROM users WHERE id = ?";
+        return "SELECT * FROM User WHERE id = ?";
     }
 
     @Override
