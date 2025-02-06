@@ -1,7 +1,6 @@
 package src.managerdatabase;
 import src.domainmodel.User;
-import src.orm.PostDao;
-import src.orm.UserDAO;
+import src.orm.*;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -10,14 +9,14 @@ import java.util.Map;
 public class  SetDB {
 
     public static void main(String[] args) throws SQLException {
-//        DBConnection.connect();
-//        createDB();
-//        DBConnection.disconnect();
+        DBConnection.connect();
+        createDB();
+        DBConnection.disconnect();
+          int numberofPosts = 30;
+          int numberofCommunities = 10;
+          int numberofUser = 5;
 
-//        generatePosts();
-
-        UserDAO userDAO = new UserDAO();
-        userDAO.save(Map.of("nickname", "nick", "name", "surge","surname","tienmanen" ));
+          generatefakedata(numberofPosts,numberofCommunities,numberofUser);
     }
 
     public static void generatePosts() throws SQLException {
@@ -32,7 +31,7 @@ public class  SetDB {
         }
     }
 
-    public static void createDB(){
+    public static void createDB() {
 
         createUserTable();
         createCommunityTable();
@@ -50,11 +49,13 @@ public class  SetDB {
         createPostwarningsTable();
     }
 
-    public static  void createCommunityTable() {
+    public static void createCommunityTable() {
         String sql = "CREATE TABLE IF NOT EXISTS Community ("
                 + " id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " title TEXT NOT NULL,"
-                + " description TEXT"
+                + " description TEXT,"
+                + " visits INTEGER DEFAULT 0,"
+                + " scores REAL DEFAULT 1"
                 + ");";
 
         DBConnection.query(sql);
@@ -71,7 +72,7 @@ public class  SetDB {
         DBConnection.query(sql);
     }
 
-    public static void  createUserAccessTable() {
+    public static void createUserAccessTable() {
         String sql = "CREATE TABLE IF NOT EXISTS UserAccess ("
                 + " email TEXT PRIMARY KEY NOT NULL,"
                 + " user_id INTEGER NOT NULL,"
@@ -133,12 +134,13 @@ public class  SetDB {
         DBConnection.query(sql);
     }
 
-   public static void createCommentTable() {
+    public static void createCommentTable() {
         String sql = "CREATE TABLE IF NOT EXISTS Comment ("
                 + " id INTEGER,"
                 + " post_id INTEGER NOT NULL,"
                 + " level INTEGER DEFAULT 0,"
                 + " user_id INTEGER NOT NULL,"
+                + " community_id INTEGER NOT NULL,"
                 + " content TEXT NOT NULL,"
                 + " likes INTEGER DEFAULT 0,"
                 + " dislikes INTEGER DEFAULT 0,"
@@ -146,20 +148,21 @@ public class  SetDB {
                 + " is_modified INTEGER DEFAULT 0 CHECK (is_modified IN (0, 1)),"
                 + " PRIMARY KEY (id, post_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
-                + " FOREIGN KEY (post_id) REFERENCES Post(id)"
+                + " FOREIGN KEY (post_id) REFERENCES Post(id),"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
                 + ");";
 
-       String sql2 = "CREATE TRIGGER IF NOT EXISTS AutoIncrementCommentId "
-               + "AFTER INSERT ON Comment "
-               + "WHEN NEW.id IS NULL "
-               + "BEGIN "
-               + "UPDATE Comment "
-               + "SET id = COALESCE((SELECT MAX(id) FROM Comment WHERE post_id = NEW.post_id), 0) + 1 "
-               + "WHERE rowid = NEW.rowid; "
-               + "END;";
+        String sql2 = "CREATE TRIGGER IF NOT EXISTS AutoIncrementCommentId "
+                + "AFTER INSERT ON Comment "
+                + "WHEN NEW.id IS NULL "
+                + "BEGIN "
+                + "UPDATE Comment "
+                + "SET id = COALESCE((SELECT MAX(id) FROM Comment WHERE post_id = NEW.post_id), 0) + 1 "
+                + "WHERE rowid = NEW.rowid; "
+                + "END;";
 
-          DBConnection.query(sql);
-          DBConnection.query(sql2);
+        DBConnection.query(sql);
+        DBConnection.query(sql2);
     }
 
 
@@ -169,7 +172,7 @@ public class  SetDB {
                 + " parent_id INTEGER NOT NULL, "
                 + " child_id INTEGER NOT NULL, "
                 + " PRIMARY KEY (child_id, parent_id, post_id), "
-                + " FOREIGN KEY (child_id, post_id) REFERENCES Comment(id, post_id) "
+                + " FOREIGN KEY (child_id, post_id) REFERENCES Comment(id, post_id), "
                 + " FOREIGN KEY (parent_id, post_id) REFERENCES Comment(id, post_id), "
                 + " FOREIGN KEY (post_id) REFERENCES Post(id) "
                 + ");";
@@ -178,7 +181,7 @@ public class  SetDB {
     }
 
 
-    public static void  createBannedUsersTable() {
+    public static void createBannedUsersTable() {
         String sql = "CREATE TABLE IF NOT EXISTS BannedUsers ("
                 + " user_id INTEGER NOT NULL,"
                 + " community_id INTEGER NOT NULL,"
@@ -192,7 +195,7 @@ public class  SetDB {
         DBConnection.query(sql);
     }
 
-    public static void  createModeratorTable() {
+    public static void createModeratorTable() {
         String sql = "CREATE TABLE IF NOT EXISTS Moderator ("
                 + " user_id INTEGER NOT NULL,"
                 + " community_id INTEGER NOT NULL,"
@@ -205,7 +208,7 @@ public class  SetDB {
         DBConnection.query(sql);
     }
 
-    public static void  createSubscriptionTable() {
+    public static void createSubscriptionTable() {
         String sql = "CREATE TABLE IF NOT EXISTS Subscription ("
                 + " user_id INTEGER NOT NULL,"
                 + " community_id INTEGER NOT NULL,"
@@ -218,18 +221,21 @@ public class  SetDB {
         DBConnection.query(sql);
     }
 
-    public static void  createPostVotesTable() {
+    public static void createPostVotesTable() {
         String sql = "CREATE TABLE IF NOT EXISTS PostVotes ("
                 + " user_id INTEGER NOT NULL,"
                 + " post_id INTEGER NOT NULL,"
+                + " community_id INTEGER NOT NULL,"
                 + " vote_type INTEGER DEFAULT 0 CHECK (vote_type IN (0,1)),"// 0-->dislike,1-->like
                 + " PRIMARY KEY (user_id, post_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
-                + " FOREIGN KEY (post_id) REFERENCES Post(id)"
+                + " FOREIGN KEY (post_id) REFERENCES Post(id),"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
                 + ");";
 
         DBConnection.query(sql);
     }
+
     public static void createPostwarningsTable() {
         String sql = "CREATE TABLE IF NOT EXISTS PostWarnings ("
                 + " sender_id INTEGER NOT NULL,"
@@ -239,8 +245,9 @@ public class  SetDB {
                 + " FOREIGN KEY (post_id) REFERENCES Post(id)"
                 + ");";
 
-         DBConnection.query(sql);
+        DBConnection.query(sql);
     }
+
     public static void createCommentWarningsTable() {
         String sql = "CREATE TABLE IF NOT EXISTS CommentWarnings ("
                 + " sender_id INTEGER NOT NULL,"
@@ -253,5 +260,60 @@ public class  SetDB {
 
         DBConnection.query(sql);
     }
-}
 
+    public static void generatefakedata(int numberofPosts, int numberofCommunity, int numberofUsers) throws SQLException {
+        // create fake communities
+        for (int i = 0; i <= numberofCommunity; i++) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("title", "Title" + i + 1);
+            params.put("description", "description" + i + 1);
+            CommunityDAO communityDAO = new CommunityDAO();
+            communityDAO.save(params);
+        }
+        // create fake subscriptions
+        for (int i = 0; i <= numberofUsers; i++) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("user_id",i);
+            params.put("community_id", (int) (Math.random() * numberofCommunity) + 1);
+            SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
+            subscriptionDAO.save(params);
+        }
+
+        // create fake Posts
+        for (int i = 0; i <= numberofPosts; i++) {
+            Map<String, Object> params = new HashMap<>();
+            int user_id = (((int) (Math.random() * 5) + 1));
+            int community_id = (int) (Math.random() * numberofCommunity) + 1;
+            params.put("title", "Title" + i + 1);
+            params.put("content", "Content " + i + 1);
+            params.put("user_id", +user_id);
+            params.put("community_id", community_id);
+            PostDao postDao = new PostDao();
+            postDao.save(params);
+
+            // create fake PostVotes
+            Map<String, Object> params1 = new HashMap<>();
+            params1.put("user_id", user_id);
+            params1.put("post_id", i + 1);
+            params1.put("vote_type", (int )(Math.random() * 2));
+            params1.put("community_id", community_id);
+            UserDAO userDAO = new UserDAO();
+            userDAO.insertPostVotes(params1);
+        }
+
+        // create fake comments
+        for (int i = 0; i <= numberofPosts; i++) {
+            Map<String, Object> params = new HashMap<>();
+            int user_id = (((int) (Math.random() * 5) + 1));
+            int community_id = (int) (Math.random() * numberofCommunity) + 1;
+            params.put("post_id", i + 1);
+            params.put("level", 0);
+            params.put("user_id", user_id);
+            params.put("content", "Content " + i+1);
+            params.put("community_id", community_id);
+            CommentDAO commentDAO = new CommentDAO();
+            commentDAO.save(params);
+        }
+
+    }
+}

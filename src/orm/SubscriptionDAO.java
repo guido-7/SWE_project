@@ -1,12 +1,11 @@
 package src.orm;
 
 import src.domainmodel.Subscription;
+import src.managerdatabase.DBConnection;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +40,8 @@ public class SubscriptionDAO extends BaseDAO<Subscription, List<Integer>> {
     protected void setInsertParams(PreparedStatement statement, Map<String, Object> parameters) throws SQLException {
         statement.setInt(1, (int) parameters.get("user_id"));
         statement.setInt(2, (int) parameters.get("community_id"));
-        statement.setTimestamp(3, Timestamp.valueOf((LocalDateTime) parameters.get("subscription_date")));
+        statement.setString(3, LocalDateTime.now().toString());
+
     }
 
     @Override
@@ -65,5 +65,21 @@ public class SubscriptionDAO extends BaseDAO<Subscription, List<Integer>> {
     protected void setDeleteParams(PreparedStatement statement, List<Integer> id) throws SQLException {
         statement.setInt(1, id.get(0)); // user_id
         statement.setInt(2, id.get(1)); // community_id
+    }
+    public ArrayList<Integer> getCommunityIds(int userId,int numberofCommunities){
+        String sql = "SELECT community_id FROM Subscription INNER JOIN Community ON Community.id = Subscription.community_id WHERE user_id = ? ORDER BY (scores * 0.6 + visits * 0.4) DESC LIMIT ?";
+        ArrayList<Integer> communityIds = new ArrayList<>();
+        try (Connection connection = DBConnection.open_connection() ;
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, numberofCommunities);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                communityIds.add(resultSet.getInt("community_id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return communityIds;
     }
 }

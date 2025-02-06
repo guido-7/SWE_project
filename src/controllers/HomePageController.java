@@ -4,7 +4,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
+import src.businesslogic.FeedService;
+import src.domainmodel.Guest;
+import src.domainmodel.PermitsManager;
 import src.domainmodel.Post;
+import src.domainmodel.User;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -17,11 +21,12 @@ public class HomePageController implements Initializable {
     @FXML
     private VBox postsContainer;
     List<Post> posts;
+    FeedService feedService = new FeedService(new User(1, "gio63", "Giovanni", "Lello", PermitsManager.createUserPermits()));
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try{
-            posts = new ArrayList<>(getPosts());
+            posts = new ArrayList<>(feedService.getFeed());
             for (Post post : posts) {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Post.fxml"));
                 VBox vBox = fxmlLoader.load();
@@ -32,16 +37,5 @@ public class HomePageController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private List<Post> getPosts() throws SQLException {
-        PostController postController = new PostController();
-        List<Post> ls = new ArrayList<>();
-
-        for (int i = 1; i < 8; i++) {
-            ls.add(postController.getPost(i));
-        }
-
-        return ls;
     }
 }
