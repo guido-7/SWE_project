@@ -1,41 +1,42 @@
-.root {
-    -fx-background-color: #f4f4f4;
-    -fx-padding: 20;
+TextField{
+    -fx-background-color: transparent;
+    -fx-border-color: #C27933;
+    -fx-border-width: 0px 0px 2px 0px;
 }
 
-.welcome-label {
-    -fx-text-fill: #333333;
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
+PasswordField{
+    -fx-background-color: transparent;
+    -fx-border-color: #C27933;
+    -fx-border-width: 0px 0px 2px 0px;
 }
 
-.instruction-label {
-    -fx-text-fill: #666666;
-    -fx-font-size: 14px;
-}
-
-.text-field, .password-field {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #cccccc;
-    -fx-border-radius: 4px;
-    -fx-padding: 8px;
-    -fx-font-size: 14px;
-}
-
-.button {
-    -fx-background-color: #4CAF50;
+Button{
+    sizing: 10px;
+    -fx-background-color: #C27933;
     -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 10px 20px;
-    -fx-border-radius: 4px;
-    -fx-cursor: hand;
+    -fx-border-color: #C27933;
+    -fx-border-width: 0px 0px 2px 0px;
+    -fx-alignment: center;
+
 }
 
-.button:hover {
-    -fx-background-color: #45a049;
+Button:hover{
+    -fx-background-color: #7D3F0F;
+    -fx-text-fill: white;
+    -fx-border-color: #7D3F0F;
+    -fx-border-width: 0px 0px 2px 0px;
 }
 
-.error-label {
-    -fx-text-fill: #ff0000;
-    -fx-font-size: 12px;
+Hyperlink{
+    -fx-text-fill: #C27933;
+    -fx-alignment: center;
+
+}
+
+Label{
+    -fx-font-size: 26px;
+    -fx-text-fill: #C27933;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial", sans-serif;
+    -fx-alignment: center;
 }
