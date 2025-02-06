@@ -65,3 +65,10 @@
     -fx-background-color: #aa0000; /* Rosso */
     -fx-text-fill: #ffffff;
 }
+.comment-button {
+    -fx-padding: 5 10;
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333333;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}

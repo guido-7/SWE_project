@@ -2,8 +2,10 @@ package src.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import src.domainmodel.Community;
 import src.domainmodel.Post;
 import src.domainmodel.User;
+import src.orm.CommunityDAO;
 import src.orm.PostDao;
 import src.orm.UserDAO;
 
@@ -13,6 +15,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public class PostController {
+    @FXML
+    private Label community;
+
     @FXML
     private Label username;
 
@@ -34,9 +39,13 @@ public class PostController {
     public void setData(Post post) throws SQLException {
         this.post = post;
 
+        CommunityDAO communityDAO = new CommunityDAO();
+        Community comm = communityDAO.findById(post.getCommunityId()).orElse(null);
+        community.setText("r/" + comm.getTitle());
+
         UserDAO userDAO = new UserDAO();
         User user = userDAO.findById(post.getUserId()).orElse(null);
-        username.setText("by " + user.getNickname());
+        username.setText(user.getNickname());
 
         date.setText(getFormattedTime(post.getTime()));
         title.setText(post.getTitle());
