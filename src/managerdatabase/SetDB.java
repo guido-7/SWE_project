@@ -12,9 +12,9 @@ public class  SetDB {
         DBConnection.connect();
         createDB();
         DBConnection.disconnect();
-          int numberofPosts = 30;
+          int numberofPosts = 40;
           int numberofCommunities = 10;
-          int numberofUser = 5;
+          int numberofUser = 100;
 
           generatefakedata(numberofPosts,numberofCommunities,numberofUser);
     }
@@ -282,7 +282,7 @@ public class  SetDB {
         // create fake Posts
         for (int i = 0; i <= numberofPosts; i++) {
             Map<String, Object> params = new HashMap<>();
-            int user_id = (((int) (Math.random() * 5) + 1));
+            int user_id = (((int) (Math.random() * numberofUsers) + 1));
             int community_id = (int) (Math.random() * numberofCommunity) + 1;
             params.put("title", "Title" + i + 1);
             params.put("content", "Content " + i + 1);
@@ -304,7 +304,7 @@ public class  SetDB {
         // create fake comments
         for (int i = 0; i <= numberofPosts; i++) {
             Map<String, Object> params = new HashMap<>();
-            int user_id = (((int) (Math.random() * 5) + 1));
+            int user_id = (((int) (Math.random() * numberofUsers) + 1));
             int community_id = (int) (Math.random() * numberofCommunity) + 1;
             params.put("post_id", i + 1);
             params.put("level", 0);
