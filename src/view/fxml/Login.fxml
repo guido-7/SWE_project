@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="login_label" prefHeight="600.0" prefWidth="600.0" styleClass="username_label" stylesheets="@../css/Login.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="login_label" prefHeight="600.0" prefWidth="600.0" styleClass="username_label" stylesheets="@../css/Login.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controllers.LoginController">
    <children>
       <TextField fx:id="user_id" layoutX="248.0" layoutY="247.0" promptText="email.@gmail.com" stylesheets="@../css/Login.css" />
       <Label fx:id="title" layoutX="226.0" layoutY="125.0" stylesheets="@../css/Login.css" text="LOGIN PAGE">
@@ -18,8 +18,8 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <Button fx:id="login_button" layoutX="258.0" layoutY="457.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Login" />
-      <PasswordField fx:id="password_id" layoutX="248.0" layoutY="352.0" promptText="password" styleClass="-fx-background-color: tansaprent" stylesheets="@../css/Login.css" />
+      <Button fx:id="login_button" layoutX="258.0" layoutY="457.0" mnemonicParsing="false" onAction="#handleLoginButtonAction" prefHeight="30.0" prefWidth="100.0" text="Login" />
+      <PasswordField fx:id="password_id" layoutX="248.0" layoutY="352.0" promptText="password" stylesheets="@../css/Login.css" />
       <ImageView fitHeight="36.0" fitWidth="35.0" layoutX="209.0" layoutY="243.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/login_icon.jpg" />
@@ -36,5 +36,6 @@
          </image>
       </ImageView>
       <Hyperlink layoutX="243.0" layoutY="535.0" text="Forgot your password?" />
+      <Label fx:id="errorLabel" layoutX="286.0" layoutY="401.0" text="Label" />
    </children>
 </AnchorPane>

@@ -98,4 +98,21 @@ public class UserDAO extends BaseDAO<User,Integer> {
             e.printStackTrace();
         }
     }
+
+    public boolean isValidUser(String email, String password) throws SQLException {
+        String query = "SELECT COUNT(*) FROM UserAccess WHERE email = ? AND password = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            statement.setString(2, password);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next() && resultSet.getInt(1) > 0) {
+                    return true; // Email e password corrette
+                }
+            }
+        }
+        return false; // Credenziali errate
+    }
+
+
 }

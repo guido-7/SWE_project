@@ -1,32 +1,68 @@
 package src.controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import src.orm.UserDAO;
+import javafx.event.ActionEvent;
+import javafx.scene.Scene;
+
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 public class LoginController {
+    @FXML
+    private TextField user_id;
 
     @FXML
-    private TextField usernameField;
-
-    @FXML
-    private PasswordField passwordField;
+    private PasswordField password_id;
 
     @FXML
     private Label errorLabel;
 
-
     @FXML
-    private void handleLoginButtonAction(){
-        String username = usernameField.getText();
-        String password = passwordField.getText();
+    private void handleLoginButtonAction() {
+        System.out.println("Login button clicked!");
+        UserDAO userDAO = new UserDAO();
+        String username = user_id.getText();
+        String password = password_id.getText();
+        System.out.println("Username: " + username + ", Password: " + password);
+
         if (username.isEmpty() || password.isEmpty()) {
+            errorLabel.setOpacity(1);
             errorLabel.setText("Please enter both username and password.");
-        } else if (username.equals("admin") && password.equals("password")) {
-            errorLabel.setText("Login successful!");
         } else {
-            errorLabel.setText("Invalid username or password.");
+            try {
+                if (userDAO.isValidUser(username, password)) {
+                    openHomePage(); // Apri la homepage
+                } else {
+                    errorLabel.setOpacity(1);
+                    errorLabel.setText("Invalid username or password.");
+                }
+            } catch (SQLException e) {
+                errorLabel.setOpacity(1);
+                errorLabel.setText("Database error!");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void openHomePage() {
+        try {
+            System.out.println("Opening Home Page...");
+            FXMLLoader homePage = new FXMLLoader(getClass().getResource("/src/view/fxml/HomePage.fxml"));
+            Stage stage = (Stage) user_id.getScene().getWindow();
+            stage.setScene(new Scene(homePage.load()));
+            stage.setTitle("Home Page");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            errorLabel.setText("Error loading Home Page.");
         }
     }
 }
