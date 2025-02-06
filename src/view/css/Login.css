@@ -33,10 +33,19 @@ Hyperlink{
 
 }
 
-Label{
+#title{
     -fx-font-size: 26px;
     -fx-text-fill: #C27933;
     -fx-font-weight: bold;
     -fx-font-family: "Arial", sans-serif;
     -fx-alignment: center;
+}
+
+#errorLabel{
+    -fx-font-size: 16px;
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial", sans-serif;
+    -fx-alignment: center;
+    -fx-opacity: 0;
 }
