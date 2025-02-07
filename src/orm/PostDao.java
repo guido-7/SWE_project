@@ -71,14 +71,15 @@ public class PostDao extends BaseDAO<Post, Integer>{
     protected void setDeleteParams(PreparedStatement statement, Integer id) throws SQLException {
         statement.setInt(1, id);
     }
-    public ArrayList<Post> getPosts(int CommunityId, int PostCount) {
+    public ArrayList<Post> getPosts(int CommunityId, int PostCount,int Offset) {
 
         ArrayList<Post> posts = new ArrayList<>();
 
         try(Connection connection = DBConnection.open_connection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE community_id = ? ORDER BY (time * 0.6 + likes * 0.4)    DESC LIMIT ?");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE community_id = ? ORDER BY (time * 0.6 + likes * 0.4)    DESC LIMIT ? OFFSET ?");
             statement.setInt(1, CommunityId);
             statement.setInt(2, PostCount);
+            statement.setInt(3, Offset);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 posts.add(mapResultSetToEntity(resultSet));

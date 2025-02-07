@@ -17,7 +17,11 @@ public class FeedService {
     SubscriptionDAO subscriptionDao = new SubscriptionDAO();
     UserDAO userDAO = new UserDAO();
     CommentDAO commentDAO = new CommentDAO();
+    Map<Integer,Integer> noOfPostsTaken = new LinkedHashMap<>();
+    Map<Integer,Integer> noOfFirstPostsTaken = new LinkedHashMap<>();
+
     Guest guest ;
+
     int numberofPosts = 30;
     int numberofCommunities = 10;
 
@@ -35,6 +39,7 @@ public class FeedService {
             return posts;
 
         } else {
+
             ArrayList<ArrayList<Integer>> community_ids = new ArrayList<>();
             //10: 4 3 2 1
 
@@ -85,18 +90,19 @@ public class FeedService {
             //normalization
             double sum = scores.values().stream().mapToDouble(Double::doubleValue).sum();
             scores.replaceAll((k, v) -> v / sum);
+
             System.out.println("Length of scores: " + scores.size());
             // we obtain the partition of the posts in the following form (community_id,number of posts from that community)
-            getPartition(scores,numberofPosts,numberofCommunities);
+            getPartition(scores);
 
-            posts = getPostsFromCommunity(numberofCommunities);
+            posts = getPostsFromCommunity();
             return posts;
         }
     }
     // 345 : 122,56 , 333 : 123 , 566 : 124 --->scores  se io facessi get(0) mi darebbe 0
     // 345 , 333, 566 --->community_ids --->get(0)=345 get(get(0))-->get(345)
     //
-    private void getPartition(Map<Integer,Double> scores, int numberofPosts, int numberofCommunities){
+    private void getPartition(Map<Integer,Double> scores){
         int maxKey = findmaxKey(scores);
         List<Integer> community_ids = new ArrayList<>(scores.keySet());
 
@@ -125,97 +131,36 @@ public class FeedService {
         return maxKey;
     }
 
-    private List<Post> getPostsFromCommunity(int numberofCommunities) {
+    private List<Post> getPostsFromCommunity() {
         List<Post> posts = new ArrayList<>();
         List<Integer> keys = new ArrayList<>(community_partition.keySet());
 
-        for (int j = 0; j < keys.size(); j++) {
-            Integer communityId = keys.get(j);
+        for (Integer communityId : keys) {
             Integer postCount = community_partition.get(communityId);
-            List<Post> communityPosts = postDao.getPosts(communityId, postCount);
+            List<Post> communityPosts = postDao.getPosts(communityId, postCount, 0);
+            System.out.println("Community ID: " + communityId + ", Number of Posts: " + communityPosts.size());
+            noOfPostsTaken.put(communityId,communityPosts.size());
+            // 2 : 4
             posts.addAll(communityPosts);
         }
         return posts;
     }
-
-
-    /*
-    public class FeedService {
-    Map<Integer, Integer> community_partition = new LinkedHashMap<>();// at the end of the loading of feed this should be in
-                                                                        // the form of community_id,number of posts from that community
-    PostDao postDao = new PostDao();
-    CommunityDAO communityDao = new CommunityDAO();
-    SubscriptionDAO subscriptionDao = new SubscriptionDAO();
-    UserDAO userDAO = new UserDAO();
-    CommentDAO commentDAO = new CommentDAO();
-
-    Guest guest ;
-
-    FeedService(Guest guest){
-        this.guest = guest;
-    }
-    public List<Post> getFeed(int numberofPosts,int numberofCommunities) {
-
+    public List<Post> getNextFeed(){
         List<Post> posts = new ArrayList<>();
-        ArrayList<int> communityId = new ArrayList<>;
-        ArrayList<Int> weight = new ArrayList<>();
+        List<Integer> keys = new ArrayList<>(community_partition.keySet());
 
-        if (!guest.hasPermit(Permits.PERSONAL_FEED)){
-            return posts;
-
-        } else {
-            ArrayList<Integer> subscription_C_ids = subscriptionDao.getCommunityIds(guest.getId(),numberofCommunities);
-            for(int i = 0, i < Subscription_C_ids.size, i++){ weights.add(20); }
-
-
-            ArrayList<Integer> votes_C_ids = userDAO.getCommunityIds(guest.getId(),numberofCommunities);
-             for(int i = 0, i < votes_C_ids.size, i++){ weights.add(5); }
-
-
-            ArrayList<Integer> community_C_ids = communityDao.getCommunityIds(guest.getId(),numberofCommunities);
-            for(int i = 0, i < community_C_ids.size, i++){ weights.add(5); }
-
-            ArrayList<Integer> comment_C_ids = commentDAO.getCommunityIds(guest.getId(),numberofCommunities);
-            for(int i = 0, i < comment_C_ids.size, i++){ weights.add(5); }
-
-            //da aggiungere score CommunityDAO di andre
-
-            //merge per id
-            communityId.addAll(subscription_C_ids);
-            communityId.addAll(votes_C_ids);
-            communityId.addAll(community_C_ids);
-            communityId.addAll(comment_C_ids);
-
-            Map<Integer, Integer> mergedMap = new HashMap<>();
-            for (int i = 0; i < community.size(); i++) {
-                mergedMap.put(community.get(i), mergedMap.getOrDefault(community.get(i), 0) + weights.get(i));
+        for (Integer communityId : keys) {
+            Integer postCount = community_partition.get(communityId);
+            List<Post> communityPosts = postDao.getPosts(communityId, postCount,noOfPostsTaken.get(communityId));
+            System.out.println("Community ID: " + communityId + ", Number of Posts: " + communityPosts.size());
+            noOfPostsTaken.put(communityId, noOfPostsTaken.getOrDefault(communityId, 0) + communityPosts.size());
+            if(communityPosts.isEmpty()){
+                community_partition.remove(communityId);
             }
-            communityId = new ArrayList<>(mergedMap.keySet());
-            weights = new ArrayList<>(mergedMap.values());
-
-            //normalization
-            for (int i = 0; i < numberofCommunities; i++) {
-                probability_community_weights.add((double) community_ids.get(i) / sum);
-            }
-            getpartion(community_ids,probability_community_weights,numberofPosts,numberofCommunities);
-
-            posts = getPostsFromCommunity(numberofCommunities);
-            return posts;
+            posts.addAll(communityPosts);
         }
-    }
-    private void getpartion(ArrayList<Integer> community_ids,ArrayList<Double> probability_community_weights,int numberofPosts,int numberofCommunities){
-        int maxIndex = findmaxIndex(probability_community_weights);
-        for (int i = 0; i < numberofCommunities; i++) {
-            if (i == maxIndex) {
-                int value = (int) Math.floor(probability_community_weights.get(i) * numberofPosts)+1;
-                community_partition.put(community_ids.get(i), value);
-            } else {
-                int value = (int) Math.floor(probability_community_weights.get(i) * numberofPosts);
-                community_partition.put(community_ids.get(i), value);
-            }
-        }
-
+        return posts;
 
     }
-     */
+    // 120 : 23  , 121 : 22 , 122 : 10 , 123 : 23 , 124 : 23
 }
