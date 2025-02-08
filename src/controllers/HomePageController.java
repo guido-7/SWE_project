@@ -1,20 +1,19 @@
 package src.controllers;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.ScrollPane;
+import javafx.geometry.Side;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import src.businesslogic.FeedService;
-import javafx.scene.control.Label;
-import src.domainmodel.Guest;
-import src.domainmodel.PermitsManager;
-import src.domainmodel.Post;
-import src.domainmodel.User;
+import src.domainmodel.*;
+import src.businesslogic.*;
 import src.servicemanager.Service;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -28,14 +27,18 @@ public class HomePageController implements Initializable {
     private VBox postsContainer;
     @FXML
     private ScrollPane scrollPane;
-
+    @FXML
+    private TextField searchField;
 
     List<Post> posts;
     private FeedService feedService;
+    private SearchCommunityService searchCommunityService = new SearchCommunityService();
     private boolean isLoading = false;
     private boolean allPostsLoaded = false;
     private ProgressIndicator progressIndicator = new ProgressIndicator();
 
+    // ContextMenu per i suggerimenti
+    private ContextMenu suggestionsPopup = new ContextMenu();
 
     public void setFeedService(FeedService feedService) {
         this.feedService = feedService;
@@ -52,6 +55,51 @@ public class HomePageController implements Initializable {
             scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal.doubleValue() == 1.0 && !isLoading && !allPostsLoaded) {
                     loadMorePosts();
+                }
+            });
+
+            searchField.textProperty().addListener(new ChangeListener<>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    if (newValue.isEmpty()) {
+                        suggestionsPopup.hide();
+                    } else {
+                        // Avvia una ricerca in background per ottenere le community che corrispondono al testo
+                        Task<List<Community>> searchTask = new Task<>() {
+                            @Override
+                            protected List<Community> call() {
+                                return searchCommunityService.searchCommunities(newValue);
+                            }
+                        };
+
+                        searchTask.setOnSucceeded(event -> {
+                            List<Community> communities = searchTask.getValue();
+                            // Popola il ContextMenu
+                            suggestionsPopup.getItems().clear();
+                            if (communities != null && !communities.isEmpty()) {
+                                for (Community community : communities) {
+                                    MenuItem item = new MenuItem(community.getTitle());
+                                    // Quando si clicca il suggerimento, ad esempio, imposta il testo e/o naviga alla community
+                                    item.setOnAction(e -> {
+                                        searchField.setText(community.getTitle());
+                                        suggestionsPopup.hide();
+                                        // Aggiungi eventuale logica: per esempio, carica la pagina della community
+                                    });
+                                    suggestionsPopup.getItems().add(item);
+                                }
+                                // Mostra il ContextMenu sotto il TextField
+                                suggestionsPopup.show(searchField, Side.BOTTOM, 0, 0);
+                            } else {
+                                suggestionsPopup.hide();
+                            }
+                        });
+
+                        searchTask.setOnFailed(event -> {
+                            suggestionsPopup.hide();
+                        });
+
+                        new Thread(searchTask).start();
+                    }
                 }
             });
 

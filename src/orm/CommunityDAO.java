@@ -100,4 +100,23 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
         return communityIds;
     }
 
+    public ArrayList<Community> searchByTitle(String query) {
+        ArrayList<Community> communities = new ArrayList<>();
+        String sql = "SELECT * FROM Community WHERE title LIKE ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, "%" + query + "%");
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    communities.add(mapResultSetToEntity(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return communities;
+    }
+
 }
