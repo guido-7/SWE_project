@@ -3,9 +3,12 @@ package src.controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import src.domainmodel.Post;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -43,5 +46,19 @@ public class HomePageController implements Initializable {
         }
 
         return ls;
+    }
+
+    @FXML
+    public static void openHomePage(Stage stage) {
+        try {
+            System.out.println("Opening Home Page...");
+            FXMLLoader homePage = new FXMLLoader(HomePageController.class.getResource("/src/view/fxml/HomePage.fxml"));
+            stage.setScene(new Scene(homePage.load()));
+            stage.setTitle("Home Page");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error loading Home Page.");
+        }
     }
 }

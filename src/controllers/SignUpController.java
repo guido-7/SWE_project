@@ -48,7 +48,7 @@ public class SignUpController {
         String nameId = name.getText();
         String password = password_id.getText();
 
-        boolean isValid = true; // Flag per controllare se possiamo procedere
+        boolean isValid = true;
 
         // Reset dei messaggi di errore
         not_username.setOpacity(0);
@@ -56,7 +56,6 @@ public class SignUpController {
         not_name.setOpacity(0);
         not_password.setOpacity(0);
 
-        // Controllo se i campi sono vuoti e mostro il messaggio di errore
         if (userId.isEmpty()) {
             not_username.setOpacity(1);
             not_username.setText("Missing name!");
@@ -76,9 +75,12 @@ public class SignUpController {
             not_password.setOpacity(1);
             not_password.setText("Missing password!");
             isValid = false;
+        }else if(password.length() < 8){
+            not_password.setOpacity(1);
+            not_password.setText("Password must be at least 8 characters long.");
+            isValid = false;
         }
 
-        // Se c'è almeno un errore, esco dalla funzione
         if (!isValid) {
             return;
         }
@@ -88,23 +90,20 @@ public class SignUpController {
             if (userDAO.isRegisteredUser(userId)) {
                 not_username.setOpacity(1);
                 not_username.setText("User already registered");
-                return; // Blocca la registrazione se l'utente esiste già
+                return;
+            } else {
+                userDAO.registerUser(userId, surnameId, nameId);
+                int id = userDAO.getUserId(userId);
+                userDAO.registerUserAccess(id, userId, password);
             }
 
-            // Prova a registrare l'utente
-            try {
-                userDAO.registerUser(userId, surnameId, nameId, password);
-            } catch (Exception e) {
-                System.err.println("Registration failed: " + e.getMessage());
-                return;
-            }
             System.out.println("User registered successfully!");
 
             Stage stage = (Stage) name.getScene().getWindow();
             LoginController.openLoginPage(stage);
 
         } catch (Exception e) {
-            System.err.println("Unexpected error: " + e.getMessage());
+            System.err.println("Registration failed: " + e.getMessage());
         }
     }
 

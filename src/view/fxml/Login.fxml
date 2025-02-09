@@ -8,9 +8,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="login_label" prefHeight="600.0" prefWidth="600.0" styleClass="username_label" stylesheets="@../css/Login.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controllers.LoginController">
+<AnchorPane fx:id="login_label" prefHeight="600.0" prefWidth="600.0" stylesheets="@../css/Login.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controllers.LoginController">
    <children>
       <TextField fx:id="user_id" layoutX="248.0" layoutY="247.0" promptText="email.@gmail.com" stylesheets="@../css/Login.css" />
       <Label fx:id="title" layoutX="226.0" layoutY="125.0" stylesheets="@../css/Login.css" text="LOGIN PAGE">
@@ -35,7 +36,13 @@
             <Image url="@../images/Logo.png" />
          </image>
       </ImageView>
-      <Hyperlink layoutX="243.0" layoutY="535.0" text="Forgot your password?" />
-      <Label fx:id="errorLabel" layoutX="286.0" layoutY="401.0" text="Label" />
+      <Hyperlink layoutX="244.0" layoutY="380.0" text="Forgot your password?" />
+      <Hyperlink fx:id="sign_up" layoutX="323.0" layoutY="497.0" onAction="#handleSignUpButtonAction" text="Sign Up" />
+      <Label layoutX="240.0" layoutY="500.0" text="Not a member?" />
+      <StackPane layoutX="60.0" layoutY="404.0" prefHeight="40.0" prefWidth="500.0">
+         <children>
+            <Label fx:id="errorLabel" alignment="CENTER" contentDisplay="CENTER" text="errore" />
+         </children>
+      </StackPane>
    </children>
 </AnchorPane>

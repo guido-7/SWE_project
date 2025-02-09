@@ -2,15 +2,12 @@ package src.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import src.orm.UserDAO;
-import javafx.event.ActionEvent;
-import javafx.scene.Scene;
-
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -33,13 +30,23 @@ public class LoginController {
         String password = password_id.getText();
         System.out.println("Username: " + username + ", Password: " + password);
 
-        if (username.isEmpty() || password.isEmpty()) {
+        if (username.isEmpty() && password.isEmpty()) {
             errorLabel.setOpacity(1);
             errorLabel.setText("Please enter both username and password.");
-        } else {
+        } else if(username.isEmpty()) {
+            errorLabel.setOpacity(1);
+            errorLabel.setText("Please enter username.");
+        }else if (password.isEmpty()) {
+            errorLabel.setOpacity(1);
+            errorLabel.setText("Please enter password.");
+        } else if (password.length() < 8) {
+            errorLabel.setOpacity(1);
+            errorLabel.setText("Password must be at least 8 characters long.");
+        } else{
             try {
                 if (userDAO.isValidUser(username, password)) {
-                    openHomePage(); // Apri la homepage
+                    Stage stage = (Stage) user_id.getScene().getWindow();
+                    HomePageController.openHomePage(stage);
                 } else {
                     errorLabel.setOpacity(1);
                     errorLabel.setText("Invalid username or password.");
@@ -52,17 +59,22 @@ public class LoginController {
         }
     }
 
-    private void openHomePage() {
+    public static void openLoginPage(Stage stage) {
         try {
-            System.out.println("Opening Home Page...");
-            FXMLLoader homePage = new FXMLLoader(getClass().getResource("/src/view/fxml/HomePage.fxml"));
-            Stage stage = (Stage) user_id.getScene().getWindow();
-            stage.setScene(new Scene(homePage.load()));
-            stage.setTitle("Home Page");
+            System.out.println("Opening Login Page...");
+            FXMLLoader loader = new FXMLLoader(LoginController.class.getResource("/src/view/fxml/Login.fxml"));
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Login Page");
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
-            errorLabel.setText("Error loading Home Page.");
+            System.err.println("Error loading Login Page: " + e.getMessage());
         }
     }
+
+    @FXML
+    private void handleSignUpButtonAction() {
+        Stage stage = (Stage) user_id.getScene().getWindow();
+        SignUpController.openSignUpPage(stage);
+    }
+
 }

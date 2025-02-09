@@ -74,12 +74,70 @@ public class UserDAO extends BaseDAO<User,Integer> {
             statement.setString(2, password);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next() && resultSet.getInt(1) > 0) {
-                    return true; // Email e password corrette
+                    return true; // correct Email and password
                 }
             }
         }
-        return false; // Credenziali errate
+        return false; // wrong Email or password
     }
 
 
+    public boolean isRegisteredUser(String email) {
+        String query = "SELECT COUNT(*) FROM User WHERE nickname = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next() && resultSet.getInt(1) > 0) {
+                    return true; // user already registered
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // user not registered
+    }
+
+
+    public void registerUser(String userId, String name, String surname) {
+        String query = "INSERT INTO User (nickname, name, surname) VALUES (?, ?, ?)";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, userId);
+            statement.setString(2, name);
+            statement.setString(3, surname);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void registerUserAccess(int id, String userId, String password) {
+        String query = "INSERT INTO UserAccess (email, user_id, password) VALUES (?, ?, ?)";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, userId);
+            statement.setString(2, String.valueOf(id));
+            statement.setString(3, password);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getUserId(String userId) {
+        String query = "SELECT id FROM User WHERE nickname = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
 }
