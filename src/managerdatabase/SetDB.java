@@ -9,9 +9,9 @@ import java.util.Map;
 public class  SetDB {
 
     public static void main(String[] args) throws SQLException {
-        DBConnection.connect();
-        createDB();
-        DBConnection.disconnect();
+//        DBConnection.connect();
+//        createDB();
+//        DBConnection.disconnect();
           int numberofPosts = 40;
           int numberofCommunities = 10;
           int numberofUser = 100;
@@ -262,6 +262,7 @@ public class  SetDB {
     }
 
     public static void generatefakedata(int numberofPosts, int numberofCommunity, int numberofUsers) throws SQLException {
+
         // create fake communities
         for (int i = 0; i <= numberofCommunity; i++) {
             Map<String, Object> params = new HashMap<>();

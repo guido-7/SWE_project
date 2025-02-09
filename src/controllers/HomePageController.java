@@ -6,9 +6,15 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import src.businesslogic.FeedService;
+import javafx.scene.control.Label;
+
+import java.io.IOException;
 import src.domainmodel.*;
 import src.businesslogic.*;
 import src.servicemanager.Service;
@@ -40,15 +46,18 @@ public class HomePageController implements Initializable {
     // ContextMenu per i suggerimenti
     private ContextMenu suggestionsPopup = new ContextMenu();
 
+    public HomePageController(FeedService feedService) {
+        this.feedService = feedService;
+    }
     public void setFeedService(FeedService feedService) {
         this.feedService = feedService;
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         try {
-            setFeedService(Service.getFeedService());
             posts = new ArrayList<>(feedService.getFeed());
             loadPosts(posts);
 
@@ -126,7 +135,6 @@ public class HomePageController implements Initializable {
     private void loadMorePosts() {
         isLoading = true;
 
-        // Mostra indicatore di caricamento
         if (!postsContainer.getChildren().contains(progressIndicator)) {
             postsContainer.getChildren().add(progressIndicator);
         }
@@ -159,6 +167,20 @@ public class HomePageController implements Initializable {
         });
 
         new Thread(task).start();
+    }
+
+    @FXML
+    public static void openHomePage(Stage stage) {
+        try {
+            System.out.println("Opening Home Page...");
+            FXMLLoader homePage = new FXMLLoader(HomePageController.class.getResource("/src/view/fxml/HomePage.fxml"));
+            stage.setScene(new Scene(homePage.load()));
+            stage.setTitle("Home Page");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error loading Home Page.");
+        }
     }
 
 }
