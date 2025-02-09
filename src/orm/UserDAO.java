@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -64,6 +66,37 @@ public class UserDAO extends BaseDAO<User,Integer> {
         String surname = resultSet.getString("surname");
         Set<Permits> permits = PermitsManager.createAdminPermits();  // Assuming permits need to be fetched from another table
         return new Admin(id, nickname, name, surname, permits);
+    }
+
+    public ArrayList<Integer> getCommunityIds(int userId, int numberofCommunities){
+        String sql = "SELECT community_id, SUM(vote_type) AS total_votes FROM PostVotes WHERE user_id = ? GROUP BY community_id ORDER BY total_votes DESC LIMIT ?";
+        ArrayList<Integer> communityIds = new ArrayList<>();
+
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, numberofCommunities);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                communityIds.add(resultSet.getInt("community_id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return communityIds;
+    }
+    public void insertPostVotes(Map<String,Object> parameters) throws SQLException {
+        String sql = "INSERT INTO PostVotes (user_id, post_id,community_id, vote_type) VALUES (?, ?, ?, ?)";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, (int) parameters.get("user_id"));
+            statement.setInt(2, (int) parameters.get("post_id"));
+            statement.setInt(3, (int) parameters.get("community_id"));
+            statement.setInt(4, (int) parameters.get("vote_type"));
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isValidUser(String email, String password) throws SQLException {

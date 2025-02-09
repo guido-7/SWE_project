@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="910.0" styleClass="background" stylesheets="@../css/HomePage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controllers.HomePageController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="910.0" styleClass="background" stylesheets="@../css/HomePage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="65.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
@@ -34,7 +34,7 @@
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
             <Pane prefHeight="200.0" prefWidth="200.0" styleClass="background" stylesheets="@../css/HomePage.css" HBox.hgrow="ALWAYS" />
-            <ScrollPane prefHeight="585.0" prefWidth="833.0" style="-fx-background-color: transparent;">
+            <ScrollPane fx:id="scrollPane" prefHeight="585.0" prefWidth="833.0" style="-fx-background-color: transparent;">
                <content>
                   <VBox fx:id="postsContainer" alignment="CENTER" prefHeight="822.0" prefWidth="626.0" spacing="10.0" styleClass="background" stylesheets="@../css/HomePage.css">
                      <padding>

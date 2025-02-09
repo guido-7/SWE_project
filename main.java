@@ -3,13 +3,29 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import src.businesslogic.CommunityService;
+import src.businesslogic.FeedService;
+import src.controllers.CommunityController;
+import src.controllers.HomePageController;
+import src.domainmodel.PermitsManager;
+import src.domainmodel.User;
+import src.servicemanager.Service;
 
 public class main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/src/view/fxml/HomePage.fxml"));
-        primaryStage.setTitle("Login Page");
+        User user = new User(1, "gio63", "Giovanni", "Lello", PermitsManager.createUserPermits());
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
+//        loader.setController(new CommunityController(new CommunityService(1)));
+//        Parent root = loader.load();
+//        primaryStage.setTitle("Community");
+//        primaryStage.setScene(new Scene(root));
+//        primaryStage.show();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/HomePage.fxml"));
+        loader.setController(new HomePageController(new FeedService(user)));
+        Parent root = loader.load();
+        primaryStage.setTitle("Home");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

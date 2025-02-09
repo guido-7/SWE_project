@@ -44,8 +44,8 @@ public class PostController {
         community.setText("r/" + comm.getTitle());
 
         UserDAO userDAO = new UserDAO();
-        User user = userDAO.findById(post.getUserId()).orElse(null);
-        username.setText(user.getNickname());
+        //User user = userDAO.findById(post.getUserId()).orElse(null);
+        username.setText("viiii");
 
         date.setText(getFormattedTime(post.getTime()));
         title.setText(post.getTitle());

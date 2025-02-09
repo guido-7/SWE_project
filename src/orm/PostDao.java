@@ -1,11 +1,15 @@
 package src.orm;
 
 import src.domainmodel.Post;
+import src.managerdatabase.DBConnection;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class PostDao extends BaseDAO<Post, Integer>{
@@ -66,5 +70,38 @@ public class PostDao extends BaseDAO<Post, Integer>{
     @Override
     protected void setDeleteParams(PreparedStatement statement, Integer id) throws SQLException {
         statement.setInt(1, id);
+    }
+    public ArrayList<Post> getPosts(int CommunityId, int PostCount,int Offset) {
+
+        ArrayList<Post> posts = new ArrayList<>();
+
+        try(Connection connection = DBConnection.open_connection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE community_id = ? ORDER BY (time * 0.6 + likes * 0.4)    DESC LIMIT ? OFFSET ?");
+            statement.setInt(1, CommunityId);
+            statement.setInt(2, PostCount);
+            statement.setInt(3, Offset);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                posts.add(mapResultSetToEntity(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
+    }
+    public List<Integer> getCommunityIds(int id , int numberofposts) {
+        List<Integer> community_ids = new ArrayList<>();
+        try (Connection connection = DBConnection.open_connection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE community_id = ? ORDER BY time DESC LIMIT ?");
+            statement.setInt(1, id);
+            statement.setInt(2, numberofposts);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt("id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -1,19 +1,15 @@
 package src.controllers;
-
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import src.businesslogic.CommunityService;
 import src.businesslogic.FeedService;
 import javafx.scene.control.Label;
 import src.domainmodel.Post;
-
-import java.io.IOException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class HomePageController implements Initializable {
-
+public class CommunityController implements Initializable {
     @FXML
     private VBox postsContainer;
     @FXML
@@ -31,24 +26,19 @@ public class HomePageController implements Initializable {
 
 
     List<Post> posts;
-    private FeedService feedService;
+    private final CommunityService communityservice;
     private boolean isLoading = false;
     private boolean allPostsLoaded = false;
     private ProgressIndicator progressIndicator = new ProgressIndicator();
 
-    public HomePageController(FeedService feedService) {
-        this.feedService = feedService;
+    public CommunityController(CommunityService communityService){
+        this.communityservice = communityService;
     }
-    public void setFeedService(FeedService feedService) {
-        this.feedService = feedService;
-    }
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         try {
-            posts = new ArrayList<>(feedService.getFeed());
+            posts = new ArrayList<>(communityservice.getPosts());
             loadPosts(posts);
 
             scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
@@ -87,7 +77,7 @@ public class HomePageController implements Initializable {
         Task<List<Post>> task = new Task<>() {
             @Override
             protected List<Post> call() {
-                return feedService.getNextFeed();
+                return communityservice.getNextPosts();
             }
         };
 
@@ -114,18 +104,6 @@ public class HomePageController implements Initializable {
         new Thread(task).start();
     }
 
-    @FXML
-    public static void openHomePage(Stage stage) {
-        try {
-            System.out.println("Opening Home Page...");
-            FXMLLoader homePage = new FXMLLoader(HomePageController.class.getResource("/src/view/fxml/HomePage.fxml"));
-            stage.setScene(new Scene(homePage.load()));
-            stage.setTitle("Home Page");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Error loading Home Page.");
-        }
-    }
+
 
 }

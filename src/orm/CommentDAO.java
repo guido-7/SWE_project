@@ -5,6 +5,7 @@ import src.managerdatabase.DBConnection;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO Comment (post_id, level, user_id, content, time) VALUES (?, ?, ?, ?, ?)";
+        return "INSERT INTO Comment (post_id, level, user_id, content, time,community_id) VALUES (?, ?, ?, ?, ?, ?)";
         //section-->logica-->comment.save()-->commento padre e commenti figli-->commento to a child-->
         //comment(paretent.getlevle+1,parent.)
     }
@@ -50,6 +51,7 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         statement.setInt(3, (int) parameters.get("user_id"));
         statement.setString(4, (String) parameters.get("content"));
         statement.setString(5, LocalDateTime.now().toString());
+        statement.setInt(6, (int) parameters.get("community_id"));
     }
 
     @Override
@@ -177,5 +179,24 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         }
     }
 
+    public ArrayList<Integer> getCommunityIds( int userId, int numberofCommunities){
+        String sql = "SELECT community_id,count(user_id) as commentno FROM Comment WHERE user_id = ? GROUP BY community_id ORDER BY commentno  DESC LIMIT ?";
+        ArrayList<Integer> communityIds = new ArrayList<>();
+        try (Connection connection = DBConnection.open_connection() ;
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, numberofCommunities);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                communityIds.add(resultSet.getInt("community_id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return communityIds;
+    }
 }
+
+
+
 
