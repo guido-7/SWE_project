@@ -137,7 +137,7 @@
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="background" stylesheets="@../css/HomePage.css" HBox.hgrow="ALWAYS" />
                 <ScrollPane fx:id="scrollPane" prefHeight="585.0" prefWidth="865.0" style="-fx-background-color: transparent;">
                     <content>
-                        <VBox fx:id="postsContainer" alignment="CENTER" prefHeight="823.0" prefWidth="649.0" spacing="10.0" styleClass="background" stylesheets="@../css/HomePage.css">
+                        <VBox fx:id="postsContainer" alignment="CENTER" prefHeight="823.0" prefWidth="645.0" spacing="10.0" styleClass="background" stylesheets="@../css/HomePage.css">
                             <padding>
                                 <Insets right="10.0" />
                             </padding></VBox>
