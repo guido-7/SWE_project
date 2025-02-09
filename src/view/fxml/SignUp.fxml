@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="700.0" prefWidth="600.0" stylesheets="@../css/SignUp.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controllers.SignUpController">
+   <children>
+      <Label fx:id="title" alignment="TOP_RIGHT" contentDisplay="CENTER" layoutX="228.0" layoutY="67.0" stylesheets="@../css/SignUp.css" text="SIGN UP">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <TextField fx:id="name" alignment="CENTER" layoutX="225.0" layoutY="160.0" promptText="name" stylesheets="@../css/SignUp.css" />
+      <TextField fx:id="surname" alignment="CENTER" layoutX="225.0" layoutY="240.0" promptText="surname" stylesheets="@../css/SignUp.css" />
+      <TextField fx:id="nickname" alignment="CENTER" layoutX="225.0" layoutY="320.0" promptText="nickname or email" stylesheets="@../css/SignUp.css" />
+      <PasswordField fx:id="password_id" alignment="CENTER" layoutX="225.0" layoutY="400.0" promptText="password" stylesheets="@../css/SignUp.css" />
+      <Label fx:id="not_username" alignment="CENTER" layoutX="225.0" layoutY="302.0" text="wrong nickname/email" />
+      <Button fx:id="SignUpButton" alignment="CENTER" layoutX="225.0" layoutY="520.0" mnemonicParsing="false" onAction="#handleSignUpButtonAction" stylesheets="@../css/SignUp.css" text="Create account">
+         <font>
+            <Font name="Arial" />
+         </font>
+      </Button>
+      <Label fx:id="not_surname" alignment="CENTER" layoutX="225.0" layoutY="221.0" text="wrong surname" />
+      <Label fx:id="not_name" alignment="CENTER" layoutX="225.0" layoutY="147.0" text="wrong name" />
+      <Label id="not_password" fx:id="not_password" alignment="CENTER" layoutX="222.0" layoutY="382.0" text="wrong password" />
+   </children>
+</AnchorPane>
