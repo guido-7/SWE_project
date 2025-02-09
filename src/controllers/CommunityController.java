@@ -104,6 +104,4 @@ public class CommunityController implements Initializable {
         new Thread(task).start();
     }
 
-
-
 }
