@@ -9,3 +9,12 @@
 .scroll-pane > .viewport{
     -fx-background-color: transparent;
 }
+
+.context-menu {
+    -fx-min-width: 0px;
+    -fx-padding: 0px;
+}
+
+.custom-menu-item {
+    -fx-padding: 0px;
+}

@@ -102,7 +102,7 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
 
     public ArrayList<Community> searchByTitle(String query) {
         ArrayList<Community> communities = new ArrayList<>();
-        String sql = "SELECT * FROM Community WHERE title LIKE ?";
+        String sql = "SELECT * FROM Community WHERE title LIKE ? LIMIT 10";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 

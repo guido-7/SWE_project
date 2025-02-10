@@ -1,11 +1,13 @@
 package src.controllers;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
@@ -17,10 +19,7 @@ import javafx.scene.control.Label;
 import java.io.IOException;
 import src.domainmodel.*;
 import src.businesslogic.*;
-import src.servicemanager.Service;
 
-import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -87,17 +86,23 @@ public class HomePageController implements Initializable {
                             suggestionsPopup.getItems().clear();
                             if (communities != null && !communities.isEmpty()) {
                                 for (Community community : communities) {
-                                    MenuItem item = new MenuItem(community.getTitle());
-                                    // Quando si clicca il suggerimento, ad esempio, imposta il testo e/o naviga alla community
+                                    Label suggestionLabel = new Label(community.getTitle());
+                                    suggestionLabel.prefWidthProperty().bind(searchField.widthProperty());
+                                    CustomMenuItem item = new CustomMenuItem(suggestionLabel, true);
+                                    // Quando si clicca il suggerimento carica CommunityPage
                                     item.setOnAction(e -> {
                                         searchField.setText(community.getTitle());
                                         suggestionsPopup.hide();
-                                        // Aggiungi eventuale logica: per esempio, carica la pagina della community
+                                        // Carica la pagina della community
+                                        loadCommunityPage(community);
                                     });
                                     suggestionsPopup.getItems().add(item);
                                 }
-                                // Mostra il ContextMenu sotto il TextField
-                                suggestionsPopup.show(searchField, Side.BOTTOM, 0, 0);
+                                Platform.runLater(() -> {
+                                    if (searchField.getScene() != null && searchField.getScene().getWindow() != null) {
+                                        suggestionsPopup.show(searchField, Side.BOTTOM, 0, 0);
+                                    }
+                                });
                             } else {
                                 suggestionsPopup.hide();
                             }
@@ -180,6 +185,20 @@ public class HomePageController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error loading Home Page.");
+        }
+    }
+
+    private void loadCommunityPage(Community community) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
+            loader.setController(new CommunityController(new CommunityService(community.getId())));
+            Parent root = loader.load();
+            Stage stage = (Stage) searchField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle(community.getTitle());
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
