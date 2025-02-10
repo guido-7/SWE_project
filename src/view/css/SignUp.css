@@ -2,12 +2,14 @@ TextField{
     -fx-background-color: transparent;
     -fx-border-color: #C27933;
     -fx-border-width: 0px 0px 2px 0px;
+    -fx-max-width: 200px;
 }
 
 PasswordField{
     -fx-background-color: transparent;
     -fx-border-color: #C27933;
     -fx-border-width: 0px 0px 2px 0px;
+    -fx-max-width: 200px;
 }
 
 #title{
@@ -44,4 +46,6 @@ Button:hover{
     -fx-font-weight: bold;
     -fx-font-family: "Arial", sans-serif;
 }
+
+
 
