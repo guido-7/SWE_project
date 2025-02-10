@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -12,6 +14,14 @@
 <StackPane prefHeight="700.0" prefWidth="600.0" stylesheets="@../css/SignUp.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controllers.SignUpController">
    <children>
       <VBox alignment="CENTER" spacing="32.0">
+         <ImageView fx:id="backButton" fitHeight="33.0" fitWidth="35.0" onMouseClicked="#back" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@../images/X.jpg" />
+            </image>
+            <VBox.margin>
+               <Insets left="350.0" />
+            </VBox.margin>
+         </ImageView>
          <Label fx:id="title" text="SIGN UP">
             <font>
                <Font size="24.0" />

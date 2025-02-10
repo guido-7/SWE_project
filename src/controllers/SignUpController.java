@@ -108,6 +108,13 @@ public class SignUpController {
     }
 
     @FXML
+    private void back() {
+        System.out.println("Back button clicked!");
+        Stage stage = (Stage) name.getScene().getWindow();
+        openLoginPage(stage);
+    }
+
+    @FXML
     public static void openSignUpPage(Stage stage) {
         try {
             System.out.println("Opening Sign Up Page...");
