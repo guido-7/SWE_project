@@ -49,3 +49,11 @@ Hyperlink{
     -fx-alignment: center;
     -fx-opacity: 0;
 }
+
+stackPane{
+    -fx-alignment: center;
+}
+
+pane{
+    inhertit: always;
+}
