@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
 import src.businesslogic.FeedService;
 import src.controllers.CommunityController;
+import src.controllers.CommunitySettingsController;
 import src.controllers.HomePageController;
 import src.domainmodel.PermitsManager;
 import src.domainmodel.User;
@@ -22,10 +23,16 @@ public class main extends Application {
 //        primaryStage.setTitle("Community");
 //        primaryStage.setScene(new Scene(root));
 //        primaryStage.show();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/HomePage.fxml"));
-        loader.setController(new HomePageController(new FeedService(user)));
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/HomePage.fxml"));
+//        loader.setController(new HomePageController(new FeedService(user)));
+//        Parent root = loader.load();
+//        primaryStage.setTitle("Home");
+//        primaryStage.setScene(new Scene(root));
+//        primaryStage.show();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunitySettings.fxml"));
+        loader.setController(new CommunitySettingsController(new CommunityService(1)));
         Parent root = loader.load();
-        primaryStage.setTitle("Home");
+        primaryStage.setTitle("Community Settings");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

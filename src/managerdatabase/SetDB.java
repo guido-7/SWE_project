@@ -9,9 +9,9 @@ import java.util.Map;
 public class  SetDB {
 
     public static void main(String[] args) throws SQLException {
-//        DBConnection.connect();
-//        createDB();
-//        DBConnection.disconnect();
+        DBConnection.connect();
+        createDB();
+        DBConnection.disconnect();
           int numberofPosts = 40;
           int numberofCommunities = 10;
           int numberofUser = 100;
@@ -240,9 +240,11 @@ public class  SetDB {
         String sql = "CREATE TABLE IF NOT EXISTS PostWarnings ("
                 + " sender_id INTEGER NOT NULL,"
                 + " post_id INTEGER NOT NULL,"
+                + " community_id INTEGER NOT NULL,"
                 + " PRIMARY KEY (sender_id, post_id),"
                 + " FOREIGN KEY (sender_id) REFERENCES User(id),"
-                + " FOREIGN KEY (post_id) REFERENCES Post(id)"
+                + " FOREIGN KEY (post_id) REFERENCES Post(id),"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
                 + ");";
 
         DBConnection.query(sql);
@@ -253,8 +255,10 @@ public class  SetDB {
                 + " sender_id INTEGER NOT NULL,"
                 + " comment_id INTEGER NOT NULL,"
                 + " post_id INTEGER NOT NULL,"
+                + " community_id INTEGER NOT NULL,"
                 + " PRIMARY KEY (sender_id, comment_id,post_id),"
                 + " FOREIGN KEY (sender_id) REFERENCES User(id),"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id),"
                 + " FOREIGN KEY (comment_id,post_id) REFERENCES Comment(id,post_id)"
                 + ");";
 

@@ -1,14 +1,15 @@
 package src.orm;
 
+import src.domainmodel.CommentWarnings;
 import src.domainmodel.Community;
+import src.domainmodel.PostWarnings;
 import src.managerdatabase.DBConnection;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CommunityDAO extends BaseDAO<Community, Integer> {
+
 
     @Override
     protected String getFindByIdQuery() {
@@ -118,5 +119,69 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
         }
         return communities;
     }
+
+    public ArrayList<PostWarnings> getPostWarnings(int communityId) {
+        UserDAO userDAO = new UserDAO();
+        PostDao postDao = new PostDao();
+        ArrayList<PostWarnings> reports = new ArrayList<>();
+        String sql = "SELECT * FROM PostWarnings WHERE community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, communityId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                            int sender_id = resultSet.getInt("sender_id");
+                            int post_id = resultSet.getInt("post_id");
+                            String sender_nickname = userDAO.getNicknameById(sender_id);
+                            ArrayList<Object> data = postDao.getTitleAndUserById(post_id, communityId);
+                            String title = (String) data.getFirst();
+                            int reported_user_id = (int) data.getLast();
+                            String reported_nickname = userDAO.getNicknameById(reported_user_id);
+                            reports.add(new PostWarnings(sender_id, sender_nickname,title, post_id, reported_nickname));
+
+                }
+                return reports;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reports;
+    }
+
+    public ArrayList<CommentWarnings>  getCommentWarnings(int communityId) {
+        UserDAO userDAO = new UserDAO();
+        PostDao postDao = new PostDao();
+        CommentDAO commentDAO = new CommentDAO();
+        ArrayList<CommentWarnings> reports = new ArrayList<>();
+        String sql = "SELECT sender_id, comment_id, post_id  FROM CommentWarnings WHERE community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, communityId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+
+                    int sender_id = resultSet.getInt("sender_id");
+                    int post_id = resultSet.getInt("post_id");
+                    int comment_id = resultSet.getInt("comment_id");
+
+                    String sender_nickname = userDAO.getNicknameById(resultSet.getInt("sender_id"));
+
+                    ArrayList<Object> data = commentDAO.getContentAndUserById(comment_id, post_id);
+                    String content = (String) data.getFirst();
+                    int reported_user_id = (int) data.getLast();
+
+                    String reported_nickname = userDAO.getNicknameById(reported_user_id);
+                    int level= commentDAO.getLevelById(comment_id, post_id);
+                    reports.add(new CommentWarnings(sender_id, sender_nickname, content, post_id, reported_nickname, comment_id, level));
+
+                }
+                return reports;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reports;
+    }
+
 
 }

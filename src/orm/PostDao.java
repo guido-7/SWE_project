@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PostDao extends BaseDAO<Post, Integer>{
+
+
     @Override
     protected String getFindByIdQuery() {
         return "SELECT * FROM Post WHERE id = ?";
@@ -103,5 +105,25 @@ public class PostDao extends BaseDAO<Post, Integer>{
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<Object> getTitleAndUserById(int postId, int communityId) {
+        ArrayList<Object> data = new ArrayList<>();
+        Connection connection = DBConnection.open_connection();
+        try{
+            PreparedStatement statement = connection.prepareStatement("SELECT title,user_id FROM Post WHERE id = ? AND community_id = ?");
+            statement.setInt(1, postId);
+            statement.setInt(2, communityId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                data.add(resultSet.getString("title"));
+                data.add(resultSet.getInt("user_id"));
+                return data;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return data;
     }
 }

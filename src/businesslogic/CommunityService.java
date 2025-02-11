@@ -1,9 +1,6 @@
 package src.businesslogic;
 
-import src.domainmodel.Guest;
-import src.domainmodel.Permits;
-import src.domainmodel.Post;
-import src.domainmodel.User;
+import src.domainmodel.*;
 import src.orm.*;
 
 import java.util.ArrayList;
@@ -38,5 +35,14 @@ public class CommunityService {
         return communityPosts;
 
     }
+    public ArrayList<PostWarnings> getPostWarnings() {
+        CommunityDAO communityDAO = new CommunityDAO();
+        return communityDAO.getPostWarnings(communityId);
+    }
+    public ArrayList<CommentWarnings> getCommentWarnings() {
+        CommunityDAO communityDAO = new CommunityDAO();
+        return communityDAO.getCommentWarnings(communityId);
+    }
+
 
 }

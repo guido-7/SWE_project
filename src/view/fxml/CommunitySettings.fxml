@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="600.0" prefWidth="866.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+
+
+
+    <!-- HEADER: Community Name -->
+    <top>
+        <Label styleClass="header-label" text="Community Management" />
+    </top>
+
+    <!-- LEFT PANEL: Community Rules Management -->
+    <left>
+        <VBox spacing="10" styleClass="side-panel">
+            <Label styleClass="sub-header" text="Manage Rules" />
+
+            <ListView fx:id="rulesListView" prefHeight="550.0" prefWidth="370.0">
+            <padding>
+               <Insets left="100.0" />
+            </padding></ListView>
+
+            <HBox spacing="5">
+                <Button text="Add Rule" />
+                <Button text="Edit Rule" />
+                <Button text="Delete Rule" />
+                <Button text="Move Up" />
+                <Button text="Move Down" />
+            </HBox>
+        </VBox>
+    </left>
+
+    <!-- CENTER PANEL: Reports Management -->
+    <center>
+        <VBox spacing="10">
+            <Label styleClass="sub-header" text="User Reports">
+            <VBox.margin>
+               <Insets left="100.0" />
+            </VBox.margin></Label>
+
+            <TableView fx:id="reportsTable" maxWidth="326.0" prefHeight="550.0" prefWidth="248.0">
+                <columns>
+                    <TableColumn fx:id="reporter" text="Reporter" />
+                    <TableColumn fx:id="reported" prefWidth="168.0" text="Reported Post/Comment" />
+                    <TableColumn text="Reported" />
+                </columns>
+            <VBox.margin>
+               <Insets left="100.0" />
+            </VBox.margin>
+            </TableView>
+
+            <HBox spacing="10">
+                <Button text="View Details" />
+                <Button text="Dismiss Report" />
+            </HBox>
+        </VBox>
+    </center>
+
+    <!-- RIGHT PANEL: Pinning Posts -->
+    <right>
+        <VBox spacing="10" styleClass="side-panel">
+            <Label styleClass="sub-header" text="Pinned Posts" />
+
+            <ListView fx:id="pinnedPostsListView" prefHeight="550.0" prefWidth="248.0" />
+
+            <HBox spacing="5">
+                <Button text="Pin Post" />
+                <Button text="Unpin Post" />
+            </HBox>
+        </VBox>
+    </right>
+</BorderPane>
