@@ -20,9 +20,7 @@
         <HBox alignment="CENTER_LEFT" prefHeight="65.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
                 <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/Logo.png" />
-                    </image>
+                    <Image url="@../images/Logo.png"/>
                 </ImageView>
                 <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                 <TextField fx:id="searchField" prefHeight="26.0" prefWidth="320.0" promptText="Search Community" stylesheets="@../css/SearchField.css" />
