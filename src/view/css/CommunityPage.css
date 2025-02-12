@@ -8,12 +8,3 @@
     /* Per dare un effetto card, puoi aggiungere anche un'ombra */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.5, 0, 2);
 }
-
-.context-menu {
-    -fx-min-width: 0px;
-    -fx-padding: 0px;
-}
-
-.custom-menu-item {
-    -fx-padding: 0px;
-}
