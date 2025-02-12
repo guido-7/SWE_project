@@ -1,5 +1,5 @@
 package src.domainmodel;
-import src.Utils.StringManager;
+import src.utils.StringManager;
 
 public class PostWarnings {
     private final int senderId;
