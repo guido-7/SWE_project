@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PostDao extends BaseDAO<Post, Integer>{
+public class PostDAO extends BaseDAO<Post, Integer>{
 
 
     @Override
@@ -74,9 +74,7 @@ public class PostDao extends BaseDAO<Post, Integer>{
         statement.setInt(1, id);
     }
     public ArrayList<Post> getPosts(int CommunityId, int PostCount,int Offset) {
-
         ArrayList<Post> posts = new ArrayList<>();
-
         try(Connection connection = DBConnection.open_connection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE community_id = ? ORDER BY (time * 0.6 + likes * 0.4)    DESC LIMIT ? OFFSET ?");
             statement.setInt(1, CommunityId);
@@ -143,4 +141,43 @@ public class PostDao extends BaseDAO<Post, Integer>{
     }
         return null;
     }
+
+    public ArrayList<Post> searchByTitle(String query, int communityId) {
+        ArrayList<Post> posts = new ArrayList<>();
+        String sql = "SELECT * FROM Post WHERE community_id = ? AND title LIKE ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, communityId);
+            statement.setString(2, "%" + query + "%");
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    posts.add(mapResultSetToEntity(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
+    }
+
+    public ArrayList<Post> getFilteredPosts(int communityId, String query, int limit, int offset) {
+        ArrayList<Post> posts = new ArrayList<>();
+        String sql = "SELECT * FROM Post WHERE community_id = ? AND title LIKE ? LIMIT ? OFFSET ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, communityId);
+            statement.setString(2, "%" + query + "%");
+            statement.setInt(3, limit);
+            statement.setInt(4, offset);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    posts.add(mapResultSetToEntity(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
+    }
+
 }

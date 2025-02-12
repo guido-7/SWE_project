@@ -1,5 +1,4 @@
 package src.managerdatabase;
-import src.domainmodel.User;
 import src.orm.*;
 
 import java.sql.SQLException;
@@ -20,7 +19,7 @@ public class  SetDB {
     }
 
     public static void generatePosts() throws SQLException {
-        PostDao postDao = new PostDao();
+        PostDAO postDao = new PostDAO();
         for (int i = 1; i <= 8; i++) {
             Map<String, Object> params = new HashMap<>();
             params.put("title", "Post Title " + i);
@@ -293,7 +292,7 @@ public class  SetDB {
             params.put("content", "Content " + i + 1);
             params.put("user_id", +user_id);
             params.put("community_id", community_id);
-            PostDao postDao = new PostDao();
+            PostDAO postDao = new PostDAO();
             postDao.save(params);
 
             // create fake PostVotes

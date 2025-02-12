@@ -106,9 +106,7 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
         String sql = "SELECT * FROM Community WHERE title LIKE ? LIMIT 10";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-
             statement.setString(1, "%" + query + "%");
-
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     communities.add(mapResultSetToEntity(resultSet));
@@ -122,7 +120,7 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
 
     public ArrayList<PostWarnings> getPostWarnings(int communityId) {
         UserDAO userDAO = new UserDAO();
-        PostDao postDao = new PostDao();
+        PostDAO postDao = new PostDAO();
         ArrayList<PostWarnings> reports = new ArrayList<>();
         String sql = "SELECT * FROM PostWarnings WHERE community_id = ?";
         try (Connection connection = DBConnection.open_connection();
@@ -151,7 +149,7 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
 
     public ArrayList<CommentWarnings>  getCommentWarnings(int communityId) {
         UserDAO userDAO = new UserDAO();
-        PostDao postDao = new PostDao();
+        PostDAO postDao = new PostDAO();
         CommentDAO commentDAO = new CommentDAO();
         ArrayList<CommentWarnings> reports = new ArrayList<>();
         String sql = "SELECT sender_id, comment_id, post_id  FROM CommentWarnings WHERE community_id = ?";
