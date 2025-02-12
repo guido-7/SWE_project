@@ -25,8 +25,7 @@
                     </image>
                 </ImageView>
                 <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                <TextField fx:id="searchField" prefHeight="26.0" prefWidth="320.0" promptText="Search Community" />
-                <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                <TextField fx:id="searchField" prefHeight="26.0" prefWidth="320.0" promptText="Search Community" stylesheets="@../css/SearchField.css" />                <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
                   <ImageView fx:id="settings" fitHeight="41.0" fitWidth="52.0" layoutX="105.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true" />
                </children></Pane>
