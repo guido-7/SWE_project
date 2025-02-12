@@ -19,4 +19,8 @@ public class SearchService {
     public List<Community> searchCommunities(String query) {
         return communityDAO.searchByTitle(query);
     }
+
+    public List<Post> searchPosts(String query, int communityId) {
+        return postDAO.searchByTitle(query, communityId);
+    }
 }
