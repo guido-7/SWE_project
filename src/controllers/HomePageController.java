@@ -37,12 +37,11 @@ public class HomePageController implements Initializable {
 
     List<Post> posts;
     private FeedService feedService;
-    private SearchCommunityService searchCommunityService = new SearchCommunityService();
     private boolean isLoading = false;
     private boolean allPostsLoaded = false;
     private ProgressIndicator progressIndicator = new ProgressIndicator();
 
-    // ContextMenu per i suggerimenti
+    private SearchService searchService = new SearchService();
     private ContextMenu suggestionsPopup = new ContextMenu();
 
     public HomePageController(FeedService feedService) {
@@ -51,7 +50,6 @@ public class HomePageController implements Initializable {
     public void setFeedService(FeedService feedService) {
         this.feedService = feedService;
     }
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -76,7 +74,7 @@ public class HomePageController implements Initializable {
                         Task<List<Community>> searchTask = new Task<>() {
                             @Override
                             protected List<Community> call() {
-                                return searchCommunityService.searchCommunities(newValue);
+                                return searchService.searchCommunities(newValue);
                             }
                         };
 
