@@ -135,9 +135,10 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
                             String sender_nickname = userDAO.getNicknameById(sender_id);
                             ArrayList<Object> data = postDao.getTitleAndUserById(post_id, communityId);
                             String title = (String) data.getFirst();
+                            String content = (String) data.get(1);
                             int reported_user_id = (int) data.getLast();
                             String reported_nickname = userDAO.getNicknameById(reported_user_id);
-                            reports.add(new PostWarnings(sender_id, sender_nickname,title, post_id, reported_nickname));
+                            reports.add(new PostWarnings(sender_id, sender_nickname,content, post_id, reported_nickname,title));
 
                 }
                 return reports;
@@ -165,14 +166,14 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
                     int comment_id = resultSet.getInt("comment_id");
 
                     String sender_nickname = userDAO.getNicknameById(resultSet.getInt("sender_id"));
-
+                    String title = postDao.getTitle(post_id, communityId);
                     ArrayList<Object> data = commentDAO.getContentAndUserById(comment_id, post_id);
                     String content = (String) data.getFirst();
                     int reported_user_id = (int) data.getLast();
 
                     String reported_nickname = userDAO.getNicknameById(reported_user_id);
                     int level= commentDAO.getLevelById(comment_id, post_id);
-                    reports.add(new CommentWarnings(sender_id, sender_nickname, content, post_id, reported_nickname, comment_id, level));
+                    reports.add(new CommentWarnings(sender_id, sender_nickname, content, post_id, reported_nickname,title, comment_id, level));
 
                 }
                 return reports;

@@ -43,6 +43,14 @@ public class CommunityService {
         CommunityDAO communityDAO = new CommunityDAO();
         return communityDAO.getCommentWarnings(communityId);
     }
+    public ArrayList<PostWarnings> getWarnings(){
+        ArrayList<PostWarnings> postWarnings = getPostWarnings();
+        ArrayList<CommentWarnings> commentWarnings = getCommentWarnings();
+        ArrayList<PostWarnings> warnings = new ArrayList<>();
+        warnings.addAll(postWarnings);
+        warnings.addAll(commentWarnings);
+        return warnings;
+    }
 
 
 }

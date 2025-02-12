@@ -27,7 +27,10 @@
             <ListView fx:id="rulesListView" prefHeight="550.0" prefWidth="370.0">
             <padding>
                <Insets left="100.0" />
-            </padding></ListView>
+            </padding>
+            <VBox.margin>
+               <Insets left="100.0" />
+            </VBox.margin></ListView>
 
             <HBox spacing="5">
                 <Button text="Add Rule" />
@@ -47,14 +50,15 @@
                <Insets left="100.0" />
             </VBox.margin></Label>
 
-            <TableView fx:id="reportsTable" maxWidth="326.0" prefHeight="550.0" prefWidth="248.0">
+            <TableView fx:id="reportsTable" maxWidth="480.0" prefHeight="550.0" prefWidth="248.0">
                 <columns>
                     <TableColumn fx:id="reporter" text="Reporter" />
+                    <TableColumn fx:id="content" text="Reported" />
                     <TableColumn fx:id="reported" prefWidth="168.0" text="Reported Post/Comment" />
-                    <TableColumn text="Reported" />
+                    <TableColumn fx:id="title" text="Post Title" />
                 </columns>
             <VBox.margin>
-               <Insets left="100.0" />
+               <Insets left="150.0" />
             </VBox.margin>
             </TableView>
 
@@ -70,7 +74,10 @@
         <VBox spacing="10" styleClass="side-panel">
             <Label styleClass="sub-header" text="Pinned Posts" />
 
-            <ListView fx:id="pinnedPostsListView" prefHeight="550.0" prefWidth="248.0" />
+            <ListView fx:id="pinnedPostsListView" prefHeight="550.0" prefWidth="248.0">
+            <VBox.margin>
+               <Insets right="100.0" />
+            </VBox.margin></ListView>
 
             <HBox spacing="5">
                 <Button text="Pin Post" />

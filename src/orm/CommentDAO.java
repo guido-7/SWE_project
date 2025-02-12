@@ -198,10 +198,11 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
 
     public ArrayList<Object> getContentAndUserById(int comment_id, int post_id) {
         ArrayList<Object> data = new ArrayList<>();
-        try (Connection connection = DBConnection.open_connection()) {
+        Connection connection = DBConnection.open_connection();
+        try {
             PreparedStatement statement = connection.prepareStatement("SELECT content, user_id FROM Comment WHERE id = ? AND post_id = ?");
             statement.setInt(1, comment_id);
-            statement.setInt(1, post_id);
+            statement.setInt(2, post_id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 data.add(resultSet.getString("content"));
@@ -216,7 +217,8 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
     }
 
     public int getLevelById(int comment_id, int post_id) {
-        try (Connection connection = DBConnection.open_connection()) {
+        Connection connection = DBConnection.open_connection();
+        try {
             PreparedStatement statement = connection.prepareStatement("SELECT level FROM Comment WHERE id = ? AND post_id = ?");
             statement.setInt(1, comment_id);
             statement.setInt(2, post_id);

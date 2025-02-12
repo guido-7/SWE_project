@@ -111,12 +111,13 @@ public class PostDao extends BaseDAO<Post, Integer>{
         ArrayList<Object> data = new ArrayList<>();
         Connection connection = DBConnection.open_connection();
         try{
-            PreparedStatement statement = connection.prepareStatement("SELECT title,user_id FROM Post WHERE id = ? AND community_id = ?");
+            PreparedStatement statement = connection.prepareStatement("SELECT title,user_id,content FROM Post WHERE id = ? AND community_id = ?");
             statement.setInt(1, postId);
             statement.setInt(2, communityId);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 data.add(resultSet.getString("title"));
+                data.add(resultSet.getString("content"));
                 data.add(resultSet.getInt("user_id"));
                 return data;
             }
@@ -125,5 +126,21 @@ public class PostDao extends BaseDAO<Post, Integer>{
 
         }
         return data;
+    }
+    public String getTitle(int postId, int communityId) {
+        Connection connection = DBConnection.open_connection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT title FROM Post WHERE id = ? AND community_id = ?");
+            statement.setInt(1, postId);
+            statement.setInt(2, communityId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("title");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+    }
+        return null;
     }
 }
