@@ -1,4 +1,5 @@
 package src.controllers;
+
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -11,17 +12,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
-import src.businesslogic.FeedService;
 import src.businesslogic.SearchCommunityService;
 import src.domainmodel.Community;
 import src.domainmodel.Post;
+
+import javafx.scene.input.MouseEvent;
+import src.domainmodel.Rule;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -33,6 +38,18 @@ public class CommunityController implements Initializable {
     private ScrollPane scrollPane;
     @FXML
     private TextField searchField;
+    @FXML
+    private Text community_title;
+    @FXML
+    private Text description;
+    @FXML
+    private Text num_subscribes;
+    @FXML
+    private Text num_monthly_visits;
+    @FXML
+    private VBox rulesContainer;
+    @FXML
+    private Label rules;
 
 
     List<Post> posts;
@@ -42,14 +59,19 @@ public class CommunityController implements Initializable {
     private ProgressIndicator progressIndicator = new ProgressIndicator();
     private ContextMenu suggestionsPopup = new ContextMenu();
     private SearchCommunityService searchCommunityService = new SearchCommunityService();
+    private int currentCommunityId;
 
-    public CommunityController(CommunityService communityService){
+    public CommunityController(CommunityService communityService) {
         this.communityservice = communityService;
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         try {
+            Community currentCommunity = communityservice.getCommunity();
+            setData(currentCommunity);
+            this.currentCommunityId = currentCommunity.getId();
             posts = new ArrayList<>(communityservice.getPosts());
             loadPosts(posts);
 
@@ -110,11 +132,14 @@ public class CommunityController implements Initializable {
                 }
             });
 
+            rules.setOnMouseClicked(event -> loadRules(currentCommunityId));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
 
     private void loadPosts(List<Post> newPosts) {
         for (Post post : newPosts) {
@@ -172,6 +197,9 @@ public class CommunityController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
             loader.setController(new CommunityController(new CommunityService(community.getId())));
             Parent root = loader.load();
+
+            loadRules(community.getId()); // Passa l'ID della community per caricare le regole
+
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle(community.getTitle());
@@ -180,5 +208,35 @@ public class CommunityController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    public void setData(Community community) {
+        System.out.println("Setting data");
+        community_title.setText(community.getTitle());
+        description.setText(community.getDescription());
+        num_subscribes.setText(community.getSubscribers() + "");
+        num_monthly_visits.setText(community.getMonthlyVisits() + "");
+    }
+
+
+    @FXML
+    public void loadRules(int communityId) {
+        try {
+            List<Rule> rules = communityservice.getCommunityRules(communityId);
+            postsContainer.getChildren().clear();
+            for (Rule rule : rules) {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/RulesPage.fxml"));
+                    RulesController rulesController = new RulesController();
+                    fxmlLoader.setController(rulesController);
+                    VBox vBox = fxmlLoader.load();
+                    rulesController.setRuleData(community_title.getText(), rule.getTitle(), rule.getContent());
+                    postsContainer.getChildren().add(vBox);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 }

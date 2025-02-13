@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="180.0" prefWidth="550.0" spacing="15" stylesheets="@../css/RulesPage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label fx:id="community_title" text="CommunityID" />
+    </HBox>
+    <Label fx:id="rule_title"  text="Rule 1: Read README:TXT " />
+
+    <Label fx:id="content" styleClass="content" text="Contenuto della regola..." wrapText="true" />
+
+</VBox>

@@ -6,10 +6,10 @@ import src.domainmodel.Post;
 import src.domainmodel.User;
 import src.orm.*;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CommunityService {
 
@@ -38,5 +38,17 @@ public class CommunityService {
         return communityPosts;
 
     }
+
+    public int getCommunityId() {
+        return communityId;
+    }
+    public Community getCommunity() throws SQLException {
+        return communityDAO.findById(communityId).orElse(null);
+    }
+    public List<Rule> getCommunityRules(int communityId) {
+        return communityDAO.getCommunityRules(communityId);
+    }
+
+
 
 }
