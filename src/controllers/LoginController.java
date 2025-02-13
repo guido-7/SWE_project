@@ -7,6 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import src.businesslogic.FeedService;
+import src.domainmodel.User;
 import src.orm.UserDAO;
 
 import java.io.IOException;
@@ -45,8 +47,12 @@ public class LoginController {
         } else{
             try {
                 if (userDAO.isValidUser(username, password)) {
+                    User user = userDAO.createUser(username);
                     Stage stage = (Stage) user_id.getScene().getWindow();
-                    HomePageController.openHomePage(stage);
+                    HomePageController homePageController = new HomePageController(new FeedService(user));
+                    SceneManager.changeScene("home","/src/view/fxml/Homepage.fxml",homePageController);
+                    //SceneManager.show();
+                    //HomePageController.openHomePage(user,stage);
                 } else {
                     errorLabel.setOpacity(1);
                     errorLabel.setText("Invalid username or password.");
@@ -76,5 +82,7 @@ public class LoginController {
         Stage stage = (Stage) user_id.getScene().getWindow();
         SignUpController.openSignUpPage(stage);
     }
+
+
 
 }

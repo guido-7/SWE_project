@@ -1,9 +1,6 @@
 package src.businesslogic;
 
-import src.domainmodel.Guest;
-import src.domainmodel.Permits;
-import src.domainmodel.Post;
-import src.domainmodel.User;
+import src.domainmodel.*;
 import src.orm.*;
 
 import java.sql.Connection;
@@ -14,6 +11,7 @@ import java.util.List;
 public class CommunityService {
 
     PostDao postDao = new PostDao();
+    CommunityDAO communityDAO = new CommunityDAO();
     int  noOfPostsTaken;
     int communityId;
     int numberofPosts = 30;
