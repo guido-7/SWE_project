@@ -22,7 +22,6 @@ import src.businesslogic.SearchService;
 import src.domainmodel.Guest;
 import src.domainmodel.Moderator;
 import src.domainmodel.PermitsManager;
-import src.businesslogic.SearchCommunityService;
 import src.domainmodel.Community;
 import src.domainmodel.Post;
 
@@ -69,15 +68,14 @@ public class CommunityController implements Initializable {
     private final SearchService searchService = new SearchService();
     private final ContextMenu suggestionsPopup = new ContextMenu();
     private String currentSearchTerm = "";
-    private ProgressIndicator progressIndicator = new ProgressIndicator();
-    private ContextMenu suggestionsPopup = new ContextMenu();
-    private SearchCommunityService searchCommunityService = new SearchCommunityService();
+    private SearchService searchCommunityService = new SearchService();
     private int currentCommunityId;
 
     public CommunityController(CommunityService communityService, Guest guest) {
         this.communityservice = communityService;
         this.guest = guest;
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -129,6 +127,8 @@ public class CommunityController implements Initializable {
                     updateSuggestions(newValue);
                 }
             });
+
+            rules.setOnMouseClicked(event -> loadRules(currentCommunityId));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -189,7 +189,6 @@ public class CommunityController implements Initializable {
 
         new Thread(searchTask).start();
 
-        rules.setOnMouseClicked(event -> loadRules(currentCommunityId));
 
 
 
@@ -298,7 +297,7 @@ public class CommunityController implements Initializable {
     private void loadCommunityPage(Community community) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
-            loader.setController(new CommunityController(new CommunityService(community.getId())));
+            loader.setController(new CommunityController(new CommunityService(community.getId()), guest));
             Parent root = loader.load();
             loadRules(community.getId()); // Passa l'ID della community per caricare le regole
             Stage stage = (Stage) searchField.getScene().getWindow();

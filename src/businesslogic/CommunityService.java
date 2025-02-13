@@ -10,11 +10,10 @@ import java.util.List;
 
 public class CommunityService {
 
-    PostDao postDao = new PostDao();
+    PostDAO postDAO = new PostDAO();
     CommunityDAO communityDAO = new CommunityDAO();
     int  noOfPostsTaken;
     PostDAO postDao = new PostDAO();
-    int noOfPostsTaken;
     int communityId;
     int numberofPosts = 30;
 
@@ -67,20 +66,19 @@ public class CommunityService {
         return warnings;
     }
 
-    public int getCommunityId() {
-        return communityId;
-    }
-
     public boolean isModerator(int moderatorId) {
         ModeratorDAO moderatorDAO = new ModeratorDAO();
         return moderatorDAO.isModerator(moderatorId, communityId);
     }
+
     public int getCommunityId() {
         return communityId;
     }
+
     public Community getCommunity() throws SQLException {
         return communityDAO.findById(communityId).orElse(null);
     }
+
     public List<Rule> getCommunityRules(int communityId) {
         return communityDAO.getCommunityRules(communityId);
     }
