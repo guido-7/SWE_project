@@ -1,0 +1,10 @@
+/* Apply styles to the root container of the pop-up */
+.dialog-root {
+    -fx-background-color: #ffffff;    /* White background */
+    -fx-padding: 20;                   /* Internal padding */
+    -fx-border-color: #cccccc;         /* Light gray border */
+    -fx-border-width: 1;               /* Border thickness */
+    -fx-border-radius: 15;             /* Rounded border corners */
+    -fx-background-radius: 15;         /* Ensure background follows rounded corners */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4); /* Optional: adds a subtle drop shadow */
+}
