@@ -30,5 +30,8 @@ public class PermitsManager {
         }
         return null;
     }
+    public static Set<Permits> getModeratorPermits(){
+        return createModeratorPermits();
+    }
 }
 

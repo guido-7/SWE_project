@@ -1,21 +1,19 @@
 package src.controllers;
 
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
+  import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.scene.input.KeyCode;
 import src.businesslogic.CommunityService;
 import src.businesslogic.SearchService;
+import src.domainmodel.Guest;
+import src.domainmodel.Moderator;
+import src.domainmodel.PermitsManager;
 import src.domainmodel.Post;
 
 import java.io.IOException;
@@ -33,9 +31,12 @@ public class CommunityController implements Initializable {
     private ScrollPane scrollPane;
     @FXML
     private TextField searchField;
+    @FXML
+    private ImageView settings;
 
     private List<Post> posts;
     private final CommunityService communityservice;
+    private final Guest guest;
     private boolean isLoading = false;
     private boolean allPostsLoaded = false;
     private final ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -43,13 +44,24 @@ public class CommunityController implements Initializable {
     private final ContextMenu suggestionsPopup = new ContextMenu();
     private String currentSearchTerm = "";
 
-    public CommunityController(CommunityService communityService) {
+    public CommunityController(CommunityService communityService, Guest guest) {
         this.communityservice = communityService;
+        this.guest = guest;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
+            //Control for show settings button
+            if(guest.hasPermits(PermitsManager.getModeratorPermits())){
+                int moderator_id = ((Moderator)guest).getId();
+                if(communityservice.isModerator(moderator_id)){
+                    settings.setVisible(true);
+                }else {
+                    settings.setVisible(false);
+                }
+            }
+
             posts = new ArrayList<>(communityservice.getPosts());
             loadPosts(posts);
 
@@ -59,12 +71,11 @@ public class CommunityController implements Initializable {
                 }
             });
 
-            // Gestione del tasto invio con priorità massima
+            // Search field event handlers
             searchField.setOnKeyReleased(event -> {
                 if (event.getCode() == KeyCode.ENTER) {
-                    event.consume(); // Previene che l'evento si propaghi
+                    event.consume();
                     String searchTerm = searchField.getText().trim();
-                    System.out.println("ENTER premuto. Search term: " + searchTerm);
                     if (!searchTerm.isEmpty()) {
                         suggestionsPopup.hide();
                         showFilteredPosts(searchTerm);
@@ -72,7 +83,7 @@ public class CommunityController implements Initializable {
                 }
             });
 
-            // Gestione del cambio testo per i suggerimenti
+            // Search field suggestions
             searchField.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue.isEmpty()) {
                     suggestionsPopup.hide();
@@ -141,6 +152,7 @@ public class CommunityController implements Initializable {
         }
     }
 
+    // Reset posts to the initial state after a search
     private void resetPosts() {
         currentSearchTerm = "";
         postsContainer.getChildren().clear();

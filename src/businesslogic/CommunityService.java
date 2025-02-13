@@ -67,4 +67,9 @@ public class CommunityService {
     public int getCommunityId() {
         return communityId;
     }
+
+    public boolean isModerator(int moderatorId) {
+        ModeratorDAO moderatorDAO = new ModeratorDAO();
+        return moderatorDAO.isModerator(moderatorId, communityId);
+    }
 }

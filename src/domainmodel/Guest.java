@@ -1,5 +1,6 @@
 package src.domainmodel;
 
+import java.util.List;
 import java.util.Set;
 
 public class Guest {
@@ -10,6 +11,9 @@ public class Guest {
     }
     public boolean hasPermit(Permits permit){
         return permits.contains(permit);
+    }
+    public boolean hasPermits(Set<Permits> permits){
+        return this.permits.containsAll(permits);
     }
     public Set<Permits> getPermits() {
         return permits;
