@@ -19,6 +19,7 @@ import javafx.scene.control.Label;
 import java.io.IOException;
 import src.domainmodel.*;
 import src.businesslogic.*;
+import src.orm.ModeratorDAO;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -38,12 +39,11 @@ public class HomePageController implements Initializable  {
     User user;
     List<Post> posts;
     private FeedService feedService;
-    private SearchCommunityService searchCommunityService = new SearchCommunityService();
     private boolean isLoading = false;
     private boolean allPostsLoaded = false;
     private ProgressIndicator progressIndicator = new ProgressIndicator();
 
-    // ContextMenu per i suggerimenti
+    private SearchService searchService = new SearchService();
     private ContextMenu suggestionsPopup = new ContextMenu();
 
     public HomePageController(FeedService feedService) {
@@ -52,7 +52,6 @@ public class HomePageController implements Initializable  {
     public void setFeedService(FeedService feedService) {
         this.feedService = feedService;
     }
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -77,7 +76,7 @@ public class HomePageController implements Initializable  {
                         Task<List<Community>> searchTask = new Task<>() {
                             @Override
                             protected List<Community> call() {
-                                return searchCommunityService.searchCommunities(newValue);
+                                return searchService.searchCommunities(newValue);
                             }
                         };
 
@@ -193,8 +192,14 @@ public class HomePageController implements Initializable  {
 
     private void loadCommunityPage(Community community) {
         try {
+            ModeratorDAO moderatorDAO = new ModeratorDAO();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
-            loader.setController(new CommunityController(new CommunityService(community.getId())));
+            try {
+                Moderator moderator = moderatorDAO.findById(1).orElse(null);
+                loader.setController(new CommunityController(new CommunityService(community.getId()), moderator));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             Parent root = loader.load();
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -203,8 +208,6 @@ public class HomePageController implements Initializable  {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
-
-
-
 }

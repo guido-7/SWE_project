@@ -1,5 +1,4 @@
 package src.managerdatabase;
-import src.domainmodel.User;
 import src.orm.*;
 
 import java.sql.SQLException;
@@ -9,9 +8,9 @@ import java.util.Map;
 public class  SetDB {
 
     public static void main(String[] args) throws SQLException {
-//        DBConnection.connect();
-//        createDB();
-//        DBConnection.disconnect();
+        DBConnection.connect();
+        createDB();
+        DBConnection.disconnect();
           int numberofPosts = 40;
           int numberofCommunities = 10;
           int numberofUser = 100;
@@ -20,7 +19,7 @@ public class  SetDB {
     }
 
     public static void generatePosts() throws SQLException {
-        PostDao postDao = new PostDao();
+        PostDAO postDao = new PostDAO();
         for (int i = 1; i <= 8; i++) {
             Map<String, Object> params = new HashMap<>();
             params.put("title", "Post Title " + i);
@@ -243,9 +242,11 @@ public class  SetDB {
         String sql = "CREATE TABLE IF NOT EXISTS PostWarnings ("
                 + " sender_id INTEGER NOT NULL,"
                 + " post_id INTEGER NOT NULL,"
+                + " community_id INTEGER NOT NULL,"
                 + " PRIMARY KEY (sender_id, post_id),"
                 + " FOREIGN KEY (sender_id) REFERENCES User(id),"
-                + " FOREIGN KEY (post_id) REFERENCES Post(id)"
+                + " FOREIGN KEY (post_id) REFERENCES Post(id),"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
                 + ");";
 
         DBConnection.query(sql);
@@ -256,8 +257,10 @@ public class  SetDB {
                 + " sender_id INTEGER NOT NULL,"
                 + " comment_id INTEGER NOT NULL,"
                 + " post_id INTEGER NOT NULL,"
+                + " community_id INTEGER NOT NULL,"
                 + " PRIMARY KEY (sender_id, comment_id,post_id),"
                 + " FOREIGN KEY (sender_id) REFERENCES User(id),"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id),"
                 + " FOREIGN KEY (comment_id,post_id) REFERENCES Comment(id,post_id)"
                 + ");";
 
@@ -292,7 +295,7 @@ public class  SetDB {
             params.put("content", "Content " + i + 1);
             params.put("user_id", +user_id);
             params.put("community_id", community_id);
-            PostDao postDao = new PostDao();
+            PostDAO postDao = new PostDAO();
             postDao.save(params);
 
             // create fake PostVotes

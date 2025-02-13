@@ -11,8 +11,8 @@ import java.util.*;
 public class FeedService {
 
     Map<Integer, Integer> community_partition = new LinkedHashMap<>();// at the end of the loading of feed this should be in
-                                                                      // the form of community_id,number of posts from that community
-    PostDao postDao = new PostDao();
+                                                                        // the form of community_id,number of posts from that community
+    PostDAO postDao = new PostDAO();
     CommunityDAO communityDao = new CommunityDAO();
     SubscriptionDAO subscriptionDao = new SubscriptionDAO();
     UserDAO userDAO = new UserDAO();

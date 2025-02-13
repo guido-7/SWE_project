@@ -3,7 +3,9 @@ package src.orm;
 import src.domainmodel.Moderator;
 import src.domainmodel.Permits;
 import src.domainmodel.PermitsManager;
+import src.managerdatabase.DBConnection;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +17,7 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
 
     @Override
     protected String getFindByIdQuery() {
-        return "SELECT * FROM Moderator JOIN User ON Moderator.id = User.id WHERE Moderator.id = ?";
+        return "SELECT * FROM Moderator JOIN User ON Moderator.user_id = User.id  WHERE Moderator.user_id = ?";
     }
 
     @Override
@@ -45,7 +47,7 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
 
     @Override
     protected String getDeleteQuery() {
-        return "DELETE FROM Moderator WHERE id = ?";
+        return "DELETE FROM Moderator WHERE user_id = ?";
     }
 
     @Override
@@ -55,7 +57,7 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
 
     @Override
     protected Moderator mapResultSetToEntity(ResultSet resultSet) throws SQLException {
-        int id = resultSet.getInt("id");
+        int id = resultSet.getInt("user_id");
         LocalDateTime assigned_date = LocalDateTime.parse(resultSet.getString("assigned_date"));
         String nickname = resultSet.getString("nickname");
         String name =resultSet.getString("name");
@@ -63,5 +65,19 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
         int community_id = resultSet.getInt("community_id");
         Set<Permits> permits =PermitsManager.createModeratorPermits();
         return new Moderator(id, nickname, name, surname,permits, community_id, assigned_date);
+    }
+
+    public boolean isModerator(int moderator_id, int community_id){
+        String query = "SELECT * FROM Moderator WHERE user_id = ? AND community_id = ?";
+        try( Connection connection = DBConnection.open_connection();
+                PreparedStatement statement = connection.prepareStatement(query)){
+            statement.setInt(1, moderator_id);
+            statement.setInt(2, community_id);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+    }
+        return false;
     }
 }

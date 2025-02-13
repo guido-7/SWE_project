@@ -3,6 +3,7 @@ package src.controllers;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,10 +12,16 @@ import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
+import src.businesslogic.SearchService;
+import src.domainmodel.Guest;
+import src.domainmodel.Moderator;
+import src.domainmodel.PermitsManager;
 import src.businesslogic.SearchCommunityService;
 import src.domainmodel.Community;
 import src.domainmodel.Post;
@@ -50,28 +57,44 @@ public class CommunityController implements Initializable {
     private VBox rulesContainer;
     @FXML
     private Label rules;
+    @FXML
+    private ImageView settings;
 
-
-    List<Post> posts;
+    private List<Post> posts;
     private final CommunityService communityservice;
+    private final Guest guest;
     private boolean isLoading = false;
     private boolean allPostsLoaded = false;
+    private final ProgressIndicator progressIndicator = new ProgressIndicator();
+    private final SearchService searchService = new SearchService();
+    private final ContextMenu suggestionsPopup = new ContextMenu();
+    private String currentSearchTerm = "";
     private ProgressIndicator progressIndicator = new ProgressIndicator();
     private ContextMenu suggestionsPopup = new ContextMenu();
     private SearchCommunityService searchCommunityService = new SearchCommunityService();
     private int currentCommunityId;
 
-    public CommunityController(CommunityService communityService) {
+    public CommunityController(CommunityService communityService, Guest guest) {
         this.communityservice = communityService;
+        this.guest = guest;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         try {
             Community currentCommunity = communityservice.getCommunity();
             setData(currentCommunity);
             this.currentCommunityId = currentCommunity.getId();
+            //Control for show settings button
+            if(guest.hasPermits(PermitsManager.getModeratorPermits())){
+                int moderator_id = ((Moderator)guest).getId();
+                if(communityservice.isModerator(moderator_id)){
+                    settings.setVisible(true);
+                }else {
+                    settings.setVisible(false);
+                }
+            }
+
             posts = new ArrayList<>(communityservice.getPosts());
             loadPosts(posts);
 
@@ -81,62 +104,94 @@ public class CommunityController implements Initializable {
                 }
             });
 
-            searchField.textProperty().addListener(new ChangeListener<>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    if (newValue.isEmpty()) {
+            // Search field event handlers
+            searchField.setOnKeyReleased(event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    event.consume();
+                    String searchTerm = searchField.getText().trim();
+                    if (!searchTerm.isEmpty()) {
                         suggestionsPopup.hide();
-                    } else {
-                        // Avvia una ricerca in background per ottenere le community che corrispondono al testo
-                        Task<List<Community>> searchTask = new Task<>() {
-                            @Override
-                            protected List<Community> call() {
-                                return searchCommunityService.searchCommunities(newValue);
-                            }
-                        };
-
-                        searchTask.setOnSucceeded(event -> {
-                            List<Community> communities = searchTask.getValue();
-                            // Popola il ContextMenu
-                            suggestionsPopup.getItems().clear();
-                            if (communities != null && !communities.isEmpty()) {
-                                for (Community community : communities) {
-                                    Label suggestionLabel = new Label(community.getTitle());
-                                    suggestionLabel.prefWidthProperty().bind(searchField.widthProperty());
-                                    CustomMenuItem item = new CustomMenuItem(suggestionLabel, true);
-                                    // Quando si clicca il suggerimento carica CommunityPage
-                                    item.setOnAction(e -> {
-                                        searchField.setText(community.getTitle());
-                                        suggestionsPopup.hide();
-                                        // Carica la pagina della community
-                                        loadCommunityPage(community);
-                                    });
-                                    suggestionsPopup.getItems().add(item);
-                                }
-                                Platform.runLater(() -> {
-                                    if (searchField.getScene() != null && searchField.getScene().getWindow() != null) {
-                                        suggestionsPopup.show(searchField, Side.BOTTOM, 0, 0);
-                                    }
-                                });
-                            } else {
-                                suggestionsPopup.hide();
-                            }
-                        });
-
-                        searchTask.setOnFailed(event -> {
-                            suggestionsPopup.hide();
-                        });
-
-                        new Thread(searchTask).start();
+                        showFilteredPosts(searchTerm);
                     }
                 }
             });
 
-            rules.setOnMouseClicked(event -> loadRules(currentCommunityId));
+            settings.setOnMouseClicked(event -> {
+                handleSettingsClick();
+            });
+
+            // Search field suggestions
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue.isEmpty()) {
+                    suggestionsPopup.hide();
+                    resetPosts();
+                } else if (!newValue.equals(oldValue)) {
+                    updateSuggestions(newValue);
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    @FXML
+    private void handleSettingsClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunitySettings.fxml"));
+            loader.setController(new CommunitySettingsController(communityservice));
+            Parent root = loader.load();
+            Stage stage = (Stage) settings.getScene().getWindow();
+            stage.setTitle("Community Settings");
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    private void updateSuggestions(String searchTerm) {
+        Task<List<Post>> searchTask = new Task<>() {
+            @Override
+            protected List<Post> call() {
+                return searchService.searchPosts(searchTerm, communityservice.getCommunityId());
+            }
+        };
+
+        searchTask.setOnSucceeded(event -> {
+            List<Post> searchResults = searchTask.getValue();
+            suggestionsPopup.getItems().clear();
+
+            if (searchResults != null && !searchResults.isEmpty()) {
+                for (Post post : searchResults) {
+                    Label suggestionLabel = new Label(post.getTitle());
+                    suggestionLabel.prefWidthProperty().bind(searchField.widthProperty());
+                    CustomMenuItem item = new CustomMenuItem(suggestionLabel, true);
+                    item.setOnAction(e -> {
+                        searchField.setText(post.getTitle());
+                        suggestionsPopup.hide();
+                        showFilteredPosts(post.getTitle());
+                    });
+                    suggestionsPopup.getItems().add(item);
+                }
+
+                if (!searchField.getText().isEmpty() && searchField.getScene() != null && searchField.getScene().getWindow() != null) {
+                    suggestionsPopup.show(searchField, Side.BOTTOM, 0, 0);
+                }
+            } else {
+                suggestionsPopup.hide();
+            }
+        });
+
+        searchTask.setOnFailed(event -> {
+            suggestionsPopup.hide();
+        });
+
+        new Thread(searchTask).start();
+
+        rules.setOnMouseClicked(event -> loadRules(currentCommunityId));
+
+
 
     }
 
@@ -155,6 +210,49 @@ public class CommunityController implements Initializable {
         }
     }
 
+    // Reset posts to the initial state after a search
+    private void resetPosts() {
+        currentSearchTerm = "";
+        postsContainer.getChildren().clear();
+        allPostsLoaded = false;
+        try {
+            posts = new ArrayList<>(communityservice.getPosts());
+            loadPosts(posts);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showFilteredPosts(String searchTerm) {
+        currentSearchTerm = searchTerm;
+        postsContainer.getChildren().clear();
+        allPostsLoaded = false;
+
+        Task<List<Post>> task = new Task<>() {
+            @Override
+            protected List<Post> call() {
+                return communityservice.getFilteredPosts(searchTerm);
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            List<Post> filteredPosts = task.getValue();
+            loadPosts(filteredPosts);
+
+            // Se non ci sono risultati, mostra un messaggio
+            if (filteredPosts.isEmpty()) {
+                Label noResults = new Label("No posts found for: " + searchTerm);
+                postsContainer.getChildren().add(noResults);
+            }
+        });
+
+        task.setOnFailed(event -> {
+            System.err.println("Failed to load filtered posts");
+        });
+
+        new Thread(task).start();
+    }
+
     private void loadMorePosts() {
         isLoading = true;
 
@@ -165,7 +263,11 @@ public class CommunityController implements Initializable {
         Task<List<Post>> task = new Task<>() {
             @Override
             protected List<Post> call() {
-                return communityservice.getNextPosts();
+                if (currentSearchTerm.isEmpty()) {
+                    return communityservice.getNextPosts();
+                } else {
+                    return communityservice.getNextFilteredPosts(currentSearchTerm);
+                }
             }
         };
 
@@ -187,6 +289,7 @@ public class CommunityController implements Initializable {
         task.setOnFailed(event -> {
             isLoading = false;
             postsContainer.getChildren().remove(progressIndicator);
+            System.err.println("Failed to load more posts");
         });
 
         new Thread(task).start();
@@ -197,9 +300,7 @@ public class CommunityController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
             loader.setController(new CommunityController(new CommunityService(community.getId())));
             Parent root = loader.load();
-
             loadRules(community.getId()); // Passa l'ID della community per caricare le regole
-
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle(community.getTitle());

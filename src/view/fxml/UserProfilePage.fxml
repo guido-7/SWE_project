@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="20" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+
+    <!-- Define padding properly using Insets -->
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+
+    <!-- Header Section -->
+    <HBox spacing="20">
+        <!-- User Picture -->
+        <ImageView fx:id="userImage" fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
+            <HBox.margin>
+                <Insets bottom="10" left="10" right="10" top="10" />
+            </HBox.margin>
+         <image>
+            <Image url="@../images/Logo.png" />
+         </image>
+        </ImageView>
+
+        <!-- User Information -->
+        <VBox alignment="CENTER_LEFT" spacing="5">
+            <Label fx:id="nicknameLabel" text="Nickname" />
+            <Label fx:id="nameLabel" text="Name" />
+            <Label fx:id="surnameLabel" text="Surname" />
+        </VBox>
+
+        <!-- Profile Description -->
+        <VBox spacing="5">
+            <Label text="Profile Description" />
+            <TextArea fx:id="profileDescription" editable="false" prefColumnCount="20" prefRowCount="3" wrapText="true" />
+         <HBox.margin>
+            <Insets left="70.0" top="10.0" />
+         </HBox.margin>
+        </VBox>
+    </HBox>
+
+    <!-- Posts Section -->
+    <HBox spacing="20">
+        <!-- My Posts Section -->
+        <VBox spacing="5">
+            <Label text="My Posts" />
+            <ListView fx:id="postsListView" prefHeight="300" prefWidth="300" />
+        </VBox>
+
+        <!-- Saved Posts Section -->
+        <VBox spacing="5">
+            <Label text="Saved Posts" />
+            <ListView fx:id="savedPostsListView" prefHeight="300" prefWidth="300" />
+        </VBox>
+    </HBox>
+
+</VBox>

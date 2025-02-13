@@ -68,7 +68,7 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
 
     @Override
     protected String getDeleteQuery() {
-        return  "WITH RECURSIVE descendants(id) AS ( " +
+        return "WITH RECURSIVE descendants(id) AS ( " +
                 "SELECT ? " +
                 "UNION " +
                 "SELECT c.id FROM CommentHierarchy c " +
@@ -83,7 +83,7 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         statement.setInt(2, id.get(1));
     }
 
-    public void saveCommentRelation(Map<String,Object> parameters) throws SQLException {
+    public void saveCommentRelation(Map<String, Object> parameters) throws SQLException {
         String query = getInsertQueryCommentRelation();
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -92,11 +92,11 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         }
     }
 
-    public String getInsertQueryCommentRelation(){
+    public String getInsertQueryCommentRelation() {
         return "INSERT INTO CommentHierarchy (post_id, parent_id, child_id) VALUES (?, ?, ?)";
     }
 
-    protected void setInsertParamsCommentRelation(PreparedStatement statement, Map<String,Object> parameters) throws SQLException {
+    protected void setInsertParamsCommentRelation(PreparedStatement statement, Map<String, Object> parameters) throws SQLException {
         statement.setInt(1, (int) parameters.get("post_id"));
         statement.setInt(2, (int) parameters.get("parent_id"));
         statement.setInt(3, (int) parameters.get("child_id"));
@@ -107,7 +107,7 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         PreparedStatement stmt = null;
         ResultSet rs = null;
 
-        if ((parentLevel+1) != comment.getLevel()) {
+        if ((parentLevel + 1) != comment.getLevel()) {
             return false;
         }
 
@@ -179,10 +179,10 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         }
     }
 
-    public ArrayList<Integer> getCommunityIds( int userId, int numberofCommunities){
-        String sql = "SELECT community_id,count(user_id) as commentno FROM Comment WHERE user_id = ? GROUP BY community_id ORDER BY commentno  DESC LIMIT ?";
+    public ArrayList<Integer> getCommunityIds(int userId, int numberofCommunities) {
+        String sql = "SELECT community_id,count(user_id) as commento FROM Comment WHERE user_id = ? GROUP BY community_id ORDER BY commento  DESC LIMIT ?";
         ArrayList<Integer> communityIds = new ArrayList<>();
-        try (Connection connection = DBConnection.open_connection() ;
+        try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, userId);
             statement.setInt(2, numberofCommunities);
@@ -195,8 +195,43 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         }
         return communityIds;
     }
-}
 
+    public ArrayList<Object> getContentAndUserById(int comment_id, int post_id) {
+        ArrayList<Object> data = new ArrayList<>();
+        Connection connection = DBConnection.open_connection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT content, user_id FROM Comment WHERE id = ? AND post_id = ?");
+            statement.setInt(1, comment_id);
+            statement.setInt(2, post_id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                data.add(resultSet.getString("content"));
+                data.add(resultSet.getInt("user_id"));
+                return data;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+
+    public int getLevelById(int comment_id, int post_id) {
+        Connection connection = DBConnection.open_connection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT level FROM Comment WHERE id = ? AND post_id = ?");
+            statement.setInt(1, comment_id);
+            statement.setInt(2, post_id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("level");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            }
+        return -1;
+    }
+}
 
 
 

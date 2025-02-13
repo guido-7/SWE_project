@@ -173,6 +173,24 @@ public class UserDAO extends BaseDAO<User,Integer> {
         }
         return -1;
     }
+
+    public String getNicknameById(int user_id){
+        String query = "SELECT nickname FROM User WHERE id = ?";
+        Connection connection = DBConnection.open_connection();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, user_id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
     public User createUser(String nickname) throws SQLException {
         return findById(getUserId(nickname)).orElse(null);
     }
