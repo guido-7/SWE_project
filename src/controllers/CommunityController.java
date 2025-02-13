@@ -1,14 +1,17 @@
 package src.controllers;
 
-  import javafx.concurrent.Task;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
 import src.businesslogic.SearchService;
 import src.domainmodel.Guest;
@@ -83,6 +86,10 @@ public class CommunityController implements Initializable {
                 }
             });
 
+            settings.setOnMouseClicked(event -> {
+                handleSettingsClick();
+            });
+
             // Search field suggestions
             searchField.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue.isEmpty()) {
@@ -97,6 +104,21 @@ public class CommunityController implements Initializable {
             e.printStackTrace();
         }
     }
+    @FXML
+    private void handleSettingsClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunitySettings.fxml"));
+            loader.setController(new CommunitySettingsController(communityservice));
+            Parent root = loader.load();
+            Stage stage = (Stage) settings.getScene().getWindow();
+            stage.setTitle("Community Settings");
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     private void updateSuggestions(String searchTerm) {
         Task<List<Post>> searchTask = new Task<>() {
