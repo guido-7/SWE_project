@@ -179,5 +179,34 @@ public class PostDAO extends BaseDAO<Post, Integer>{
         }
         return posts;
     }
+    public List<Post> getPostsByUser(int userId) {
+        List<Post> posts = new ArrayList<>();
+        try (Connection connection = DBConnection.open_connection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE user_id = ?");
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                posts.add(mapResultSetToEntity(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();}
+        return posts;
+    }
+    public List<Post> getSavedPosts(int userId,int limit, int offset) {
+        List<Post> posts = new ArrayList<>();
+        try (Connection connection = DBConnection.open_connection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE id IN (SELECT post_id FROM SavedPost WHERE user_id = ?) LIMIT ? OFFSET ?");
+            statement.setInt(1, userId);
+            statement.setInt(2, limit);
+            statement.setInt(3, offset);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                posts.add(mapResultSetToEntity(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
+    }
 
 }

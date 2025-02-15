@@ -46,6 +46,8 @@ public class  SetDB {
         createUserAccessTable();
         createCommentWarningsTable();
         createPostwarningsTable();
+        createUserDescription();
+        createSavedPost();
     }
 
     public static void createCommunityTable() {
@@ -163,6 +165,15 @@ public class  SetDB {
         DBConnection.query(sql);
         DBConnection.query(sql2);
     }
+    public static void createUserDescription() {
+        String sql = "CREATE TABLE IF NOT EXISTS UserDescription ("
+                + " user_id INTEGER PRIMARY KEY NOT NULL,"
+                + " description TEXT,"
+                + " FOREIGN KEY (user_id) REFERENCES User(id)"
+                + ");";
+
+        DBConnection.query(sql);
+    }
 
 
     public static void createCommentHierarchyTable() {
@@ -259,6 +270,17 @@ public class  SetDB {
                 + " FOREIGN KEY (sender_id) REFERENCES User(id),"
                 + " FOREIGN KEY (community_id) REFERENCES Community(id),"
                 + " FOREIGN KEY (comment_id,post_id) REFERENCES Comment(id,post_id)"
+                + ");";
+
+        DBConnection.query(sql);
+    }
+    private static void createSavedPost(){
+        String sql = "CREATE TABLE IF NOT EXISTS SavedPost ("
+                + " user_id INTEGER NOT NULL,"
+                + " post_id INTEGER NOT NULL,"
+                + " PRIMARY KEY (user_id, post_id),"
+                + " FOREIGN KEY (user_id) REFERENCES User(id),"
+                + " FOREIGN KEY (post_id) REFERENCES Post(id)"
                 + ");";
 
         DBConnection.query(sql);

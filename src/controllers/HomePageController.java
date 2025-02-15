@@ -38,8 +38,8 @@ public class HomePageController implements Initializable {
 
     List<Post> posts;
     private FeedService feedService;
-    private boolean isLoading = false;
-    private boolean allPostsLoaded = false;
+    private Boolean isLoading = false;
+    private Boolean allPostsLoaded = false;
     private ProgressIndicator progressIndicator = new ProgressIndicator();
 
     private SearchService searchService = new SearchService();
