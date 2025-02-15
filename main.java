@@ -8,6 +8,7 @@ import src.businesslogic.FeedService;
 import src.controllers.CommunityController;
 import src.controllers.CommunitySettingsController;
 import src.controllers.HomePageController;
+import src.domainmodel.Guest;
 import src.domainmodel.PermitsManager;
 import src.domainmodel.User;
 import src.servicemanager.Service;
@@ -23,21 +24,33 @@ public class main extends Application {
 //        primaryStage.setTitle("Community");
 //        primaryStage.setScene(new Scene(root));
 //        primaryStage.show();
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/HomePage.fxml"));
-//        loader.setController(new HomePageController(new FeedService(user)));
-//        Parent root = loader.load();
-//        primaryStage.setTitle("Home");
-//        primaryStage.setScene(new Scene(root));
-//        primaryStage.show();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunitySettings.fxml"));
-        loader.setController(new CommunitySettingsController(new CommunityService(1)));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/HomePage.fxml"));
+        loader.setController(new HomePageController(new FeedService(user)));
         Parent root = loader.load();
-        primaryStage.setTitle("Community Settings");
+        primaryStage.setTitle("Home");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
+//        loader.setController(new CommunityController(new CommunityService(1)));
+//        Parent root = loader.load();
+//        primaryStage.setTitle("Community Settings");
+//        primaryStage.setTitle("Community");
+//        primaryStage.setScene(new Scene(root));
+//        primaryStage.show();
+
     }
 
     public static void main(String[] args) {
         launch(args);
     }
+
+//    public static void launchCommunityService(Stage primaryStage) throws Exception {
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunitySettings.fxml"));
+//        loader.setController(new CommunitySettingsController(new CommunityService(1)));
+//        Parent root = loader.load();
+//        primaryStage.setTitle("Community Settings");
+//        primaryStage.setScene(new Scene(root));
+//        primaryStage.show();
+//}
 }

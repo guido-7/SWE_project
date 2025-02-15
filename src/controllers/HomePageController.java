@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class HomePageController implements Initializable {
+public class HomePageController implements Initializable  {
 
     @FXML
     private VBox postsContainer;
@@ -36,6 +36,7 @@ public class HomePageController implements Initializable {
     @FXML
     private TextField searchField;
 
+    User user;
     List<Post> posts;
     private FeedService feedService;
     private boolean isLoading = false;
@@ -173,19 +174,21 @@ public class HomePageController implements Initializable {
         new Thread(task).start();
     }
 
-    @FXML
-    public static void openHomePage(Stage stage) {
-        try {
-            System.out.println("Opening Home Page...");
-            FXMLLoader homePage = new FXMLLoader(HomePageController.class.getResource("/src/view/fxml/HomePage.fxml"));
-            stage.setScene(new Scene(homePage.load()));
-            stage.setTitle("Home Page");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Error loading Home Page.");
-        }
-    }
+   // @FXML
+    //meglio fare un metodo generale per cambiare pagina
+//    public static void openHomePage(User user, Stage stage) {
+//        try {
+//            System.out.println("Opening Home Page...");
+//            FXMLLoader homePage = new FXMLLoader(HomePageController.class.getResource("/src/view/fxml/CommunityPage.fxml"));
+//            homePage.setController(new CommunityController(new CommunityService(user.getId())));
+//            stage.setScene(new Scene(homePage.load()));
+//            stage.setTitle("Home Page");
+//            stage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.err.println("Error loading Home Page.");
+//        }
+//    }
 
     private void loadCommunityPage(Community community) {
         try {
