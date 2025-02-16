@@ -68,7 +68,7 @@ public class CommunityController implements Initializable {
 
     public CommunityController(CommunityService communityService, Guest guest) throws SQLException {
         this.communityservice = communityService;
-        this.guest = getPersonRole(guest,communityService.getCommunityId());
+        this.guest = getPersonRole(guest);
     }
 
 
@@ -331,10 +331,10 @@ public class CommunityController implements Initializable {
             e.printStackTrace();
         }
     }
-    private Guest getPersonRole(Guest guest,int communityId) throws SQLException {
+    private Guest getPersonRole(Guest guest) throws SQLException {
         if (guest.hasPermits(PermitsManager.createUserPermits())){
             User user = (User)guest;
-            Moderator moderator = communityservice.getModerator(communityId);
+            Moderator moderator = communityservice.getModerator(user.getId());
                 if(moderator != null){
                     return moderator;
                 }
