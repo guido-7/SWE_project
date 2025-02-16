@@ -13,6 +13,7 @@ public class DBConnection {
                 Class.forName("org.sqlite.JDBC");
                 conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
                 System.out.println("Connected to database");
+                conn.prepareStatement("PRAGMA foreign_keys = ON").executeUpdate();
             }
 
         } catch (ClassNotFoundException e) {
@@ -28,17 +29,14 @@ public class DBConnection {
 
     public static Connection open_connection() {
         try {
-            // Verifica se la connessione esiste e la restituisce
             if (conn != null && !conn.isClosed()) {
                 return conn;
             }
 
-            // Carica il driver JDBC per SQLite
             Class.forName("org.sqlite.JDBC");
-
-            // Apre la connessione al database SQLite
             conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
             System.out.println("Connected to database");
+            conn.prepareStatement("PRAGMA foreign_keys = ON").executeUpdate();
 
         } catch (ClassNotFoundException e) {
             System.out.println("JDBC driver not found");
@@ -52,20 +50,17 @@ public class DBConnection {
         return conn;
     }
 
-    // metodo usato per i test
+    // For test only
     public static Connection open_connection(String dbPathTest) {
         try {
-            // Verifica se la connessione esiste e la restituisce
             if (conn != null && !conn.isClosed()) {
                 return conn;
             }
 
-            // Carica il driver JDBC per SQLite
             Class.forName("org.sqlite.JDBC");
-
-            // Apre la connessione al database SQLite
             conn = DriverManager.getConnection("jdbc:sqlite:" + dbPathTest);
             System.out.println("Connected to database");
+            conn.prepareStatement("PRAGMA foreign_keys = ON").executeUpdate();
 
         } catch (ClassNotFoundException e) {
             System.out.println("JDBC driver not found");
@@ -81,7 +76,6 @@ public class DBConnection {
 
     public static void disconnect() {
         try {
-            // Verifica se la connessione esiste e chiude la connessione
             if (conn != null && !conn.isClosed()) {
                 conn.close();
                 System.out.println("Disconnected from database");
