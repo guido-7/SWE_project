@@ -33,5 +33,6 @@ public class PermitsManager {
     public static Set<Permits> getModeratorPermits(){
         return createModeratorPermits();
     }
+    public static Set<Permits> getUserPermits(){return createUserPermits();}
 }
 

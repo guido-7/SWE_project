@@ -36,6 +36,8 @@ public class HomePageController implements Initializable  {
     private ScrollPane scrollPane;
     @FXML
     private TextField searchField;
+    @FXML
+    private Button login;
 
     User user;
     List<Post> posts;
@@ -46,6 +48,7 @@ public class HomePageController implements Initializable  {
 
     private SearchService searchService = new SearchService();
     private ContextMenu suggestionsPopup = new ContextMenu();
+
 
     public HomePageController(FeedService feedService) {
         this.feedService = feedService;
@@ -58,9 +61,11 @@ public class HomePageController implements Initializable  {
     public void initialize(URL location, ResourceBundle resources) {
 
         try {
-            posts = new ArrayList<>(feedService.getFeed());
-            loadPosts(posts);
-
+            List<Post> post = feedService.getFeed();
+            if(!(post ==null) ){
+                posts = new ArrayList<>(feedService.getFeed());
+                loadPosts(posts);
+            }
             scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal.doubleValue() == 1.0 && !isLoading && !allPostsLoaded) {
                     loadMorePosts();
@@ -174,6 +179,10 @@ public class HomePageController implements Initializable  {
 
         new Thread(task).start();
     }
+    public void LoadUserPosts(){
+        posts = new ArrayList<>(feedService.getFeed());
+        loadPosts(posts);
+    }
 
    // @FXML
     //meglio fare un metodo generale per cambiare pagina
@@ -193,14 +202,8 @@ public class HomePageController implements Initializable  {
 
     private void loadCommunityPage(Community community) {
         try {
-            ModeratorDAO moderatorDAO = new ModeratorDAO();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
-            try {
-                Moderator moderator = moderatorDAO.findById(1).orElse(null);
-                loader.setController(new CommunityController(new CommunityService(community.getId()), moderator));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            loader.setController(new CommunityController(new CommunityService(community.getId()), feedService.getGuest()));
             Parent root = loader.load();
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -208,6 +211,8 @@ public class HomePageController implements Initializable  {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
     }
@@ -218,6 +223,10 @@ public class HomePageController implements Initializable  {
         loginController.setHomePageController(this);
         Stage stage = (Stage) searchField.getScene().getWindow();
         SceneManager.openModal("login", "/src/view/fxml/Login.fxml", loginController, stage);
+    }
+    public void setLoginButtonVisibility(boolean visibility){
+        login.setVisible(visibility);
+
     }
 
 

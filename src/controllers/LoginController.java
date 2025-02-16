@@ -57,8 +57,11 @@ public class LoginController {
                     User user = userDAO.createUser(username);
                     //Stage stage = (Stage) user_id.getScene().getWindow();
 
-                    HomePageController homePageController = new HomePageController(new FeedService(user));
+                    FeedService feedService = new FeedService(user);
+                    homePageController.setFeedService(feedService);
                     SceneManager.changeScene("home","/src/view/fxml/Homepage.fxml",homePageController);
+                    homePageController.LoadUserPosts();
+                    homePageController.setLoginButtonVisibility(false);
                     SceneManager.closeSecondaryStage();
                     //SceneManager.show();
                     //HomePageController.openHomePage(user,stage);

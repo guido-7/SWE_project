@@ -19,14 +19,9 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
 import src.businesslogic.SearchService;
-import src.domainmodel.Guest;
-import src.domainmodel.Moderator;
-import src.domainmodel.PermitsManager;
-import src.domainmodel.Community;
-import src.domainmodel.Post;
+import src.domainmodel.*;
 
 import javafx.scene.input.MouseEvent;
-import src.domainmodel.Rule;
 
 import java.io.IOException;
 import java.net.URL;
@@ -71,14 +66,15 @@ public class CommunityController implements Initializable {
     private SearchService searchCommunityService = new SearchService();
     private int currentCommunityId;
 
-    public CommunityController(CommunityService communityService, Guest guest) {
+    public CommunityController(CommunityService communityService, Guest guest) throws SQLException {
         this.communityservice = communityService;
-        this.guest = guest;
+        this.guest = getPersonRole(guest,communityService.getCommunityId());
     }
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        settings.setVisible(false);
         try {
             Community currentCommunity = communityservice.getCommunity();
             setData(currentCommunity);
@@ -88,8 +84,6 @@ public class CommunityController implements Initializable {
                 int moderator_id = ((Moderator)guest).getId();
                 if(communityservice.isModerator(moderator_id)){
                     settings.setVisible(true);
-                }else {
-                    settings.setVisible(false);
                 }
             }
 
@@ -306,6 +300,8 @@ public class CommunityController implements Initializable {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -335,8 +331,20 @@ public class CommunityController implements Initializable {
             e.printStackTrace();
         }
     }
-
-
-
+    private Guest getPersonRole(Guest guest,int communityId) throws SQLException {
+        if (guest.hasPermits(PermitsManager.createUserPermits())){
+            User user = (User)guest;
+            Moderator moderator = communityservice.getModerator(communityId);
+                if(moderator != null){
+                    return moderator;
+                }
+            else return guest;
+        }
+        return guest;
+    }
 
 }
+
+
+
+

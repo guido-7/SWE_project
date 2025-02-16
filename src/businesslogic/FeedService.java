@@ -1,9 +1,6 @@
 package src.businesslogic;
 
-import src.domainmodel.Permits;
-import src.domainmodel.Post;
-import src.domainmodel.Guest;
-import src.domainmodel.User;
+import src.domainmodel.*;
 import src.orm.*;
 
 import java.util.*;
@@ -35,8 +32,8 @@ public class FeedService {
 
         List<Post> posts = new ArrayList<>();
 
-        if (guest.hasPermit(Permits.PERSONAL_FEED)){
-            return posts;
+        if (!guest.hasPermits(PermitsManager.getUserPermits())){
+            return GuestFeed();
 
         } else {
 
@@ -163,4 +160,12 @@ public class FeedService {
 
     }
     // 120 : 23  , 121 : 22 , 122 : 10 , 123 : 23 , 124 : 23
+
+    public Guest getGuest() {
+        return guest;
+    }
+    private List<Post> GuestFeed(){
+        return null;
+
+    }
 }

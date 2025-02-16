@@ -76,6 +76,7 @@ public class SceneManager {
     }
 
 
+
     private static void showFirstStage(){
         primaryStage.show();
     }
@@ -133,6 +134,11 @@ public class SceneManager {
 //            e.printStackTrace();
 //        }
 //    }
+    public void changeController(Object controller){
+
+
+
+    }
 
 }
 
