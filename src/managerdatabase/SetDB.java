@@ -1,4 +1,5 @@
 package src.managerdatabase;
+import src.domainmodel.Post;
 import src.orm.*;
 
 import java.sql.SQLException;
@@ -18,20 +19,7 @@ public class  SetDB {
           generatefakedata(numberofPosts,numberofCommunities,numberofUser);
     }
 
-    public static void generatePosts() throws SQLException {
-        PostDAO postDao = new PostDAO();
-        for (int i = 1; i <= 8; i++) {
-            Map<String, Object> params = new HashMap<>();
-            params.put("title", "Post Title " + i);
-            params.put("content", "This is the content of post number " + i);
-            params.put("user_id", 1); // Assuming user_id 1 exists
-            params.put("community_id", 1); // Assuming community_id 1 exists
-            postDao.save(params);
-        }
-    }
-
     public static void createDB() {
-
         createUserTable();
         createCommunityTable();
         createAdminTable();
@@ -241,12 +229,34 @@ public class  SetDB {
                 + " community_id INTEGER NOT NULL,"
                 + " vote_type INTEGER DEFAULT 0 CHECK (vote_type IN (0,1)),"// 0-->dislike,1-->like
                 + " PRIMARY KEY (user_id, post_id),"
-                + " FOREIGN KEY (user_id) REFERENCES User(id),"
-                + " FOREIGN KEY (post_id) REFERENCES Post(id),"
+                + " FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE,"
+                + " FOREIGN KEY (post_id) REFERENCES Post(id) ON DELETE CASCADE,"
                 + " FOREIGN KEY (community_id) REFERENCES Community(id)"
                 + ");";
 
+        String sql2 = "CREATE TRIGGER IF NOT EXISTS update_post_likes_dislikes"
+                + " AFTER INSERT ON PostVotes"
+                + " FOR EACH ROW"
+                + " BEGIN"
+                + " UPDATE Post"
+                + " SET likes = (SELECT COUNT(*) FROM PostVotes WHERE post_id = NEW.post_id AND vote_type = 1),"
+                + " dislikes = (SELECT COUNT(*) FROM PostVotes WHERE post_id = NEW.post_id AND vote_type = 0)"
+                + " WHERE id = NEW.post_id;"
+                + " END;";
+
+        String sql3 = "CREATE TRIGGER IF NOT EXISTS delete_post_likes_dislikes"
+                + " AFTER DELETE ON PostVotes"
+                + " FOR EACH ROW"
+                + " BEGIN"
+                + " UPDATE Post"
+                + " SET likes = (SELECT COUNT(*) FROM PostVotes WHERE post_id = OLD.post_id AND vote_type = 1),"
+                + " dislikes = (SELECT COUNT(*) FROM PostVotes WHERE post_id = OLD.post_id AND vote_type = 0)"
+                + " WHERE id = OLD.post_id;"
+                + " END;";
+
         DBConnection.query(sql);
+        DBConnection.query(sql2);
+        DBConnection.query(sql3);
     }
 
     public static void createPostwarningsTable() {
@@ -290,59 +300,77 @@ public class  SetDB {
     }
 
     public static void generatefakedata(int numberofPosts, int numberofCommunity, int numberofUsers) throws SQLException {
+        UserDAO userDAO = new UserDAO();
+        CommunityDAO communityDAO = new CommunityDAO();
+        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
+        PostDAO postDao = new PostDAO();
+        CommentDAO commentDAO = new CommentDAO();
+
+        // create fake users
+        for (int i = 1; i <= numberofUsers; i++) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("nickname", "User " + i);
+            params.put("name", "Name " + i);
+            params.put("surname", "Surname " + i);
+            userDAO.save(params);
+        }
+        System.out.println("Users created");
 
         // create fake communities
-        for (int i = 0; i <= numberofCommunity; i++) {
+        for (int i = 1; i <= numberofCommunity; i++) {
             Map<String, Object> params = new HashMap<>();
-            params.put("title", "Title" + i + 1);
-            params.put("description", "description" + i + 1);
-            CommunityDAO communityDAO = new CommunityDAO();
+            params.put("title", "Community Title " + i);
+            params.put("description", "Description " + i);
             communityDAO.save(params);
         }
+        System.out.println("Communities created");
+
         // create fake subscriptions
-        for (int i = 0; i <= numberofUsers; i++) {
+        for (int i = 1; i <= numberofUsers; i++) {
             Map<String, Object> params = new HashMap<>();
-            params.put("user_id",i);
-            params.put("community_id", (int) (Math.random() * numberofCommunity) + 1);
-            SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
+            params.put("user_id", i);
+            params.put("community_id", (int) (Math.random() * numberofCommunity)+1);
             subscriptionDAO.save(params);
         }
+        System.out.println("Subscriptions created");
 
         // create fake Posts
-        for (int i = 0; i <= numberofPosts; i++) {
+        for (int i = 1; i <= numberofPosts; i++) {
             Map<String, Object> params = new HashMap<>();
-            int user_id = (((int) (Math.random() * numberofUsers) + 1));
-            int community_id = (int) (Math.random() * numberofCommunity) + 1;
-            params.put("title", "Title" + i + 1);
-            params.put("content", "Content " + i + 1);
-            params.put("user_id", +user_id);
+            int user_id = (int) ((Math.random() * numberofUsers) + 1);
+            int community_id = (int) ((Math.random() * numberofCommunity) + 1);
+            params.put("title", "Title Post " + i);
+            params.put("content", "Content " + i);
+            params.put("user_id", user_id);
             params.put("community_id", community_id);
-            PostDAO postDao = new PostDAO();
             postDao.save(params);
-
-            // create fake PostVotes
+        }
+        // create fake PostVotes
+        for (int i = 1; i <= (numberofUsers * 2); i++) {
+            PostDAO postDao1 = new PostDAO();
+            Post p1 = postDao1.findById((int) ((Math.random() * numberofPosts) + 1)).orElse(null);
             Map<String, Object> params1 = new HashMap<>();
-            params1.put("user_id", user_id);
-            params1.put("post_id", i + 1);
+            params1.put("user_id", (i % numberofUsers) + 1);
+            params1.put("post_id", p1.getId());
             params1.put("vote_type", (int )(Math.random() * 2));
-            params1.put("community_id", community_id);
-            UserDAO userDAO = new UserDAO();
+            params1.put("community_id", p1.getCommunityId());
             userDAO.insertPostVotes(params1);
         }
+        System.out.println("Posts created\n");
 
         // create fake comments
-        for (int i = 0; i <= numberofPosts; i++) {
+        for (int i = 1; i <= numberofPosts; i++) {
             Map<String, Object> params = new HashMap<>();
-            int user_id = (((int) (Math.random() * numberofUsers) + 1));
-            int community_id = (int) (Math.random() * numberofCommunity) + 1;
-            params.put("post_id", i + 1);
+            int user_id = (int) ((Math.random() * numberofUsers) + 1);
+            int community_id = (int) ((Math.random() * numberofCommunity) + 1);
+            params.put("post_id", i);
             params.put("level", 0);
             params.put("user_id", user_id);
             params.put("content", "Content " + i+1);
             params.put("community_id", community_id);
-            CommentDAO commentDAO = new CommentDAO();
             commentDAO.save(params);
         }
+        System.out.println("Comments created\n");
 
     }
 }
