@@ -20,6 +20,7 @@ import java.io.IOException;
 import src.domainmodel.*;
 import src.businesslogic.*;
 import src.orm.ModeratorDAO;
+import src.servicemanager.SceneManager;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -39,8 +40,8 @@ public class HomePageController implements Initializable  {
     User user;
     List<Post> posts;
     private FeedService feedService;
-    private boolean isLoading = false;
-    private boolean allPostsLoaded = false;
+    private Boolean isLoading = false;
+    private Boolean allPostsLoaded = false;
     private ProgressIndicator progressIndicator = new ProgressIndicator();
 
     private SearchService searchService = new SearchService();
@@ -210,4 +211,15 @@ public class HomePageController implements Initializable  {
         }
 
     }
+
+    public void handleLoginButton() {
+        System.out.println("Login button clicked!");
+        LoginController loginController = new LoginController();
+        loginController.setHomePageController(this);
+        Stage stage = (Stage) searchField.getScene().getWindow();
+        SceneManager.openModal("login", "/src/view/fxml/Login.fxml", loginController, stage);
+    }
+
+
+
 }

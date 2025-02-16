@@ -3,6 +3,7 @@ import src.managerdatabase.DBConnection;
 import java.sql.*;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public abstract class BaseDAO<T, ID> {
     public BaseDAO() {
@@ -65,4 +66,49 @@ public abstract class BaseDAO<T, ID> {
     protected abstract void setDeleteParams(PreparedStatement statement, ID id) throws SQLException;
 
     protected abstract T mapResultSetToEntity(ResultSet resultSet) throws SQLException;
+
+    public Object retrieveSingleAttribute(String tableName, String columnName, String whereClause, Object... params) throws SQLException {
+        String query = "SELECT " + columnName + " FROM " + tableName + " WHERE " + whereClause;
+
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            for (int i = 0; i < params.length; i++) {
+                statement.setObject(i + 1, params[i]);
+            }
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getObject(1);
+                }
+            }
+        }
+        return null; // Se non trova nulla
+    }
+    public void insertSingleAttribute(String tableName, String columnName, Object value) throws SQLException {
+        String query = "INSERT INTO " + tableName + " (" + columnName + ") VALUES (?)";
+
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setObject(1, value);
+            statement.executeUpdate();
+        }
+    }
+    public void updatesingleAttribute(String tableName, String columnName, Object value, String whereClause, Object... params) throws SQLException {
+        String query = "UPDATE " + tableName + " SET " + columnName + " = ? WHERE " + whereClause;
+
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setObject(1, value);
+
+            for (int i = 0; i < params.length; i++) {
+                statement.setObject(i + 2, params[i]);
+            }
+
+            statement.executeUpdate();
+        }
+    }
+
 }

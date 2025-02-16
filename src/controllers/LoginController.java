@@ -1,7 +1,10 @@
 package src.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -10,11 +13,15 @@ import javafx.stage.Stage;
 import src.businesslogic.FeedService;
 import src.domainmodel.User;
 import src.orm.UserDAO;
+import src.servicemanager.SceneManager;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
 public class LoginController {
+
+    private HomePageController homePageController;
+
     @FXML
     private TextField user_id;
 
@@ -48,9 +55,11 @@ public class LoginController {
             try {
                 if (userDAO.isValidUser(username, password)) {
                     User user = userDAO.createUser(username);
-                    Stage stage = (Stage) user_id.getScene().getWindow();
+                    //Stage stage = (Stage) user_id.getScene().getWindow();
+
                     HomePageController homePageController = new HomePageController(new FeedService(user));
                     SceneManager.changeScene("home","/src/view/fxml/Homepage.fxml",homePageController);
+                    SceneManager.closeSecondaryStage();
                     //SceneManager.show();
                     //HomePageController.openHomePage(user,stage);
                 } else {
@@ -65,22 +74,31 @@ public class LoginController {
         }
     }
 
-    public static void openLoginPage(Stage stage) {
-        try {
-            System.out.println("Opening Login Page...");
-            FXMLLoader loader = new FXMLLoader(LoginController.class.getResource("/src/view/fxml/Login.fxml"));
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Login Page");
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Error loading Login Page: " + e.getMessage());
-        }
-    }
+//    public static void openLoginPage(Stage stage) {
+//        try {
+//            System.out.println("Opening Login Page...");
+//            FXMLLoader loader = new FXMLLoader(LoginController.class.getResource("/src/view/fxml/Login.fxml"));
+//            stage.setScene(new Scene(loader.load()));
+//            stage.setTitle("Login Page");
+//            stage.show();
+//        } catch (IOException e) {
+//            System.err.println("Error loading Login Page: " + e.getMessage());
+//        }
+//    }
 
     @FXML
     private void handleSignUpButtonAction() {
         Stage stage = (Stage) user_id.getScene().getWindow();
         SignUpController.openSignUpPage(stage);
+    }
+
+    public void setHomePageController(HomePageController homePageController) {
+        this.homePageController = homePageController;
+    }
+
+    public static void openLoginPage() {
+        LoginController loginController = new LoginController();
+        SceneManager.changeScene("login", "/src/view/fxml/Login.fxml", loginController);
     }
 
 

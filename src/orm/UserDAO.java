@@ -7,10 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class UserDAO extends BaseDAO<User,Integer> {
 
@@ -189,6 +186,25 @@ public class UserDAO extends BaseDAO<User,Integer> {
         }
         return null;
 
+    }
+
+    public Map<String,String> getUserInfo(int id) {
+        String query = "SELECT * FROM User WHERE id = ?";
+        Map<String,String> userInfo = new HashMap<>();
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    userInfo.put("nickname", resultSet.getString("nickname"));
+                    userInfo.put("name", resultSet.getString("name"));
+                    userInfo.put("surname", resultSet.getString("surname"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userInfo;
     }
 
     public User createUser(String nickname) throws SQLException {

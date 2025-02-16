@@ -8,6 +8,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import src.orm.UserDAO;
+import src.servicemanager.SceneManager;
 
 import java.io.IOException;
 
@@ -99,8 +100,7 @@ public class SignUpController {
 
             System.out.println("User registered successfully!");
 
-            Stage stage = (Stage) name.getScene().getWindow();
-            LoginController.openLoginPage(stage);
+            SceneManager.changeSecondaryScene("login", "/src/view/fxml/Login.fxml", new LoginController());
 
         } catch (Exception e) {
             System.err.println("Registration failed: " + e.getMessage());
@@ -110,8 +110,8 @@ public class SignUpController {
     @FXML
     private void back() {
         System.out.println("Back button clicked!");
-        Stage stage = (Stage) name.getScene().getWindow();
-        openLoginPage(stage);
+
+        SceneManager.changeSecondaryScene("login", "/src/view/fxml/Login.fxml", new LoginController());
     }
 
     @FXML
@@ -122,6 +122,7 @@ public class SignUpController {
             stage.setScene(new Scene(signUpPage.load()));
             stage.setTitle("Sign Up Page");
             stage.show();
+            SceneManager.setSecondaryStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error loading Sign Up Page.");
