@@ -11,6 +11,7 @@ import src.controllers.HomePageController;
 import src.domainmodel.Guest;
 import src.domainmodel.PermitsManager;
 import src.domainmodel.User;
+import src.servicemanager.SceneManager;
 import src.servicemanager.Service;
 
 public class main extends Application {
@@ -24,12 +25,14 @@ public class main extends Application {
 //        primaryStage.setTitle("Community");
 //        primaryStage.setScene(new Scene(root));
 //        primaryStage.show();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/HomePage.fxml"));
-        loader.setController(new HomePageController(new FeedService(user)));
-        Parent root = loader.load();
-        primaryStage.setTitle("Home");
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
+        SceneManager.setPrimaryStage(primaryStage);
+        SceneManager.loadPrimaryScene("home", "/src/view/fxml/HomePage.fxml", new HomePageController(new FeedService(user)));
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/HomePage.fxml"));
+//        loader.setController(new HomePageController(new FeedService(user)));
+//        Parent root = loader.load();
+//        primaryStage.setTitle("Home");
+//        primaryStage.setScene(new Scene(root));
+//        primaryStage.show();
 
 //        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
 //        loader.setController(new CommunityController(new CommunityService(1)));
