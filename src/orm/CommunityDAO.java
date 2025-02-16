@@ -2,10 +2,15 @@ package src.orm;
 
 import src.domainmodel.CommentWarnings;
 import src.domainmodel.Community;
+import src.domainmodel.Rule;
 import src.domainmodel.PostWarnings;
 import src.managerdatabase.DBConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.*;
 
 public class CommunityDAO extends BaseDAO<Community, Integer> {
@@ -183,4 +188,24 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
     }
 
 
+    public List<Rule> getCommunityRules(int communityId) {
+        List<Rule> rules = new ArrayList<>();
+        String sql = "SELECT * FROM Rules WHERE community_id = ? ORDER BY priority ASC ";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, communityId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                String content = resultSet.getString("content");
+                int priority = resultSet.getInt("priority");
+                rules.add(new Rule(id, communityId, title, content, priority));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return rules;
+    }
 }

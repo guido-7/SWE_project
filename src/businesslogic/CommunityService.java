@@ -3,15 +3,17 @@ package src.businesslogic;
 import src.domainmodel.*;
 import src.orm.*;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CommunityService {
 
+    PostDAO postDAO = new PostDAO();
+    CommunityDAO communityDAO = new CommunityDAO();
+    int  noOfPostsTaken;
     PostDAO postDao = new PostDAO();
-    int noOfPostsTaken;
     int communityId;
     int numberofPosts = 30;
 
@@ -64,12 +66,23 @@ public class CommunityService {
         return warnings;
     }
 
-    public int getCommunityId() {
-        return communityId;
-    }
-
     public boolean isModerator(int moderatorId) {
         ModeratorDAO moderatorDAO = new ModeratorDAO();
         return moderatorDAO.isModerator(moderatorId, communityId);
     }
+
+    public int getCommunityId() {
+        return communityId;
+    }
+
+    public Community getCommunity() throws SQLException {
+        return communityDAO.findById(communityId).orElse(null);
+    }
+
+    public List<Rule> getCommunityRules(int communityId) {
+        return communityDAO.getCommunityRules(communityId);
+    }
+
+
+
 }

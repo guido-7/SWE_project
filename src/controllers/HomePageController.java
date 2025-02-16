@@ -20,6 +20,7 @@ import java.io.IOException;
 import src.domainmodel.*;
 import src.businesslogic.*;
 import src.orm.ModeratorDAO;
+import src.servicemanager.SceneManager;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class HomePageController implements Initializable {
+public class HomePageController implements Initializable  {
 
     @FXML
     private VBox postsContainer;
@@ -36,6 +37,7 @@ public class HomePageController implements Initializable {
     @FXML
     private TextField searchField;
 
+    User user;
     List<Post> posts;
     private FeedService feedService;
     private Boolean isLoading = false;
@@ -173,19 +175,21 @@ public class HomePageController implements Initializable {
         new Thread(task).start();
     }
 
-    @FXML
-    public static void openHomePage(Stage stage) {
-        try {
-            System.out.println("Opening Home Page...");
-            FXMLLoader homePage = new FXMLLoader(HomePageController.class.getResource("/src/view/fxml/HomePage.fxml"));
-            stage.setScene(new Scene(homePage.load()));
-            stage.setTitle("Home Page");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Error loading Home Page.");
-        }
-    }
+   // @FXML
+    //meglio fare un metodo generale per cambiare pagina
+//    public static void openHomePage(User user, Stage stage) {
+//        try {
+//            System.out.println("Opening Home Page...");
+//            FXMLLoader homePage = new FXMLLoader(HomePageController.class.getResource("/src/view/fxml/CommunityPage.fxml"));
+//            homePage.setController(new CommunityController(new CommunityService(user.getId())));
+//            stage.setScene(new Scene(homePage.load()));
+//            stage.setTitle("Home Page");
+//            stage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.err.println("Error loading Home Page.");
+//        }
+//    }
 
     private void loadCommunityPage(Community community) {
         try {
@@ -207,4 +211,15 @@ public class HomePageController implements Initializable {
         }
 
     }
+
+    public void handleLoginButton() {
+        System.out.println("Login button clicked!");
+        LoginController loginController = new LoginController();
+        loginController.setHomePageController(this);
+        Stage stage = (Stage) searchField.getScene().getWindow();
+        SceneManager.openModal("login", "/src/view/fxml/Login.fxml", loginController, stage);
+    }
+
+
+
 }

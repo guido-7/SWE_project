@@ -6,6 +6,9 @@ public class Community {
     private final int id;
     private String title;
     private String description;
+    private int subscribers;
+    private int monthlyVisits;
+    private int score;
     private ArrayList<Post> posts = new ArrayList<>();
 
     public Community(int id, String title, String description) {
@@ -48,5 +51,29 @@ public class Community {
 
     public void setPosts(ArrayList<Post> posts) {
         this.posts = posts;
+    }
+
+    public int getSubscribers() {
+        return subscribers;
+    }
+
+    public void setSubscribers(int subscribers) {
+        this.subscribers = subscribers;
+    }
+
+    public int getMonthlyVisits() {
+        return monthlyVisits;
+    }
+
+    public void setMonthlyVisits(int monthlyVisits) {
+        this.monthlyVisits = monthlyVisits;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

@@ -59,14 +59,14 @@
                         <Insets left="10.0" right="10.0" />
                      </VBox.margin>
                      <children>
-                        <Pane styleClass="pane-bordered" stylesheets="@../css/CommunityPage.css" HBox.hgrow="ALWAYS">
+                        <Pane prefHeight="221.0" prefWidth="210.0" styleClass="pane-bordered" stylesheets="@../css/CommunityPage.css" HBox.hgrow="ALWAYS">
                            <children>
-                              <Text layoutX="26.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Community Title">
+                              <Text fx:id="community_title" layoutX="26.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Community Title">
                                  <font>
                                     <Font name="Arial Black" size="12.0" />
                                  </font>
                               </Text>
-                              <Text layoutX="26.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
+                              <Text fx:id="description" layoutX="26.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
                                  <font>
                                     <Font name="Arial Black" size="12.0" />
                                  </font>
@@ -76,11 +76,18 @@
                                     <Font name="Arial Black" size="12.0" />
                                  </font>
                               </Text>
-                              <Text layoutX="26.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Montly visits">
+                              <Text layoutX="26.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Monthly visits">
                                  <font>
                                     <Font name="Arial Black" size="12.0" />
                                  </font>
                               </Text>
+                              <Text fx:id="num_subscribes" layoutX="112.0" layoutY="114.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                              <Text fx:id="num_monthly_visits" layoutX="122.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                              <Label fx:id="rules" layoutX="28.0" layoutY="179.0"  text="Rules">
+                                 <font>
+                                    <Font name="Arial Black" size="12.0" />
+                                 </font>
+                              </Label>
                            </children>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -96,7 +103,7 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </VBox.margin>
                      <children>
-                        <Pane prefHeight="148.0" prefWidth="210.0" styleClass="pane-bordered" stylesheets="@../css/CommunityPage.css" HBox.hgrow="ALWAYS">
+                        <Pane prefHeight="175.0" prefWidth="210.0" styleClass="pane-bordered" stylesheets="@../css/CommunityPage.css" HBox.hgrow="ALWAYS">
                            <children>
                               <ImageView fitHeight="24.0" fitWidth="28.0" layoutX="23.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -127,13 +134,6 @@
                      </VBox.margin>
                      <children>
                         <AnchorPane prefHeight="62.0" prefWidth="208.0" styleClass="pane-bordered" stylesheets="@../css/CommunityPage.css" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label layoutX="33.0" layoutY="34.0" text="Rules">
-                                 <font>
-                                    <Font name="Arial Black" size="12.0" />
-                                 </font>
-                              </Label>
-                           </children>
                            <HBox.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </HBox.margin>
@@ -158,9 +158,15 @@
                         <VBox fx:id="postsContainer" alignment="CENTER" prefWidth="645.0" spacing="10.0" styleClass="background" stylesheets="@../css/HomePage.css">
                             <padding>
                                 <Insets left="10.0" right="10.0" />
-                            </padding></VBox>
+                            </padding>
+                        </VBox>
+                            <!-- rulesContainer visible when necessary -->
+                   <!--         <VBox fx:id="rulesContainer" alignment="CENTER" prefWidth="645.0" spacing="10.0" styleClass="background" visible="false" managed="false">
+                                <Label text="Community Rules" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                            </VBox> -->
                     </content>
                 </ScrollPane>
+
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="background" stylesheets="@../css/HomePage.css" HBox.hgrow="ALWAYS" />
             </children></HBox>
     </center>

@@ -33,6 +33,7 @@ public class PostController {
     private Label scoreLabel;
 
     private Post post;
+
     private PostDAO postDao = new PostDAO();
 
     public void setData(Post post) throws SQLException {

@@ -206,4 +206,8 @@ public class UserDAO extends BaseDAO<User,Integer> {
         }
         return userInfo;
     }
+
+    public User createUser(String nickname) throws SQLException {
+        return findById(getUserId(nickname)).orElse(null);
+    }
 }

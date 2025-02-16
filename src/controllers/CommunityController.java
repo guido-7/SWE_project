@@ -1,5 +1,9 @@
 package src.controllers;
 
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
@@ -17,12 +22,17 @@ import src.businesslogic.SearchService;
 import src.domainmodel.Guest;
 import src.domainmodel.Moderator;
 import src.domainmodel.PermitsManager;
+import src.domainmodel.Community;
 import src.domainmodel.Post;
+
+import javafx.scene.input.MouseEvent;
+import src.domainmodel.Rule;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -35,6 +45,18 @@ public class CommunityController implements Initializable {
     @FXML
     private TextField searchField;
     @FXML
+    private Text community_title;
+    @FXML
+    private Text description;
+    @FXML
+    private Text num_subscribes;
+    @FXML
+    private Text num_monthly_visits;
+    @FXML
+    private VBox rulesContainer;
+    @FXML
+    private Label rules;
+    @FXML
     private ImageView settings;
 
     private List<Post> posts;
@@ -46,15 +68,21 @@ public class CommunityController implements Initializable {
     private final SearchService searchService = new SearchService();
     private final ContextMenu suggestionsPopup = new ContextMenu();
     private String currentSearchTerm = "";
+    private SearchService searchCommunityService = new SearchService();
+    private int currentCommunityId;
 
     public CommunityController(CommunityService communityService, Guest guest) {
         this.communityservice = communityService;
         this.guest = guest;
     }
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
+            Community currentCommunity = communityservice.getCommunity();
+            setData(currentCommunity);
+            this.currentCommunityId = currentCommunity.getId();
             //Control for show settings button
             if(guest.hasPermits(PermitsManager.getModeratorPermits())){
                 int moderator_id = ((Moderator)guest).getId();
@@ -99,6 +127,8 @@ public class CommunityController implements Initializable {
                     updateSuggestions(newValue);
                 }
             });
+
+            rules.setOnMouseClicked(event -> loadRules(currentCommunityId));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -158,7 +188,12 @@ public class CommunityController implements Initializable {
         });
 
         new Thread(searchTask).start();
+
+
+
+
     }
+
 
     private void loadPosts(List<Post> newPosts) {
         for (Post post : newPosts) {
@@ -258,4 +293,50 @@ public class CommunityController implements Initializable {
 
         new Thread(task).start();
     }
+
+    private void loadCommunityPage(Community community) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
+            loader.setController(new CommunityController(new CommunityService(community.getId()), guest));
+            Parent root = loader.load();
+            loadRules(community.getId()); // Passa l'ID della community per caricare le regole
+            Stage stage = (Stage) searchField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle(community.getTitle());
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setData(Community community) {
+        System.out.println("Setting data");
+        community_title.setText(community.getTitle());
+        description.setText(community.getDescription());
+        num_subscribes.setText(community.getSubscribers() + "");
+        num_monthly_visits.setText(community.getMonthlyVisits() + "");
+    }
+
+
+    @FXML
+    public void loadRules(int communityId) {
+        try {
+            List<Rule> rules = communityservice.getCommunityRules(communityId);
+            postsContainer.getChildren().clear();
+            for (Rule rule : rules) {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/RulesPage.fxml"));
+                    RulesController rulesController = new RulesController();
+                    fxmlLoader.setController(rulesController);
+                    VBox vBox = fxmlLoader.load();
+                    rulesController.setRuleData(community_title.getText(), rule.getTitle(), rule.getContent());
+                    postsContainer.getChildren().add(vBox);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 }
