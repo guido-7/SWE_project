@@ -19,26 +19,8 @@ public class main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Guest guest = new Guest(PermitsManager.createGuestPermits());
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
-//        loader.setController(new CommunityController(new CommunityService(1)));
-//        Parent root = loader.load();
-//        primaryStage.setTitle("Community");
-//        primaryStage.setScene(new Scene(root));
-//        primaryStage.show();
         SceneManager.setPrimaryStage(primaryStage);
         SceneManager.loadPrimaryScene("home", "/src/view/fxml/HomePage.fxml", new HomePageController(new FeedService(guest)));
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/HomePage.fxml"));
-//        loader.setController(new HomePageController(new FeedService(user)));
-//        Parent root = loader.load();
-//        primaryStage.setTitle("Home");
-//        primaryStage.setScene(new Scene(root));
-//        primaryStage.show();
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunitySettings.fxml"));
-//        loader.setController(new CommunitySettingsController(new CommunityService(1)));
-//        Parent root = loader.load();
-//        primaryStage.setTitle("Community Settings");
-//        primaryStage.setScene(new Scene(root));
-//        primaryStage.show();
        }
 
     public static void main(String[] args) {
