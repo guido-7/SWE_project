@@ -27,13 +27,14 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO Moderator (name, email) VALUES (?, ?)";
+        return "INSERT INTO Moderator (user_id, community_id, assigned_date) VALUES (?, ?, ?)";
     }
 
     @Override
     protected void setInsertParams(PreparedStatement statement, Map<String, Object> parameters) throws SQLException {
-        statement.setString(1, (String) parameters.get("name"));
-        statement.setString(2, (String) parameters.get("email"));
+        statement.setInt(1, (Integer) parameters.get("user_id"));
+        statement.setInt(2, (Integer) parameters.get("community_id"));
+        statement.setString(3, LocalDateTime.now().toString());
     }
 
     @Override
