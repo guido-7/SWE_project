@@ -442,7 +442,54 @@ class SetDBTest {
         assertTrue(rs.next(), "Vote for user_id = 2 and post_id = 1 not found.");
         assertEquals(1, rs.getInt("vote_type"), "The vote type for user_id = 2 does not match.");
         assertEquals(1, rs.getInt("post_id"), "The post_id for user_id = 2 does not match.");
+
+        userDAO.save(Map.of("nickname", "Luigi2", "name", "luigi", "surname", "bianchi"));
+        conn = DBConnection.open_connection(url);
+        userDAO.insertPostVotes(Map.of("user_id", 3, "post_id", 1, "community_id", 1, "vote_type", 1));
+        conn = DBConnection.open_connection(url);
+        stmt = conn.createStatement();
+        rs = stmt.executeQuery("SELECT * FROM PostVotes WHERE user_id = 3 AND post_id = 1;");
+
+        assertTrue(rs.next(), "Vote for user_id = 2 and post_id = 1 not found.");
+        assertEquals(1, rs.getInt("vote_type"), "The vote type for user_id = 2 does not match.");
+        assertEquals(1, rs.getInt("post_id"), "The post_id for user_id = 2 does not match.");
+
+        userDAO.insertPostVotes(Map.of("user_id", 3, "post_id", 1, "community_id", 1, "vote_type", 0));
+        conn = DBConnection.open_connection(url);
+        stmt = conn.createStatement();
+        rs = stmt.executeQuery("SELECT * FROM PostVotes WHERE user_id = 3 AND post_id = 1;");
+        assertTrue(rs.next(), "Vote for user_id = 3 and post_id = 1 not found.");
+        assertEquals(0, rs.getInt("vote_type"), "The vote type for user_id = 3 does not match.");
     }
+
+    @Test
+    void testTriggerUpdatePostLikes() throws SQLException {
+        // Verify that likes in Post table are updated correctly
+        userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
+        conn = DBConnection.open_connection(url);
+        userDAO.save(Map.of("nickname", "Mario1", "name", "mario", "surname", "rossi"));
+        conn = DBConnection.open_connection(url);
+        userDAO.save(Map.of("nickname", "Luigi2", "name", "luigi", "surname", "bianchi"));
+        conn = DBConnection.open_connection(url);
+        communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
+        conn = DBConnection.open_connection(url);
+        postDAO.save(Map.of( "title", "Title 1", "content", "Post content 1", "user_id", 1, "community_id", 1));
+        conn = DBConnection.open_connection(url);
+        userDAO.insertPostVotes(Map.of("user_id", 1, "post_id", 1, "community_id", 1, "vote_type", 1));
+        conn = DBConnection.open_connection(url);
+        userDAO.insertPostVotes(Map.of("user_id", 2, "post_id", 1, "community_id", 1, "vote_type", 1));
+        conn = DBConnection.open_connection(url);
+        userDAO.insertPostVotes(Map.of("user_id", 3, "post_id", 1, "community_id", 1, "vote_type", 0));
+        conn = DBConnection.open_connection(url);
+        Statement stmt = conn.createStatement();
+
+        ResultSet rs = stmt.executeQuery("SELECT * FROM Post WHERE id = 1;");
+        assertTrue(rs.next(), "Post with id = 1 not found.");
+        assertEquals(2, rs.getInt("likes"), "The likes in Post does not match.");
+        assertEquals(1, rs.getInt("dislikes"), "The dislikes in Post does not match.");
+    }
+
+
 
     @Test
     void testCreatePostWarnings() throws SQLException {
