@@ -62,6 +62,7 @@ public class LoginController {
                     SceneManager.changeScene("home","/src/view/fxml/Homepage.fxml",homePageController);
                     homePageController.LoadUserPosts();
                     homePageController.setLoginButtonVisibility(false);
+                    homePageController.setUserProfileAccessVisibility(true);
                     SceneManager.closeSecondaryStage();
                     //SceneManager.show();
                     //HomePageController.openHomePage(user,stage);

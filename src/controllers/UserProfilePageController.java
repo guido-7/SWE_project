@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -19,6 +20,7 @@ import javafx.stage.Stage;
 import src.businesslogic.UserProfileService;
 import src.domainmodel.PermitsManager;
 import src.domainmodel.User;
+import src.servicemanager.SceneManager;
 import src.utils.LoadingPost;
 
 import java.io.IOException;
@@ -47,14 +49,19 @@ public class UserProfilePageController implements Initializable {
     private AnchorPane popupContainer;
     @FXML
     private Text savewarning;
+    @FXML
+    private ImageView exit;
 
     // vars no FXML
     private String description;
     private String tempDescription;
 
-    private UserProfileService userProfileService = new UserProfileService(new User(1, "nickname", "name", "surname", PermitsManager.createUserPermits()));
+    private UserProfileService userProfileService ; //new UserProfileService(new User(1, "nickname", "name", "surname", PermitsManager.createUserPermits()));
 
     public void  setService(UserProfileService userProfileService) {
+        this.userProfileService = userProfileService;
+    }
+    public UserProfilePageController(UserProfileService userProfileService) {
         this.userProfileService = userProfileService;
     }
 
@@ -142,6 +149,12 @@ public class UserProfilePageController implements Initializable {
         popupContainer.getChildren().clear();
         popupContainer.setMouseTransparent(true);
         popupContainer.setVisible(false);
+    }
+
+    @FXML
+    private void backToHomePage(){
+        SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
+
     }
 
 }
