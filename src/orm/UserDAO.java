@@ -82,8 +82,9 @@ public class UserDAO extends BaseDAO<User,Integer> {
         }
         return communityIds;
     }
+
     public void insertPostVotes(Map<String,Object> parameters) throws SQLException {
-        String sql = "INSERT INTO PostVotes (user_id, post_id,community_id, vote_type) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT OR REPLACE INTO PostVotes (user_id, post_id,community_id, vote_type) VALUES (?, ?, ?, ?)";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, (int) parameters.get("user_id"));
@@ -111,7 +112,6 @@ public class UserDAO extends BaseDAO<User,Integer> {
         return false; // wrong Email or password
     }
 
-
     public boolean isRegisteredUser(String email) {
         String query = "SELECT COUNT(*) FROM User WHERE nickname = ?";
         try (Connection connection = DBConnection.open_connection();
@@ -127,7 +127,6 @@ public class UserDAO extends BaseDAO<User,Integer> {
         }
         return false; // user not registered
     }
-
 
     public void registerUser(String userId, String name, String surname) {
         String query = "INSERT INTO User (nickname, name, surname) VALUES (?, ?, ?)";
