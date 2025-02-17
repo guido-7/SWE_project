@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import src.businesslogic.FeedService;
@@ -38,6 +39,8 @@ public class HomePageController implements Initializable  {
     private TextField searchField;
     @FXML
     private Button login;
+    @FXML
+    ImageView userProfileAccess;
 
     User user;
     List<Post> posts;
@@ -61,6 +64,7 @@ public class HomePageController implements Initializable  {
     public void initialize(URL location, ResourceBundle resources) {
 
         try {
+            userProfileAccess.setVisible(false);
             List<Post> post = feedService.getFeed();
             if(!(post ==null) ){
                 posts = new ArrayList<>(feedService.getFeed());
@@ -228,7 +232,12 @@ public class HomePageController implements Initializable  {
         login.setVisible(visibility);
 
     }
+    public void openProfilePage() throws IOException {
+        UserProfileService userProfileService = new UserProfileService((User) feedService.getGuest());
+        SceneManager.changeScene("profile", "/src/view/fxml/UserProfilePage.fxml", new UserProfilePageController(userProfileService));
+    }
 
-
-
+    public void setUserProfileAccessVisibility(boolean visibility){
+        userProfileAccess.setVisible(visibility);
+    }
 }
