@@ -68,6 +68,7 @@ public class UserProfilePageController implements Initializable {
         @Override
         public void initialize(URL url, ResourceBundle resourceBundle) {
             savewarning.setVisible(false);
+            popupContainer.setMouseTransparent(true);
             try {
                 Map<String, String> userInfo = userProfileService.getUserInfo();
                 nicknameLabel.setText(userInfo.get("nickname"));
@@ -158,5 +159,3 @@ public class UserProfilePageController implements Initializable {
     }
 
 }
-
-

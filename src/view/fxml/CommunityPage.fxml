@@ -83,7 +83,7 @@
                               </Text>
                               <Text fx:id="num_subscribes" layoutX="112.0" layoutY="114.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
                               <Text fx:id="num_monthly_visits" layoutX="122.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-                              <Label fx:id="rules" layoutX="28.0" layoutY="179.0"  text="Rules">
+                              <Label fx:id="rules" layoutX="28.0" layoutY="179.0" text="Rules">
                                  <font>
                                     <Font name="Arial Black" size="12.0" />
                                  </font>
@@ -153,7 +153,7 @@
         <HBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="585.0" prefWidth="660.0" BorderPane.alignment="CENTER">
             <children>
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="background" stylesheets="@../css/HomePage.css" HBox.hgrow="ALWAYS" />
-                <ScrollPane fx:id="scrollPane" prefHeight="585.0" prefWidth="865.0" style="-fx-background-color: transparent;">
+                <ScrollPane fx:id="scrollPane" prefHeight="585.0" prefWidth="865.0" style="-fx-background-color: transparent;" stylesheets="@../css/ScrollPane.css">
                     <content>
                         <VBox fx:id="postsContainer" alignment="CENTER" prefWidth="645.0" spacing="10.0" styleClass="background" stylesheets="@../css/HomePage.css">
                             <padding>

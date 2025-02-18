@@ -97,6 +97,18 @@ public class UserDAO extends BaseDAO<User,Integer> {
         }
     }
 
+    public void removePostVotes(Map<String,Object> parameters) throws SQLException {
+        String sql = "DELETE FROM PostVotes WHERE user_id = ? AND post_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, (int) parameters.get("user_id"));
+            statement.setInt(2, (int) parameters.get("post_id"));
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean isValidUser(String email, String password) throws SQLException {
         String query = "SELECT COUNT(*) FROM UserAccess WHERE email = ? AND password = ?";
         try (Connection connection = DBConnection.open_connection();
@@ -128,11 +140,12 @@ public class UserDAO extends BaseDAO<User,Integer> {
         return false; // user not registered
     }
 
-    public void registerUser(String userId, String name, String surname) {
+    // nickname name surname
+    public void registerUser(String nickname, String name, String surname) {
         String query = "INSERT INTO User (nickname, name, surname) VALUES (?, ?, ?)";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, userId);
+            statement.setString(1, nickname);
             statement.setString(2, name);
             statement.setString(3, surname);
             statement.executeUpdate();
@@ -141,12 +154,13 @@ public class UserDAO extends BaseDAO<User,Integer> {
         }
     }
 
-    public void registerUserAccess(int id, String userId, String password) {
+    // id nickname password
+    public void registerUserAccess(int id, String nickname, String password) {
         String query = "INSERT INTO UserAccess (email, user_id, password) VALUES (?, ?, ?)";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, userId);
-            statement.setString(2, String.valueOf(id));
+            statement.setString(1, nickname);
+            statement.setInt(2, id);
             statement.setString(3, password);
             statement.executeUpdate();
         } catch (SQLException e) {

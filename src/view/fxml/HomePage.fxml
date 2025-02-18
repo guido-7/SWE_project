@@ -44,7 +44,7 @@
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
             <Pane prefHeight="200.0" prefWidth="200.0" styleClass="background" stylesheets="@../css/HomePage.css" HBox.hgrow="ALWAYS" />
-            <ScrollPane fx:id="scrollPane" prefHeight="585.0" prefWidth="865.0" style="-fx-background-color: transparent;">
+            <ScrollPane fx:id="scrollPane" prefHeight="585.0" prefWidth="865.0" style="-fx-background-color: transparent;" stylesheets="@../css/ScrollPane.css">
                <content>
                   <VBox fx:id="postsContainer" alignment="CENTER" prefWidth="645.0" spacing="10.0" styleClass="background" stylesheets="@../css/HomePage.css">
                      <padding>

@@ -12,8 +12,6 @@ import src.servicemanager.SceneManager;
 
 import java.io.IOException;
 
-import static src.controllers.LoginController.openLoginPage;
-
 public class SignUpController {
 
     @FXML
@@ -44,7 +42,7 @@ public class SignUpController {
     private void handleSignUpButtonAction() {
         System.out.println("Register link clicked!");
 
-        String userId = nickname.getText();
+        String nicknameId = nickname.getText();
         String surnameId = surname.getText();
         String nameId = name.getText();
         String password = password_id.getText();
@@ -57,7 +55,7 @@ public class SignUpController {
         not_name.setOpacity(0);
         not_password.setOpacity(0);
 
-        if (userId.isEmpty()) {
+        if (nicknameId.isEmpty()) {
             not_username.setOpacity(1);
             not_username.setText("Missing name!");
             isValid = false;
@@ -88,14 +86,14 @@ public class SignUpController {
 
         try {
             UserDAO userDAO = new UserDAO();
-            if (userDAO.isRegisteredUser(userId)) {
+            if (userDAO.isRegisteredUser(nicknameId)) {
                 not_username.setOpacity(1);
                 not_username.setText("User already registered");
                 return;
             } else {
-                userDAO.registerUser(userId, surnameId, nameId);
-                int id = userDAO.getUserId(userId);
-                userDAO.registerUserAccess(id, userId, password);
+                userDAO.registerUser(nicknameId, nameId, surnameId);
+                int id = userDAO.getUserId(nicknameId);
+                userDAO.registerUserAccess(id, nicknameId, password);
             }
 
             System.out.println("User registered successfully!");
