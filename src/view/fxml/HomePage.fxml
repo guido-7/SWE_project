@@ -22,10 +22,9 @@
             </ImageView>
             <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
             <TextField fx:id="searchField" prefHeight="26.0" prefWidth="320.0" promptText="Search Community" stylesheets="@../css/SearchField.css" />
-            <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-               <children>
-                  <Button fx:id="login" layoutX="14.0" layoutY="20.0" mnemonicParsing="false" onMouseClicked="#handleLoginButton" text="Login" />
-               </children></Pane>
+            <Pane prefWidth="110.0" HBox.hgrow="ALWAYS" />
+            <Button fx:id="login" mnemonicParsing="false" onMouseClicked="#handleLoginButton" prefHeight="35.0" styleClass="login-button" stylesheets="@../css/HomePage.css" text="Login" />
+            <Pane maxWidth="-Infinity" prefWidth="5.0" HBox.hgrow="NEVER" />
             <ImageView fx:id="userProfileAccess" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#openProfilePage" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
                   <Insets right="20.0" />
