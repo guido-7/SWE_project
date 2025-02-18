@@ -487,9 +487,17 @@ class SetDBTest {
         assertTrue(rs.next(), "Post with id = 1 not found.");
         assertEquals(2, rs.getInt("likes"), "The likes in Post does not match.");
         assertEquals(1, rs.getInt("dislikes"), "The dislikes in Post does not match.");
+
+        // Test replace
+        userDAO.insertPostVotes(Map.of("user_id", 3, "post_id", 1, "community_id", 1, "vote_type", 1));
+        conn = DBConnection.open_connection(url);
+        stmt = conn.createStatement();
+
+        rs = stmt.executeQuery("SELECT * FROM Post WHERE id = 1;");
+        assertTrue(rs.next(), "Post with id = 1 not found.");
+        assertEquals(3, rs.getInt("likes"), "The likes in Post does not match.");
+        assertEquals(0, rs.getInt("dislikes"), "The dislikes in Post does not match.");
     }
-
-
 
     @Test
     void testCreatePostWarnings() throws SQLException {
