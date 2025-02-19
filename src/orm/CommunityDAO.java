@@ -118,7 +118,7 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("No title found with this query");
         }
         return communities;
     }
