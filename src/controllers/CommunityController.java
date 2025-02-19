@@ -53,6 +53,10 @@ public class CommunityController implements Initializable {
     private Label rules;
     @FXML
     private ImageView settings;
+    @FXML
+    private ImageView userProfileAccess;
+    @FXML
+    private ImageView homePageButton;
 
     private List<Post> posts;
     private final CommunityService communityservice;
