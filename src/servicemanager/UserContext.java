@@ -3,31 +3,27 @@ package src.servicemanager;
 import src.domainmodel.User;
 
 public class UserContext {
-    private  User previousContextUser;
-    private  User currentUser;
+    private static   User previousContextUser;
+    private static  User currentUser;
 
-    public UserContext(User currentUser) {
-        this.currentUser = currentUser;
-    }
-    public UserContext() {}
 
-    public User getPreviousContextUser() {
+    public static User getPreviousContextUser() {
         return previousContextUser;
     }
 
-    public void setPreviousContextUser(User previousContextUser) {
-        this.previousContextUser = previousContextUser;
+    public static void setPreviousContextUser(User previousContextUser) {
+       UserContext.previousContextUser = previousContextUser;
     }
 
-    public User getCurrentUser() {
+    public static User getCurrentUser() {
         return currentUser;
     }
 
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
+    public static void setCurrentUser(User currentUser) {
+        UserContext.currentUser = currentUser;
     }
 
-    public void backToPreviousContext(){
+    public static void backToPreviousContext(){
         currentUser = previousContextUser;
         previousContextUser = null;
     }

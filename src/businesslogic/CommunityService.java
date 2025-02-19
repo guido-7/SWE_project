@@ -10,26 +10,26 @@ import java.util.List;
 
 public class CommunityService {
 
-    PostDAO postDAO = new PostDAO();
     CommunityDAO communityDAO = new CommunityDAO();
     int  noOfPostsTaken;
     PostDAO postDao = new PostDAO();
     int communityId;
-    int numberofPosts = 30;
+    int numberOfPosts = 30;
+
 
     public CommunityService(int communityId) {
         this.communityId = communityId;
     }
 
     public List<Post> getPosts() {
-        List<Post> communityPosts = postDao.getPosts(communityId, numberofPosts, 0);
+        List<Post> communityPosts = postDao.getPosts(communityId, numberOfPosts, 0);
         System.out.println("Community ID: " + communityId + ", Number of Posts: " + communityPosts.size());
         noOfPostsTaken = communityPosts.size();
         return communityPosts;
     }
 
     public List<Post> getNextPosts() {
-        List<Post> communityPosts = postDao.getPosts(communityId, numberofPosts, noOfPostsTaken);
+        List<Post> communityPosts = postDao.getPosts(communityId, numberOfPosts, noOfPostsTaken);
         System.out.println("Community ID: " + communityId + ", Number of Posts: " + communityPosts.size());
         noOfPostsTaken = communityPosts.size();
         return communityPosts;
@@ -38,11 +38,11 @@ public class CommunityService {
     public List<Post> getFilteredPosts(String searchTerm) {
         // Resetta il contatore quando si fa una nuova ricerca
         noOfPostsTaken = 0;
-        return postDao.getFilteredPosts(communityId, searchTerm, numberofPosts, 0);
+        return postDao.getFilteredPosts(communityId, searchTerm, numberOfPosts, 0);
     }
 
     public List<Post> getNextFilteredPosts(String searchTerm) {
-        List<Post> filteredPosts = postDao.getFilteredPosts(communityId, searchTerm, numberofPosts, noOfPostsTaken);
+        List<Post> filteredPosts = postDao.getFilteredPosts(communityId, searchTerm, numberOfPosts, noOfPostsTaken);
         noOfPostsTaken += filteredPosts.size();
         return filteredPosts;
     }

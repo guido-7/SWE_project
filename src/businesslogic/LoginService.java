@@ -60,8 +60,7 @@ public class LoginService {
      * Initializes user session and navigates to the home page.
      */
     private void initializeUserSession(User user,HomePageController homePageController) {
-        UserContext userContext = new UserContext();
-        userContext.setCurrentUser(user);
+        UserContext.setCurrentUser(user);
 
         FeedService feedService = new FeedService(user);
         homePageController.setFeedService(feedService);
