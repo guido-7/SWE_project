@@ -20,7 +20,6 @@ import javafx.scene.control.Label;
 import java.io.IOException;
 import src.domainmodel.*;
 import src.businesslogic.*;
-import src.orm.ModeratorDAO;
 import src.servicemanager.SceneManager;
 
 import java.net.URL;
@@ -52,6 +51,7 @@ public class HomePageController implements Initializable  {
     private SearchService searchService = new SearchService();
     private ContextMenu suggestionsPopup = new ContextMenu();
 
+    public HomePageController(){}
 
     public HomePageController(FeedService feedService) {
         this.feedService = feedService;
@@ -207,7 +207,7 @@ public class HomePageController implements Initializable  {
     private void loadCommunityPage(Community community) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
-            loader.setController(new CommunityController(new CommunityService(community.getId()), feedService.getGuest()));
+            loader.setController(new CommunityController(new CommunityService(community.getId())));
             Parent root = loader.load();
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -215,8 +215,6 @@ public class HomePageController implements Initializable  {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
 
     }

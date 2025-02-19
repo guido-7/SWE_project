@@ -4,10 +4,10 @@ import java.util.Set;
 
 public class Admin extends User{
     public Admin(User user) {
-        super(user.getId(), user.getNickname(), user.getName(), user.getSurname(), user.getPermits());
+        super(user.getId(), user.getNickname(), user.getName(), user.getSurname(), user.getPermits(),Role.ADMIN);
     }
 
     public Admin(int id, String nickname, String name, String surname, Set<Permits> permits) {
-        super(id, nickname, name, surname, permits);
+        super(id, nickname, name, surname, permits,Role.ADMIN);
     }
 }

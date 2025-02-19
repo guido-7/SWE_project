@@ -10,7 +10,9 @@ import src.controllers.CommunitySettingsController;
 import src.controllers.HomePageController;
 import src.domainmodel.Guest;
 import src.domainmodel.PermitsManager;
+import src.domainmodel.Role;
 import src.domainmodel.User;
+import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
 import src.servicemanager.Service;
 
@@ -18,7 +20,8 @@ public class main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Guest guest = new Guest(PermitsManager.createGuestPermits());
+        Guest guest = new Guest(PermitsManager.createGuestPermits(), Role.GUEST);
+        GuestContext.setCurrentGuest(guest);
         SceneManager.setPrimaryStage(primaryStage);
         SceneManager.loadPrimaryScene("home", "/src/view/fxml/HomePage.fxml", new HomePageController(new FeedService(guest)));
        }

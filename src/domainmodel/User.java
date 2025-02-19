@@ -9,8 +9,8 @@ public class User extends Guest {
     private final String surname;
     private String description;
 
-    public User(int id, String nickname, String name, String surname, Set<Permits> permits) {
-        super(permits);
+    public User(int id, String nickname, String name, String surname, Set<Permits> permits,Role role) {
+        super(permits,role);
         this.id = id;
         this.nickname = nickname;
         this.name = name;
@@ -44,4 +44,5 @@ public class User extends Guest {
     public void setDescription(String description) {
         this.description = description;
     }
+
 }
