@@ -211,6 +211,7 @@ public class HomePageController implements Initializable,Controller  {
     @Override
     public void init_data() {
         System.out.println("Initializing data...");
+        searchField.clear();
         List<Post> post = feedService.getFeed();
         if(!(post ==null) ){
             posts = new ArrayList<>(feedService.getFeed());

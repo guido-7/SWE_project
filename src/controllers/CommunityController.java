@@ -328,6 +328,7 @@ public class CommunityController implements Initializable, Controller {
 
     @Override
     public void init_data() throws SQLException {
+        searchField.clear();
         Community currentCommunity = communityservice.getCommunity();
         setData(currentCommunity);
 
