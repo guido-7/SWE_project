@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class HomePageController implements Initializable  {
+public class HomePageController implements Initializable,Controller  {
 
     @FXML
     private VBox postsContainer;
@@ -237,5 +237,10 @@ public class HomePageController implements Initializable  {
 
     public void setUserProfileAccessVisibility(boolean visibility){
         userProfileAccess.setVisible(visibility);
+    }
+
+    @Override
+    public void init_data() {
+
     }
 }

@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class UserProfilePageController implements Initializable {
+public class UserProfilePageController implements Initializable, Controller {
     @FXML
     public VBox UserPostsContainer;
     @FXML
@@ -61,6 +61,7 @@ public class UserProfilePageController implements Initializable {
     public void  setService(UserProfileService userProfileService) {
         this.userProfileService = userProfileService;
     }
+
     public UserProfilePageController(UserProfileService userProfileService) {
         this.userProfileService = userProfileService;
     }
@@ -158,4 +159,8 @@ public class UserProfilePageController implements Initializable {
 
     }
 
+    @Override
+    public void init_data() {
+
+    }
 }

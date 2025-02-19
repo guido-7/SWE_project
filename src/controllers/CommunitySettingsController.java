@@ -15,7 +15,7 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
-public class CommunitySettingsController {
+public class CommunitySettingsController implements Controller {
 
     @FXML
     private TableView<PostWarnings> reportsTable;
@@ -87,6 +87,11 @@ public class CommunitySettingsController {
     public void setData(ArrayList<PostWarnings> reports) {
         ObservableList<PostWarnings> observableReports = FXCollections.observableArrayList(reports);
         reportsTable.setItems(observableReports);
+    }
+
+    @Override
+    public void init_data() {
+
     }
 }
 

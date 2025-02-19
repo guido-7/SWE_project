@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-public class PostController {
+public class PostController implements Controller {
     @FXML
     private Label community;
 
@@ -77,5 +77,10 @@ public class PostController {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
             return time.format(formatter);
         }
+    }
+
+    @Override
+    public void init_data() {
+
     }
 }

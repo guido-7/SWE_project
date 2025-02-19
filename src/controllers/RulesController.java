@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-public class RulesController {
+public class RulesController implements Controller {
     @FXML
     private Label community_title;
     @FXML
@@ -31,4 +31,8 @@ public class RulesController {
     }
 
 
+    @Override
+    public void init_data() {
+
+    }
 }

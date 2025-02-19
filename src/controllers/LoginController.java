@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import src.businesslogic.LoginService;
 import src.servicemanager.SceneManager;
 
-public class LoginController {
+public class LoginController implements Controller {
 
 
     @FXML
@@ -45,5 +45,10 @@ public class LoginController {
 
     public void setHomePageController(HomePageController homePageController) {
         this.homePageController = homePageController;
+    }
+
+    @Override
+    public void init_data() {
+
     }
 }
