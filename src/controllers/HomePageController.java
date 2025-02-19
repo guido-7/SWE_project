@@ -52,6 +52,7 @@ public class HomePageController implements Initializable  {
     private SearchService searchService = new SearchService();
     private ContextMenu suggestionsPopup = new ContextMenu();
 
+    public HomePageController(){}
 
     public HomePageController(FeedService feedService) {
         this.feedService = feedService;
