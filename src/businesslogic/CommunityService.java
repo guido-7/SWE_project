@@ -85,7 +85,7 @@ public class CommunityService {
 
     public Moderator getModerator(int moderatorId) throws SQLException {
         ModeratorDAO moderatorDAO = new ModeratorDAO();
-        return moderatorDAO.findById(moderatorId).orElse(null);
+        return moderatorDAO.getCommunityModerator(moderatorId, communityId);
     }
 
 

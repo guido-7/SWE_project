@@ -1,9 +1,4 @@
 package src.controllers;
-
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,13 +16,12 @@ import src.businesslogic.CommunityService;
 import src.businesslogic.SearchService;
 import src.domainmodel.*;
 
-import javafx.scene.input.MouseEvent;
+import src.servicemanager.GuestContext;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -56,7 +50,6 @@ public class CommunityController implements Initializable {
 
     private List<Post> posts;
     private final CommunityService communityservice;
-    private final Guest guest;
     private boolean isLoading = false;
     private boolean allPostsLoaded = false;
     private final ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -66,9 +59,8 @@ public class CommunityController implements Initializable {
     private SearchService searchCommunityService = new SearchService();
     private int currentCommunityId;
 
-    public CommunityController(CommunityService communityService, Guest guest) throws SQLException {
+    public CommunityController(CommunityService communityService) {
         this.communityservice = communityService;
-        this.guest = getPersonRole(guest);
     }
 
 
@@ -76,19 +68,20 @@ public class CommunityController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         settings.setVisible(false);
         try {
+
             Community currentCommunity = communityservice.getCommunity();
             setData(currentCommunity);
             this.currentCommunityId = currentCommunity.getId();
-            //Control for show settings button
-            if(guest.hasPermits(PermitsManager.getModeratorPermits())){
-                int moderator_id = ((Moderator)guest).getId();
-                if(communityservice.isModerator(moderator_id)){
-                    settings.setVisible(true);
-                }
-            }
+
+            // get the guest for the page
+            Guest guest = retriveRightGuest();
+            GuestContext.setCurrentGuest(guest);
+
 
             posts = new ArrayList<>(communityservice.getPosts());
             loadPosts(posts);
+
+
 
             scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal.doubleValue() == 1.0 && !isLoading && !allPostsLoaded) {
@@ -291,7 +284,7 @@ public class CommunityController implements Initializable {
     private void loadCommunityPage(Community community) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
-            loader.setController(new CommunityController(new CommunityService(community.getId()), guest));
+            loader.setController(new CommunityController(new CommunityService(community.getId())));
             Parent root = loader.load();
             loadRules(community.getId()); // Passa l'ID della community per caricare le regole
             Stage stage = (Stage) searchField.getScene().getWindow();
@@ -300,8 +293,6 @@ public class CommunityController implements Initializable {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -331,17 +322,30 @@ public class CommunityController implements Initializable {
             e.printStackTrace();
         }
     }
-    private Guest getPersonRole(Guest guest) throws SQLException {
-        if (guest.hasPermits(PermitsManager.createUserPermits())){
-            User user = (User)guest;
+
+    private Guest getCurrentGuest(Guest guest) throws SQLException {
+        if (guest.getRole() == Role.USER) {
+            User user = (User) guest;
+
             Moderator moderator = communityservice.getModerator(user.getId());
-                if(moderator != null){
-                    return moderator;
-                }
-            else return guest;
+            if (moderator != null && moderator.getRole() == Role.MODERATOR) {
+
+                updateUI();
+
+                return moderator;
+            } else return guest;
         }
         return guest;
     }
+    private Guest retriveRightGuest() throws SQLException {
+        return getCurrentGuest(GuestContext.getCurrentGuest());
+
+    }
+    private void updateUI(){
+        settings.setVisible(true);
+    }
+
+
 
 }
 

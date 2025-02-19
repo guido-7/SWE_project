@@ -4,8 +4,9 @@ import javafx.scene.control.Label;
 import src.controllers.HomePageController;
 import src.domainmodel.User;
 import src.orm.UserDAO;
+import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
-import src.servicemanager.UserContext;
+import src.servicemanager.GuestContext;
 
 import java.sql.SQLException;
 
@@ -60,7 +61,7 @@ public class LoginService {
      * Initializes user session and navigates to the home page.
      */
     private void initializeUserSession(User user,HomePageController homePageController) {
-        UserContext.setCurrentUser(user);
+        GuestContext.setCurrentGuest(user);
 
         FeedService feedService = new FeedService(user);
         homePageController.setFeedService(feedService);

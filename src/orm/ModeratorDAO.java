@@ -81,4 +81,20 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
     }
         return false;
     }
+
+    public Moderator getCommunityModerator(int moderatorId, int communityId) {
+        String query = "SELECT * FROM Moderator JOIN User ON Moderator.user_id = User.id WHERE Moderator.user_id = ? AND Moderator.community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, moderatorId);
+            statement.setInt(2, communityId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return mapResultSetToEntity(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+    }
+        return null;
+    }
 }

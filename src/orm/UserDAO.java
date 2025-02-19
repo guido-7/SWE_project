@@ -62,7 +62,7 @@ public class UserDAO extends BaseDAO<User,Integer> {
         String name = resultSet.getString("name");
         String surname = resultSet.getString("surname");
         Set<Permits> permits = PermitsManager.createUserPermits();  // Assuming permits need to be fetched from another table
-        return new User(id, nickname, name, surname, permits);
+        return new User(id, nickname, name, surname, permits, Role.USER);
     }
 
     public ArrayList<Integer> getCommunityIds(int userId, int numberofCommunities){
