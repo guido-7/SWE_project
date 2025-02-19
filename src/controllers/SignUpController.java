@@ -12,7 +12,7 @@ import src.servicemanager.SceneManager;
 
 import java.io.IOException;
 
-public class SignUpController {
+public class SignUpController implements Controller {
 
     @FXML
     private TextField name;
@@ -128,5 +128,8 @@ public class SignUpController {
     }
 
 
+    @Override
+    public void init_data() {
 
+    }
 }

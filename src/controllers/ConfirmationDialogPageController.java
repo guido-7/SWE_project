@@ -8,7 +8,7 @@ import src.Interface.BackMessage;
 
 import java.sql.SQLException;
 
-public class ConfirmationDialogPageController {
+public class ConfirmationDialogPageController implements Controller {
 
     private BackMessage callback;
 
@@ -34,6 +34,11 @@ public class ConfirmationDialogPageController {
         if (callback != null) {
             callback.onResult(false);
         }
+    }
+
+    @Override
+    public void init_data() {
+
     }
 }
 

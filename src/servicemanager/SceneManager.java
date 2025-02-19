@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import src.businesslogic.FeedService;
+import src.controllers.Controller;
 import src.controllers.HomePageController;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.util.Map;
 public class SceneManager {
     private static final Map<String, Scene> primarySceneCache = new HashMap<>();
     private static final Map<String, Scene> secondarySceneCache = new HashMap<>();
+    private static final Map<Scene, Controller> Controllers = new HashMap<>();
     private static Stage primaryStage;
     private static Stage secondaryStage;
 
@@ -29,35 +31,44 @@ public class SceneManager {
 
 
 
-    public static void loadPrimaryScene(String name, String fileFxml, Object controller) {
+    public static void loadPrimaryScene(String name, String fileFxml, Controller controller) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fileFxml));
             loader.setController(controller);
             Parent root = loader.load();
             Scene scene = new Scene(root);
+
+
+            // load data into caches
             primarySceneCache.put(name, scene);
+            Controllers.put(scene, controller);
+
+
             primaryStage.setScene(scene);
             primaryStage.show();
+
         } catch (IOException e) {
             System.err.println("Errore nel caricamento del file FXML: " + fileFxml);
             e.printStackTrace();
         }
     }
 
-    public static void changeScene(String name, String fileFxml, Object controller) {
-        changeScene(name, fileFxml, controller, primarySceneCache, primaryStage);
+    public static Controller changeScene(String name, String fileFxml, Controller controller) {
+        return changeScene(name, fileFxml, controller, primarySceneCache, primaryStage);
     }
 
-    public static void changeSecondaryScene(String name, String fileFxml, Object controller) {
-      changeScene(name, fileFxml, controller, secondarySceneCache, secondaryStage);
+    public static Controller changeSecondaryScene(String name, String fileFxml, Controller controller) {
+      return changeScene(name, fileFxml, controller, secondarySceneCache, secondaryStage);
     }
 
-    private static void changeScene(String name, String fileFxml, Object controller, Map<String, Scene> cache, Stage stage) {
+    private static Controller changeScene(String name, String fileFxml, Controller controller, Map<String, Scene> cache, Stage stage) {
         try {
 
             if (cache.containsKey(name)) {
-                stage.setScene(cache.get(name));
+                Scene scene = cache.get(name);
+                stage.setScene(scene);
                 System.out.println("Scene from cache");
+                return Controllers.get(scene);
             } else {
                 // Carichiamo dinamicamente la scena
                 FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fileFxml));
@@ -68,11 +79,14 @@ public class SceneManager {
                 stage.setScene(scene);
 
             }
+
             stage.show();
+            return controller;
         } catch (IOException e) {
             System.err.println("Errore nel caricamento dinamico del file FXML: " + fileFxml);
             e.printStackTrace();
         }
+        return null;
     }
 
 
@@ -134,11 +148,6 @@ public class SceneManager {
 //            e.printStackTrace();
 //        }
 //    }
-    public void changeController(Object controller){
-
-
-
-    }
 
 }
 

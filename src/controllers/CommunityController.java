@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class CommunityController implements Initializable {
+public class CommunityController implements Initializable, Controller {
 
     @FXML
     private VBox postsContainer;
@@ -60,8 +60,9 @@ public class CommunityController implements Initializable {
     private final SearchService searchService = new SearchService();
     private final ContextMenu suggestionsPopup = new ContextMenu();
     private String currentSearchTerm = "";
-    private SearchService searchCommunityService = new SearchService();
+    //private SearchService searchCommunityService = new SearchService();
     private int currentCommunityId;
+
 
     public CommunityController(CommunityService communityService) {
         this.communityservice = communityService;
@@ -70,22 +71,13 @@ public class CommunityController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         settings.setVisible(false);
+        this.currentCommunityId = communityservice.getCommunityId();
+
         try {
 
-            Community currentCommunity = communityservice.getCommunity();
-            setData(currentCommunity);
-            this.currentCommunityId = currentCommunity.getId();
-
-            // get the guest for the page
-            Guest guest = retriveRightGuest();
-            GuestContext.setCurrentGuest(guest);
-
-
-            posts = new ArrayList<>(communityservice.getPosts());
-            loadPosts(posts);
-
-
+            init_data();
 
             scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal.doubleValue() == 1.0 && !isLoading && !allPostsLoaded) {
@@ -350,7 +342,22 @@ public class CommunityController implements Initializable {
     }
 
 
+    @Override
+    public void init_data() throws SQLException {
 
+        Community currentCommunity = communityservice.getCommunity();
+        setData(currentCommunity);
+
+        // get the guest for the page
+        Guest guest = retriveRightGuest();
+        GuestContext.setCurrentGuest(guest);
+
+
+        posts = new ArrayList<>(communityservice.getPosts());
+        loadPosts(posts);
+
+
+    }
 }
 
 
