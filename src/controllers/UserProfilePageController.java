@@ -66,86 +66,83 @@ public class UserProfilePageController implements Initializable, Controller {
         this.userProfileService = userProfileService;
     }
 
-        @Override
-        public void initialize(URL url, ResourceBundle resourceBundle) {
-            savewarning.setVisible(false);
-            popupContainer.setMouseTransparent(true);
-            try {
-                Map<String, String> userInfo = userProfileService.getUserInfo();
-                nicknameLabel.setText(userInfo.get("nickname"));
-                nameLabel.setText(userInfo.get("name"));
-                surnameLabel.setText(userInfo.get("surname"));
-                description = userProfileService.getDescription();
-                profileDescription.setText(description);
-
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            tempDescription = profileDescription.getText();
-
-            try {
-                LoadingPost.LoadPosts(userProfileService.getUserPosts(), UserPostsContainer);
-                LoadingPost.LoadPosts(userProfileService.getSavedPosts(), SavedPostsContainer);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-
-            profileDescription.setOnKeyPressed(event -> {
-                if (event.isControlDown() && event.getCode() == KeyCode.S) {
-                    event.consume(); // Evita il ritorno a capo nell'area di testo
-                    showConfirmationPopup();
-
-                }
-            });
-            profileDescription.textProperty().addListener((observable, oldValue, newValue) -> {
-                savewarning.setVisible(!Objects.equals(newValue, oldValue));
-            });
-
-
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        savewarning.setVisible(false);
+        popupContainer.setMouseTransparent(true);
+        try {
+            Map<String, String> userInfo = userProfileService.getUserInfo();
+            nicknameLabel.setText(userInfo.get("nickname"));
+            nameLabel.setText(userInfo.get("name"));
+            surnameLabel.setText(userInfo.get("surname"));
+            description = userProfileService.getDescription();
+            profileDescription.setText(description);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
+        tempDescription = profileDescription.getText();
 
-        @FXML
-        private void showConfirmationPopup() {
+        try {
+            LoadingPost.LoadPosts(userProfileService.getUserPosts(), UserPostsContainer);
+            LoadingPost.LoadPosts(userProfileService.getSavedPosts(), SavedPostsContainer);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/ConfirmationDialog.fxml"));
-                Parent popUp = loader.load();
+        exit.setOnMouseClicked(event-> backToHomePage()
+        );
 
-                ConfirmationDialogPageController dialogController = loader.getController();
+        profileDescription.setOnKeyPressed(event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.S) {
+                event.consume(); // Evita il ritorno a capo nell'area di testo
+                showConfirmationPopup();
+            }
+        });
 
-                // 🔹 Impostiamo la callback
-                dialogController.setCallback(confirmed -> {
-                    if (confirmed) {
-                        tempDescription = profileDescription.getText();
-                        if (description == null){
-                            userProfileService.SetDescription(tempDescription);
-                        }
-                        else{
-                            userProfileService.updateDescription(tempDescription);
-                        }
-                        profileDescription.getParent().requestFocus();
-                        savewarning.setVisible(false);//  Se "Yes", salviamo nel DB
-                    } else {
-                        System.out.println("Descrizione annullata");
-                        profileDescription.setText(tempDescription);
-                        profileDescription.getParent().requestFocus();
-                        savewarning.setVisible(false);// Se "No", annulliamo la modifica
+        profileDescription.textProperty().addListener((observable, oldValue, newValue) -> {
+            savewarning.setVisible(!Objects.equals(newValue, oldValue));
+        });
+    }
+
+    @FXML
+    private void showConfirmationPopup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/ConfirmationDialog.fxml"));
+            Parent popUp = loader.load();
+            ConfirmationDialogPageController dialogController = loader.getController();
+
+            //  Impostiamo la callback
+            dialogController.setCallback(confirmed -> {
+                if (confirmed) {
+                    tempDescription = profileDescription.getText();
+                    if (description == null){
+                        userProfileService.SetDescription(tempDescription);
                     }
-                    closePopup();
-                });
+                    else{
+                        userProfileService.updateDescription(tempDescription);
+                    }
+                    profileDescription.getParent().requestFocus();
+                    savewarning.setVisible(false);//  Se "Yes", salviamo nel DB
+                } else {
+                    System.out.println("Descrizione annullata");
+                    profileDescription.setText(tempDescription);
+                    profileDescription.getParent().requestFocus();
+                    savewarning.setVisible(false);// Se "No", annulliamo la modifica
+                }
+                closePopup();
+            });
 
-                popupContainer.getChildren().clear();
-                popupContainer.getChildren().add(popUp);
-                popupContainer.setMouseTransparent(false);
-                popupContainer.setVisible(true);
+            popupContainer.getChildren().clear();
+            popupContainer.getChildren().add(popUp);
+            popupContainer.setMouseTransparent(false);
+            popupContainer.setVisible(true);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
     @FXML
     private void closePopup() {
         popupContainer.getChildren().clear();
@@ -156,11 +153,9 @@ public class UserProfilePageController implements Initializable, Controller {
     @FXML
     private void backToHomePage(){
         SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
-
     }
 
     @Override
     public void init_data() {
-
     }
 }

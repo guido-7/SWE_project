@@ -18,7 +18,7 @@
     <top>
         <HBox alignment="CENTER_LEFT" prefHeight="65.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
-                <ImageView fx:id="homePageButton" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#backToHomePage" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="homePageButton" fitHeight="50.0" fitWidth="50.0"  pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../images/Logo.png" />
                     </image>
@@ -34,7 +34,7 @@
                         <Insets left="20.0" right="20.0" />
                     </HBox.margin>
                 </ImageView>
-                <ImageView fx:id="userProfileAccess" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#openProfilePage" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="userProfileAccess" fitHeight="50.0" fitWidth="50.0"  pickOnBounds="true" preserveRatio="true">
                     <HBox.margin>
                         <Insets right="20.0" />
                     </HBox.margin>

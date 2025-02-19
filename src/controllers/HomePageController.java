@@ -62,14 +62,10 @@ public class HomePageController implements Initializable,Controller  {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        userProfileAccess.setVisible(false);
 
         try {
-            userProfileAccess.setVisible(false);
-            List<Post> post = feedService.getFeed();
-            if(!(post ==null) ){
-                posts = new ArrayList<>(feedService.getFeed());
-                loadPosts(posts);
-            }
+            init_data();
             scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal.doubleValue() == 1.0 && !isLoading && !allPostsLoaded) {
                     loadMorePosts();
@@ -164,7 +160,6 @@ public class HomePageController implements Initializable,Controller  {
         task.setOnSucceeded(event -> {
             List<Post> newPosts = task.getValue();
             postsContainer.getChildren().remove(progressIndicator);
-
             if (newPosts.isEmpty()) {
                 allPostsLoaded = true;
                 Label noMoreContent = new Label("No more content available");
@@ -172,7 +167,6 @@ public class HomePageController implements Initializable,Controller  {
             } else {
                 loadPosts(newPosts);
             }
-
             isLoading = false;
         });
 
@@ -180,43 +174,17 @@ public class HomePageController implements Initializable,Controller  {
             isLoading = false;
             postsContainer.getChildren().remove(progressIndicator);
         });
-
         new Thread(task).start();
     }
+
     public void LoadUserPosts(){
         posts = new ArrayList<>(feedService.getFeed());
         loadPosts(posts);
     }
 
-   // @FXML
-    //meglio fare un metodo generale per cambiare pagina
-//    public static void openHomePage(User user, Stage stage) {
-//        try {
-//            System.out.println("Opening Home Page...");
-//            FXMLLoader homePage = new FXMLLoader(HomePageController.class.getResource("/src/view/fxml/CommunityPage.fxml"));
-//            homePage.setController(new CommunityController(new CommunityService(user.getId())));
-//            stage.setScene(new Scene(homePage.load()));
-//            stage.setTitle("Home Page");
-//            stage.show();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            System.err.println("Error loading Home Page.");
-//        }
-//    }
-
-    private void loadCommunityPage(Community community) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
-            loader.setController(new CommunityController(new CommunityService(community.getId())));
-            Parent root = loader.load();
-            Stage stage = (Stage) searchField.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle(community.getTitle());
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    private void loadCommunityPage(Community community){
+        CommunityService communityService = new CommunityService(community.getId());
+        SceneManager.changeScene("community " + community.getId(), "/src/view/fxml/CommunityPage.fxml", new CommunityController(communityService));
     }
 
     public void handleLoginButton() {
@@ -226,10 +194,11 @@ public class HomePageController implements Initializable,Controller  {
         Stage stage = (Stage) searchField.getScene().getWindow();
         SceneManager.openModal("login", "/src/view/fxml/Login.fxml", loginController, stage);
     }
+
     public void setLoginButtonVisibility(boolean visibility){
         login.setVisible(visibility);
-
     }
+
     public void openProfilePage() throws IOException {
         UserProfileService userProfileService = new UserProfileService((User) feedService.getGuest());
         SceneManager.changeScene("profile", "/src/view/fxml/UserProfilePage.fxml", new UserProfilePageController(userProfileService));
@@ -241,6 +210,11 @@ public class HomePageController implements Initializable,Controller  {
 
     @Override
     public void init_data() {
-
+        System.out.println("Initializing data...");
+        List<Post> post = feedService.getFeed();
+        if(!(post ==null) ){
+            posts = new ArrayList<>(feedService.getFeed());
+            loadPosts(posts);
+        }
     }
 }

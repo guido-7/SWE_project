@@ -4,14 +4,17 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import src.businesslogic.CommunityService;
 import src.domainmodel.PostWarnings;
 import javafx.scene.text.Text;
+import src.servicemanager.SceneManager;
 
 import java.util.ArrayList;
 
@@ -19,18 +22,16 @@ public class CommunitySettingsController implements Controller {
 
     @FXML
     private TableView<PostWarnings> reportsTable;
-
     @FXML
     private TableColumn<PostWarnings, String> reporter;
-
     @FXML
     private TableColumn<PostWarnings, String> content;
-
     @FXML
     private TableColumn<PostWarnings, String> reported;
-
     @FXML
     private TableColumn<PostWarnings, String> title;
+    @FXML
+    private ImageView exit;
 
     private final CommunityService communityService;
 
@@ -40,6 +41,8 @@ public class CommunitySettingsController implements Controller {
 
     @FXML
     public void initialize() {
+        exit.setOnMouseClicked(event-> backToCommunity());
+
         reportsTable.setSelectionModel(null);
 
         reporter.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSender_nickname()));
@@ -69,7 +72,6 @@ public class CommunitySettingsController implements Controller {
                     // Rendi il testo cliccabile
                     text.setOnMouseClicked(event -> {
                         System.out.println("Vai alla pagina di: " + item);
-
                     });
 
                     setGraphic(text);  // Imposta il testo come contenuto della cella
@@ -77,11 +79,13 @@ public class CommunitySettingsController implements Controller {
             }
         });
 
-
-
         reported.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getReported_nickname()));
         setData(communityService.getPostWarnings());
 
+    }
+
+    private void backToCommunity() {
+        SceneManager.changeScene("community " + communityService.getCommunityId(), "/src/view/fxml/CommunityPage.fxml",null);
     }
 
     public void setData(ArrayList<PostWarnings> reports) {
@@ -91,7 +95,6 @@ public class CommunitySettingsController implements Controller {
 
     @Override
     public void init_data() {
-
     }
 }
 

@@ -14,9 +14,11 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
 import src.businesslogic.SearchService;
+import src.businesslogic.UserProfileService;
 import src.domainmodel.*;
 
 import src.servicemanager.GuestContext;
+import src.servicemanager.SceneManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -71,13 +73,22 @@ public class CommunityController implements Initializable, Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         settings.setVisible(false);
+        userProfileAccess.setVisible(false);
         this.currentCommunityId = communityservice.getCommunityId();
 
         try {
-
             init_data();
+
+            homePageButton.onMouseClickedProperty().set(event -> {
+                SceneManager.changeScene("home", "/src/view/fxml/HomePage.fxml",null);
+            });
+
+            userProfileAccess.onMouseClickedProperty().set(event -> {
+                UserProfileService userProfileService = new UserProfileService((User) GuestContext.getCurrentGuest());
+                UserProfilePageController userProfilePageController = new UserProfilePageController(userProfileService);
+                SceneManager.changeScene("UserProfilePage", "/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
+            });
 
             scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal.doubleValue() == 1.0 && !isLoading && !allPostsLoaded) {
@@ -119,16 +130,7 @@ public class CommunityController implements Initializable, Controller {
     }
     @FXML
     private void handleSettingsClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunitySettings.fxml"));
-            loader.setController(new CommunitySettingsController(communityservice));
-            Parent root = loader.load();
-            Stage stage = (Stage) settings.getScene().getWindow();
-            stage.setTitle("Community Settings");
-            stage.setScene(new Scene(root));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SceneManager.changeScene("community settings " + communityservice.getCommunityId(), "/src/view/fxml/CommunitySettings.fxml", new CommunitySettingsController(communityservice));
     }
 
 
@@ -171,10 +173,6 @@ public class CommunityController implements Initializable, Controller {
         });
 
         new Thread(searchTask).start();
-
-
-
-
     }
 
 
@@ -277,21 +275,6 @@ public class CommunityController implements Initializable, Controller {
         new Thread(task).start();
     }
 
-    private void loadCommunityPage(Community community) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommunityPage.fxml"));
-            loader.setController(new CommunityController(new CommunityService(community.getId())));
-            Parent root = loader.load();
-            loadRules(community.getId()); // Passa l'ID della community per caricare le regole
-            Stage stage = (Stage) searchField.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle(community.getTitle());
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void setData(Community community) {
         System.out.println("Setting data");
         community_title.setText(community.getTitle());
@@ -322,7 +305,7 @@ public class CommunityController implements Initializable, Controller {
     private Guest getCurrentGuest(Guest guest) throws SQLException {
         if (guest.getRole() == Role.USER) {
             User user = (User) guest;
-
+            userProfileAccess.setVisible(true);
             Moderator moderator = communityservice.getModerator(user.getId());
             if (moderator != null && moderator.getRole() == Role.MODERATOR) {
 
@@ -333,6 +316,7 @@ public class CommunityController implements Initializable, Controller {
         }
         return guest;
     }
+
     private Guest retriveRightGuest() throws SQLException {
         return getCurrentGuest(GuestContext.getCurrentGuest());
 
@@ -344,7 +328,6 @@ public class CommunityController implements Initializable, Controller {
 
     @Override
     public void init_data() throws SQLException {
-
         Community currentCommunity = communityservice.getCommunity();
         setData(currentCommunity);
 
@@ -352,11 +335,8 @@ public class CommunityController implements Initializable, Controller {
         Guest guest = retriveRightGuest();
         GuestContext.setCurrentGuest(guest);
 
-
         posts = new ArrayList<>(communityservice.getPosts());
         loadPosts(posts);
-
-
     }
 }
 
