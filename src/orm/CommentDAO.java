@@ -1,6 +1,7 @@
 package src.orm;
 
 import src.domainmodel.Comment;
+import src.domainmodel.Post;
 import src.managerdatabase.DBConnection;
 
 import java.sql.*;
@@ -230,6 +231,25 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
             e.printStackTrace();
             }
         return -1;
+    }
+    public List<Comment> getRootComments(Post post , int noOfComment,int offset){
+        Connection connection = DBConnection.open_connection();
+        List<Comment> comments = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Comment WHERE post_id = ? AND community_id = ? AND level = 0 LIMIT = ? OFFSET = ? ");
+            statement.setInt(1, post.getId());
+            statement.setInt(2, post.getCommunityId());
+            statement.setInt(3, noOfComment);
+            statement.setInt(4, offset);
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                comments.add(mapResultSetToEntity(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return comments ;
     }
 }
 
