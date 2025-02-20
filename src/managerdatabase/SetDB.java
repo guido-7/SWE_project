@@ -359,15 +359,15 @@ public class  SetDB {
         System.out.println("Posts created\n");
 
         // create fake comments
-        for (int i = 1; i <= numberofPosts; i++) {
+        for (int i = 1; i <= (numberofPosts * 2); i++) {
             Map<String, Object> params = new HashMap<>();
             int user_id = (int) ((Math.random() * numberofUsers) + 1);
-            int community_id = (int) ((Math.random() * numberofCommunity) + 1);
-            params.put("post_id", i);
+            Post post = postDao.findById((i % numberofPosts) + 1).orElse(null);
+            params.put("post_id", (i % numberofPosts) + 1);
             params.put("level", 0);
             params.put("user_id", user_id);
             params.put("content", "Content " + i+1);
-            params.put("community_id", community_id);
+            params.put("community_id", post.getCommunityId());
             commentDAO.save(params);
         }
         System.out.println("Comments created\n");
