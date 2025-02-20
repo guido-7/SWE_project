@@ -181,7 +181,6 @@ public class CommunityController implements Initializable, Controller {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Post.fxml"));
                 VBox vBox = fxmlLoader.load();
-                PostController postController = fxmlLoader.getController();
                 postController.setData(post);
                 postsContainer.getChildren().add(vBox);
             } catch (IOException | SQLException e) {
