@@ -1,22 +1,15 @@
 package src.controllers;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import src.businesslogic.PostPageService;
 import src.businesslogic.PostService;
-import src.domainmodel.Community;
 import src.domainmodel.Post;
-import src.domainmodel.User;
-import src.orm.CommunityDAO;
-import src.orm.PostDAO;
-import src.orm.UserDAO;
+import src.servicemanager.FormattedTime;
 import src.servicemanager.SceneManager;
-import src.utils.StringManager;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -44,6 +37,7 @@ public class PostController implements Controller, Initializable {
     private Button postButton;
 
     private PostService postService;
+    private final FormattedTime formatter = new FormattedTime();
 
     public PostController(PostService postService){
         this.postService = postService;
@@ -61,7 +55,7 @@ public class PostController implements Controller, Initializable {
         String nickname = postService.getnickname();
         username.setText(nickname);
 
-        date.setText(getFormattedTime(post.getTime()));
+        date.setText(formatter.getFormattedTime(post.getTime()));
         title.setText(post.getTitle());
         content.setText(post.getContent());
         scoreLabel.setText(post.getLikes() - post.getDislikes() + "");
@@ -79,27 +73,6 @@ public class PostController implements Controller, Initializable {
 
     public Post getPost() throws SQLException {
         return postService.getPost();
-    }
-
-    public static String getFormattedTime(LocalDateTime time) {
-        LocalDateTime now = LocalDateTime.now();
-
-        if (time.isAfter(now.minusHours(24))) { // Oggi
-            long hoursAgo = ChronoUnit.HOURS.between(time, now);
-            return hoursAgo + "h ago";
-        }
-        else if (time.isAfter(now.minusDays(7))) { // Ultima settimana
-            long daysAgo = ChronoUnit.DAYS.between(time, now);
-            return daysAgo + "d ago";
-        }
-        else if (time.getYear() == now.getYear()) { // Stesso anno
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM");
-            return time.format(formatter);
-        }
-        else { // Anni precedenti
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
-            return time.format(formatter);
-        }
     }
 
     private void  goToPostPage(){

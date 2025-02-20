@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import src.businesslogic.CommentService;
 import src.domainmodel.Comment;
+import src.servicemanager.FormattedTime;
 
 public class CommentController {
     @FXML
@@ -21,6 +22,7 @@ public class CommentController {
     private Label username;
 
     private CommentService commentService;
+    private final FormattedTime formatter = new FormattedTime();
 
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
@@ -31,7 +33,7 @@ public class CommentController {
         System.out.println("Setting data");
         username.setText(commentService.getCommentAuthor());
         content.setText(commentService.getCommentText());
-        date.setText(comment.getTime().toString());
+        date.setText(formatter.getFormattedTime(comment.getTime()));
         scoreLabel.setText(comment.getLikes() - comment.getDislikes() + "");
     }
 }
