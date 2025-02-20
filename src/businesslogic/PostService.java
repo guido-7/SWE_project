@@ -2,6 +2,7 @@ package src.businesslogic;
 
 import src.domainmodel.Comment;
 import src.domainmodel.Post;
+import src.orm.CommentDAO;
 import src.orm.CommunityDAO;
 import src.orm.PostDAO;
 import src.orm.UserDAO;
@@ -29,11 +30,10 @@ public class PostService {
     public String getnickname() throws SQLException {
         UserDAO userDAO = new UserDAO();
         return (String) userDAO.retrieveSingleAttribute("User","nickname","id = ?", post.getUserId());
-        
     }
 
     public List<Comment> getRootComments() {
-        return null;
-        //return postDAO.getRootComments(post.getId());
+        CommentDAO commentDAO = new CommentDAO();
+        return commentDAO.getRootComments(post,10,0);
     }
 }

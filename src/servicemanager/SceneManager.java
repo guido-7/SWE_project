@@ -55,6 +55,10 @@ public class SceneManager {
       return changeScene(name, fileFxml, controller, secondarySceneCache, secondaryStage, secondaryControllers);
     }
 
+    public static void loadScene(String filefxml, Controller controller){
+        LoadScene(filefxml, controller, primaryStage);
+    }
+
     private static Controller changeScene(String name, String fileFxml, Controller controller, Map<String, Scene> cache, Stage stage ,Map<Scene, Controller> Controllers) {
         try {
             if (cache.containsKey(name)) {
@@ -124,24 +128,21 @@ public class SceneManager {
         closeStage(secondaryStage);
     }
 
-//    public static void reloadScene(String name, String fileFxml, Object controller) {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fileFxml));
-//            loader.setController(controller);
-//            Parent root = loader.load();
-//            Scene scene = new Scene(root);
-//
-//            // Aggiorniamo la cache con la nuova scena
-//            sceneCache.put(name, scene);
-//
-//            // Cambiamo la scena sulla finestra principale senza creare una nuova Stage
-//            primaryStage.setScene(scene);
-//            primaryStage.show();
-//        } catch (IOException e) {
-//            System.err.println("Errore nel ricaricamento della scena: " + fileFxml);
-//            e.printStackTrace();
-//        }
-//    }
+    private static void LoadScene(String fileFxml, Controller controller, Stage stage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fileFxml));
+            loader.setController(controller);
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+
+            // Cambiamo la scena sulla finestra principale senza creare una nuova Stage
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Errore nel caricamento della scena: " + fileFxml);
+            e.printStackTrace();
+        }
+    }
 
 }
 

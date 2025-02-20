@@ -133,8 +133,9 @@ public class HomePageController implements Initializable,Controller  {
         for (Post post : newPosts) {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Post.fxml"));
+                PostController postController = new PostController(new PostService(post));
+                fxmlLoader.setController(postController);
                 VBox vBox = fxmlLoader.load();
-                PostController postController = fxmlLoader.getController();
                 postController.setData(post);
                 postsContainer.getChildren().add(vBox);
             } catch (IOException | SQLException e) {

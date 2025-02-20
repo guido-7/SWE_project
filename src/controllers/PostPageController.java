@@ -50,8 +50,9 @@ public class PostPageController implements Controller, Initializable {
     private void loadPost(Post post) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Post.fxml"));
+            PostController postController = new PostController(new PostService(post));
+            fxmlLoader.setController(postController);
             VBox vBox = fxmlLoader.load();
-            PostController postController = fxmlLoader.getController();
             postController.setData(post);
             postsContainer.getChildren().add(vBox);
 
@@ -84,6 +85,6 @@ public class PostPageController implements Controller, Initializable {
         loadPost(currentPost);
 
         List<Comment> rootComments = postService.getRootComments();
-        loadRootComments(rootComments);
+       loadRootComments(rootComments);
     }
 }

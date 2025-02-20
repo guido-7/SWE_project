@@ -1,9 +1,13 @@
 package src.controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import src.businesslogic.PostPageService;
 import src.businesslogic.PostService;
 import src.domainmodel.Community;
 import src.domainmodel.Post;
@@ -11,14 +15,17 @@ import src.domainmodel.User;
 import src.orm.CommunityDAO;
 import src.orm.PostDAO;
 import src.orm.UserDAO;
+import src.servicemanager.SceneManager;
 import src.utils.StringManager;
 
+import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ResourceBundle;
 
-public class PostController implements Controller {
+public class PostController implements Controller, Initializable {
     @FXML
     private Label community;
     @FXML
@@ -33,15 +40,21 @@ public class PostController implements Controller {
     private Label scoreLabel;
     @FXML
     private VBox myVBox;
+    @FXML
+    private Button postButton;
 
     private PostService postService;
 
     public PostController(PostService postService){
         this.postService = postService;
-
     }
-    private void setDataOnCard(Post post) throws SQLException {
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        postButton.setOnAction(event -> goToPostPage());
+    }
+
+    private void setDataOnCard(Post post) throws SQLException {
         String communityTitle = postService.getCommunityTitle();
         community.setText("r/" + communityTitle);
 
@@ -87,6 +100,12 @@ public class PostController implements Controller {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
             return time.format(formatter);
         }
+    }
+
+    private void  goToPostPage(){
+        String fxmlfile = "/src/view/fxml/PostPage.fxml";
+        PostPageController postPageController = new PostPageController(postService);
+        SceneManager.loadScene(fxmlfile, postPageController);
     }
 
     @Override
