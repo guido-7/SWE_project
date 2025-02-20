@@ -236,7 +236,7 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         Connection connection = DBConnection.open_connection();
         List<Comment> comments = new ArrayList<>();
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Comment WHERE post_id = ? AND community_id = ? AND level = 0 LIMIT = ? OFFSET = ? ");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Comment WHERE post_id = ? AND community_id = ? AND level = 0 LIMIT ? OFFSET ? ");
             statement.setInt(1, post.getId());
             statement.setInt(2, post.getCommunityId());
             statement.setInt(3, noOfComment);
