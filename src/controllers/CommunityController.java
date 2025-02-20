@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
+import src.businesslogic.PostService;
 import src.businesslogic.SearchService;
 import src.businesslogic.UserProfileService;
 import src.domainmodel.*;
@@ -180,6 +181,8 @@ public class CommunityController implements Initializable, Controller {
         for (Post post : newPosts) {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Post.fxml"));
+                PostController postController = new PostController(new PostService(post));
+                fxmlLoader.setController(postController);
                 VBox vBox = fxmlLoader.load();
                 postController.setData(post);
                 postsContainer.getChildren().add(vBox);
