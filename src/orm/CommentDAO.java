@@ -31,7 +31,7 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         int level = resultSet.getInt("level");
         LocalDateTime time = LocalDateTime.parse(resultSet.getString("time"));
         int likes = resultSet.getInt("likes");
-        int dislikes = resultSet.getInt("dislike");
+        int dislikes = resultSet.getInt("dislikes");
         String content = resultSet.getString("content");
         int user_id = resultSet.getInt("user_id");
         boolean is_modified = resultSet.getBoolean("is_modified");
