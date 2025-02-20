@@ -2,11 +2,16 @@ package src.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import src.businesslogic.PostService;
 import src.domainmodel.Community;
 import src.domainmodel.Post;
+import src.domainmodel.User;
 import src.orm.CommunityDAO;
 import src.orm.PostDAO;
 import src.orm.UserDAO;
+import src.utils.StringManager;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -16,42 +21,48 @@ import java.time.temporal.ChronoUnit;
 public class PostController implements Controller {
     @FXML
     private Label community;
-
     @FXML
     private Label username;
-
     @FXML
     private Label content;
-
     @FXML
     private Label date;
-
     @FXML
     private Label title;
-
     @FXML
     private Label scoreLabel;
+    @FXML
+    private VBox myVBox;
 
-    private Post post;
+    private PostService postService;
 
-    private PostDAO postDao = new PostDAO();
+    public PostController(PostService postService){
+        this.postService = postService;
 
-    public void setData(Post post) throws SQLException {
-        this.post = post;
+    }
+    private void setDataOnCard(Post post) throws SQLException {
 
         CommunityDAO communityDAO = new CommunityDAO();
         Community comm = communityDAO.findById(post.getCommunityId()).orElse(null);
         community.setText("r/" + comm.getTitle());
 
-        UserDAO userDAO = new UserDAO();
-        //User user = userDAO.findById(post.getUserId()).orElse(null);
-        username.setText("viiii");
+        String nickname = postService.getnickname();
+        username.setText(nickname);
 
         date.setText(getFormattedTime(post.getTime()));
         title.setText(post.getTitle());
         content.setText(post.getContent());
         scoreLabel.setText(post.getLikes() - post.getDislikes() + "");
+    }
 
+    public void setData(Post post) throws SQLException {
+        myVBox.setMaxHeight(180);
+        setDataOnCard(post);
+    }
+
+    public void setDataPostPage(Post post) throws SQLException {
+        myVBox.setMaxHeight(Region.USE_COMPUTED_SIZE);
+        setDataOnCard(post);
     }
 
     public Post getPost(int id) throws SQLException {
