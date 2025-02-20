@@ -30,7 +30,7 @@
         <Button fx:id="likeButton" styleClass="like-button" text="Like" />
         <Label fx:id="scoreLabel" styleClass="score-label" text="0" />
         <Button fx:id="dislikeButton" styleClass="dislike-button" text="Dislike" />
-      <Button mnemonicParsing="false" styleClass="comment-button">
+      <Button fx:id="postButton" mnemonicParsing="false" styleClass="comment-button">
          <graphic>
             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                <image>
