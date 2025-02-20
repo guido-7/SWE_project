@@ -32,7 +32,8 @@ public class FeedService {
 
         List<Post> posts = new ArrayList<>();
 
-        if (!guest.hasPermits(PermitsManager.getUserPermits())){
+        if (guest.getRole() == Role.GUEST){
+
             return GuestFeed();
 
         } else {
@@ -164,8 +165,16 @@ public class FeedService {
     public Guest getGuest() {
         return guest;
     }
+
     private List<Post> GuestFeed(){
-        return null;
+        int maxPostRetrieved = 3 ;
+        List<Integer> bestcommunityIds = communityDao.getCommunityIds(numberofCommunities);
+        Collections.shuffle(bestcommunityIds);
+
+        for(Integer id : bestcommunityIds){
+            community_partition.put(id,(int)(Math.random()* maxPostRetrieved)+1 );
+        }
+        return getPostsFromCommunity();
 
     }
 }
