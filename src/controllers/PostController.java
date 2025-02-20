@@ -42,9 +42,8 @@ public class PostController implements Controller {
     }
     private void setDataOnCard(Post post) throws SQLException {
 
-        CommunityDAO communityDAO = new CommunityDAO();
-        Community comm = communityDAO.findById(post.getCommunityId()).orElse(null);
-        community.setText("r/" + comm.getTitle());
+        String communityTitle = postService.getCommunityTitle();
+        community.setText("r/" + communityTitle);
 
         String nickname = postService.getnickname();
         username.setText(nickname);
@@ -65,8 +64,8 @@ public class PostController implements Controller {
         setDataOnCard(post);
     }
 
-    public Post getPost(int id) throws SQLException {
-        return postDao.findById(id).orElse(null);
+    public Post getPost() throws SQLException {
+        return postService.getPost();
     }
 
     public static String getFormattedTime(LocalDateTime time) {
