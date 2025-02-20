@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox minHeight="140.0" minWidth="550.0" spacing="15" styleClass="post-container" stylesheets="@../css/Post.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controllers.PostController">
+<VBox minHeight="140.0" minWidth="550.0" spacing="15" styleClass="post-container" stylesheets="@../css/Post.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
 
     <!-- Header: titolo, autore e orario -->
     <HBox alignment="CENTER_LEFT" spacing="10">
