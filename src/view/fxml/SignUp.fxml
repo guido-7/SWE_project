@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane prefHeight="700.0" prefWidth="600.0" stylesheets="@../css/SignUp.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controllers.SignUpController">
+<StackPane prefHeight="700.0" prefWidth="600.0" stylesheets="@../css/SignUp.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" >
    <children>
       <VBox alignment="CENTER" spacing="32.0">
          <ImageView fx:id="backButton" fitHeight="33.0" fitWidth="35.0" onMouseClicked="#back" pickOnBounds="true" preserveRatio="true">
