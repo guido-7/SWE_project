@@ -25,12 +25,12 @@
     <HBox alignment="CENTER_RIGHT" spacing="10">
       <StackPane>
          <children>
-            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="moreComments" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/PlusIcon.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="minusComments" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/MinusIcon.png" />
                </image>
@@ -47,4 +47,7 @@
               </image>
           </ImageView>
     </HBox>
+
+    <!-- Container per i commenti di risposta -->
+    <VBox fx:id="repliesContainer" spacing="10" />
 </VBox>
