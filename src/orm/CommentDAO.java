@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 //List Integer: post_id, comment_id
 public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
@@ -250,6 +251,39 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
             e.printStackTrace();
         }
         return comments ;
+    }
+
+
+    public List<Comment> getCommentsByLevel(Comment comment){
+        List<Integer> commentsIds = getCommentsIdsByLevel(comment);
+        List<Comment> comments = new ArrayList<>();
+        try (Connection connection = DBConnection.open_connection()) {
+            String query = "SELECT * FROM Comment WHERE id IN (" + commentsIds.stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                comments.add(mapResultSetToEntity(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return comments;
+    }
+
+    public List<Integer> getCommentsIdsByLevel(Comment comment) {
+        List<Integer> commentsIds = new ArrayList<>();
+        try (Connection connection = DBConnection.open_connection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT child_id FROM CommentHierarchy WHERE post_id = ? AND parent_id = ? ");
+            statement.setInt(1, comment.getPost_id());
+            statement.setInt(2, comment.getId());
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                commentsIds.add(resultSet.getInt("child_id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return commentsIds;
     }
 }
 
