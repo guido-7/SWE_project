@@ -11,12 +11,15 @@ public class Guest {
         this.permits = permits;
         this.role = role;
     }
+
     public boolean hasPermit(Permits permit){
         return permits.contains(permit);
     }
+
     public boolean hasPermits(Set<Permits> permits){
         return this.permits.containsAll(permits);
     }
+
     public Set<Permits> getPermits() {
         return permits;
     }

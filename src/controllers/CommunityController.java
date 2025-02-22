@@ -285,7 +285,6 @@ public class CommunityController implements Initializable, Controller {
         num_monthly_visits.setText(community.getMonthlyVisits() + "");
     }
 
-
     @FXML
     public void loadRules(int communityId) {
         try {

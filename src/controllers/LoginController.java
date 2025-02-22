@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 import src.businesslogic.LoginService;
 import src.servicemanager.SceneManager;
 
+import java.io.IOException;
+
 public class LoginController implements Controller {
 
 
@@ -33,7 +35,7 @@ public class LoginController implements Controller {
     }
 
     @FXML
-    private void handleSignUpButtonAction() {
+    private void handleSignUpButtonAction() throws IOException {
         Stage stage = (Stage) user_id.getScene().getWindow();
         SignUpController.openSignUpPage(stage);
     }

@@ -132,6 +132,7 @@ public class FeedService {
     private List<Post> getPostsFromCommunity() {
         List<Post> posts = new ArrayList<>();
         List<Integer> keys = new ArrayList<>(community_partition.keySet());
+        Collections.shuffle(keys);
 
         for (Integer communityId : keys) {
             Integer postCount = community_partition.get(communityId);

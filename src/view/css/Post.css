@@ -72,3 +72,14 @@
     -fx-background-radius: 10;
     -fx-cursor: hand;
 }
+
+.selected {
+    -fx-background-color: #4CAF50; /* Verde per like */
+    -fx-text-fill: white;
+}
+
+.unselected {
+    -fx-background-color: #D3D3D3; /* Grigio per neutro */
+    -fx-text-fill: black;
+}
+

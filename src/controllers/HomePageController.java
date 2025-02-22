@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import src.businesslogic.FeedService;
@@ -211,6 +212,10 @@ public class HomePageController implements Initializable,Controller  {
 
     @Override
     public void init_data() {
+        if (scrollPane.getContent() instanceof Pane) {
+            ((Pane) scrollPane.getContent()).getChildren().clear();
+        }
+
         System.out.println("Initializing data...");
         searchField.clear();
         List<Post> post = feedService.getFeed();

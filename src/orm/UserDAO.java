@@ -52,7 +52,6 @@ public class UserDAO extends BaseDAO<User,Integer> {
     @Override
     protected void setDeleteParams(PreparedStatement statement, Integer integer) throws SQLException {
         statement.setInt(1, integer);
-
     }
 
     @Override
@@ -84,7 +83,7 @@ public class UserDAO extends BaseDAO<User,Integer> {
     }
 
     public void insertPostVotes(Map<String,Object> parameters) throws SQLException {
-        String sql = "INSERT OR REPLACE INTO PostVotes (user_id, post_id,community_id, vote_type) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT OR REPLACE INTO PostVotes (user_id, post_id, community_id, vote_type) VALUES (?, ?, ?, ?)";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, (int) parameters.get("user_id"));
@@ -107,6 +106,11 @@ public class UserDAO extends BaseDAO<User,Integer> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Integer getVote(int userId, int postId) throws SQLException {
+        return (Integer) retrieveSingleAttribute("PostVotes","vote_type","user_id = ? " +
+                "AND post_id = ? ",userId,postId);
     }
 
     public boolean isValidUser(String email, String password) throws SQLException {

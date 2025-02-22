@@ -99,4 +99,12 @@ public class Post {
     }
 
 
+    public void setLikes(int i) {
+        this.likes = i;
+    }
+
+    public void setDislikes(int i) {
+        this.dislikes = i;
+    }
+
 }

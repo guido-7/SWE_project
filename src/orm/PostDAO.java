@@ -1,6 +1,7 @@
 package src.orm;
 
 import src.domainmodel.Post;
+import src.domainmodel.User;
 import src.managerdatabase.DBConnection;
 
 import java.sql.Connection;
@@ -208,5 +209,53 @@ public class PostDAO extends BaseDAO<Post, Integer>{
         }
         return posts;
     }
+
+    public Post retrievePost(int id) throws SQLException {
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE id = ?")) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return mapResultSetToEntity(resultSet);
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean isLiked(int userId, int postId) {
+        String query = "SELECT COUNT(*) FROM PostVotes WHERE post_id = ? AND user_id = ? AND vote_type = 1";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, postId);
+            statement.setInt(2, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next())
+                    return resultSet.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isDisliked(int userId, int postId) {
+        String query = "SELECT COUNT(*) FROM PostVotes WHERE post_id = ? AND user_id = ? AND vote_type = 0";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, postId);
+            statement.setInt(2, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next())
+                    return resultSet.getInt(1) > 0;
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 
 }
