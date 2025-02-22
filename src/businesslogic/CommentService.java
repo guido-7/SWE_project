@@ -38,8 +38,16 @@ public class CommentService {
         return rootComments;
     }
 
-    public List<Post> getCommentsByLevel(){
-        return  null;
+    public List<Comment> getCommentsByLevel(){
+        List<Comment> commentsByLevel = commentDAO.getCommentsByLevel(comment);
+        System.out.println("New " + commentsByLevel.size() + " comments loaded");
+        return commentsByLevel;
     }
 
+    public boolean hasSubComments() {
+        if(!commentDAO.getCommentsIdsByLevel(comment).isEmpty()) {
+            return true;
+        }
+        return false;
+    }
 }
