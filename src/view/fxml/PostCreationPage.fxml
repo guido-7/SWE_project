@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="400.0" style="-fx-background-color: transparent;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1">
+    <VBox alignment="TOP_CENTER" layoutX="20.0" layoutY="14.0" prefHeight="363.0" prefWidth="605.0" spacing="10" stylesheets="@../css/PostCreationPage.css" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="14.0">
+      <HBox prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Pane prefHeight="200.0" prefWidth="150.0" HBox.hgrow="ALWAYS" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Create post" />
+            <Pane prefHeight="63.0" prefWidth="109.0" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </Pane>
+            <ImageView fx:id="exitButton" fitHeight="40.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/X.jpg" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+      <TextField fx:id="communitySearchBar" maxWidth="200.0" prefHeight="26.0" promptText="Search Community" stylesheets="@../css/SearchField.css">
+         <VBox.margin>
+            <Insets right="355.0" />
+         </VBox.margin>
+      </TextField>
+
+        <!-- Campo per il titolo del post -->
+        <TextField fx:id="titleField" maxWidth="580" promptText="Titolo del post" />
+
+        <!-- TextArea per il corpo del post -->
+        <TextArea fx:id="contentArea" maxWidth="580" prefRowCount="6" promptText="Scrivi qui il tuo post..." wrapText="true" />
+
+        <!-- Bottone per inviare il post -->
+        <Button fx:id="postButton" text="Posta" />
+    </VBox>
+</AnchorPane>

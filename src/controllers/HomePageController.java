@@ -41,6 +41,8 @@ public class HomePageController implements Initializable,Controller  {
     private Button login;
     @FXML
     ImageView userProfileAccess;
+    @FXML
+    private Button CreatePostButton;
 
     User user;
     List<Post> posts;
@@ -67,6 +69,10 @@ public class HomePageController implements Initializable,Controller  {
 
         try {
             init_data();
+            CreatePostButton.setOnMouseClicked(e ->{
+                PostCreationPageController postCreationPageController = new PostCreationPageController();
+                SceneManager.changeScene("postCreation","/src/view/fxml/PostCreationPage.fxml", postCreationPageController);
+            });
             scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal.doubleValue() == 1.0 && !isLoading && !allPostsLoaded) {
                     loadMorePosts();
