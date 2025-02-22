@@ -53,7 +53,7 @@ public class PostPageController implements Controller, Initializable {
             PostController postController = new PostController(new PostService(post));
             fxmlLoader.setController(postController);
             VBox vBox = fxmlLoader.load();
-            postController.setData(post);
+            postController.setDataPostPage(post);
             postsContainer.getChildren().add(vBox);
 
         } catch (IOException | SQLException e) {
@@ -87,4 +87,5 @@ public class PostPageController implements Controller, Initializable {
         List<Comment> rootComments = postService.getRootComments();
        loadRootComments(rootComments);
     }
+
 }
