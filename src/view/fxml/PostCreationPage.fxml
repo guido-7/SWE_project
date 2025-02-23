@@ -12,12 +12,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" style="-fx-background-color: transparent;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1">
+<AnchorPane prefHeight="400.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <VBox alignment="TOP_CENTER" layoutX="20.0" layoutY="14.0" prefHeight="363.0" prefWidth="605.0" spacing="10" stylesheets="@../css/PostCreationPage.css" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="14.0">
       <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
             <Pane prefHeight="200.0" prefWidth="150.0" HBox.hgrow="ALWAYS" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Create post" />
+            <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="Create post" />
             <Pane prefHeight="63.0" prefWidth="109.0" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets />
@@ -30,14 +30,14 @@
             </ImageView>
          </children>
       </HBox>
-      <TextField fx:id="communitySearchBar" maxWidth="200.0" prefHeight="26.0" promptText="Search Community" stylesheets="@../css/SearchField.css">
+      <TextField fx:id="communitySearchBar" maxHeight="26.0" maxWidth="320.0" minHeight="38.0" minWidth="320.0" prefHeight="26.0" prefWidth="350.0" promptText="Search Community" stylesheets="@../css/SearchField.css">
          <VBox.margin>
-            <Insets right="355.0" />
+            <Insets right="250.0" />
          </VBox.margin>
       </TextField>
 
         <!-- Campo per il titolo del post -->
-        <TextField fx:id="titleField" maxWidth="580" promptText="Titolo del post" />
+        <TextField fx:id="titleField" maxWidth="580.0" promptText="Titolo del post" />
 
         <!-- TextArea per il corpo del post -->
         <TextArea fx:id="contentArea" maxWidth="580" prefRowCount="6" promptText="Scrivi qui il tuo post..." wrapText="true" />

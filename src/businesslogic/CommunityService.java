@@ -2,6 +2,7 @@ package src.businesslogic;
 
 import src.domainmodel.*;
 import src.orm.*;
+import src.servicemanager.GuestContext;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -89,5 +90,14 @@ public class CommunityService {
     }
 
 
+    public boolean isSubscribed() {
+        Guest guest =  GuestContext.getCurrentGuest();
+        if(guest.getRole() == Role.GUEST) {
+            return false;
+        }
+        User user = (User) guest;
+        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
+        return subscriptionDAO.isSubscribed(user.getId(),communityId);
 
+    }
 }

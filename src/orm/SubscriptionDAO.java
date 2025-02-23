@@ -1,5 +1,6 @@
 package src.orm;
 
+import src.domainmodel.Community;
 import src.domainmodel.Subscription;
 import src.managerdatabase.DBConnection;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SubscriptionDAO extends BaseDAO<Subscription, List<Integer>> {
+
 
     @Override
     protected String getFindByIdQuery() {
@@ -82,4 +84,43 @@ public class SubscriptionDAO extends BaseDAO<Subscription, List<Integer>> {
         }
         return communityIds;
     }
+
+    public boolean isSubscribed(int userId,int communityId) {
+        String sql = "SELECT * FROM Subscription WHERE user_id = ? AND community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, communityId);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void subscribe(int userId, int communityId) throws SQLException {
+        save(Map.of("user_id", userId, "community_id", communityId));
+    }
+
+    public static List<Community> getSubscribedCommunities(String query,int userId) {
+        String sql = "SELECT * FROM Subscription INNER JOIN Community ON Community.id = Subscription.community_id WHERE user_id = ? AND  Community.title LIKE  ? ";
+        List<Community> communities = new ArrayList<>();
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, userId);
+            statement.setString(2, "%" + query + "%");
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int communityId = resultSet.getInt("community_id");
+                String communityTitle = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                communities.add(new Community(communityId, communityTitle,description));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return communities;
+    }
+
 }

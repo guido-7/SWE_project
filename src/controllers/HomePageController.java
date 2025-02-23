@@ -1,15 +1,9 @@
 package src.controllers;
 
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -19,6 +13,8 @@ import src.businesslogic.FeedService;
 import javafx.scene.control.Label;
 
 import java.io.IOException;
+
+import src.controllers.helpers.CommunitySearchHelper;
 import src.domainmodel.*;
 import src.businesslogic.*;
 import src.servicemanager.SceneManager;
@@ -51,8 +47,7 @@ public class HomePageController implements Initializable,Controller  {
     private Boolean allPostsLoaded = false;
     private ProgressIndicator progressIndicator = new ProgressIndicator();
 
-    private SearchService searchService = new SearchService();
-    private ContextMenu suggestionsPopup = new ContextMenu();
+    private final SearchService searchService = new SearchService();
 
     public HomePageController(){}
 
@@ -63,12 +58,14 @@ public class HomePageController implements Initializable,Controller  {
         this.feedService = feedService;
     }
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         userProfileAccess.setVisible(false);
 
         try {
             init_data();
+
             CreatePostButton.setOnMouseClicked(e ->{
                 PostCreationPageController postCreationPageController = new PostCreationPageController();
                 SceneManager.changeScene("postCreation","/src/view/fxml/PostCreationPage.fxml", postCreationPageController);
@@ -79,56 +76,16 @@ public class HomePageController implements Initializable,Controller  {
                 }
             });
 
-            searchField.textProperty().addListener(new ChangeListener<>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    if (newValue.isEmpty()) {
-                        suggestionsPopup.hide();
-                    } else {
-                        // Avvia una ricerca in background per ottenere le community che corrispondono al testo
-                        Task<List<Community>> searchTask = new Task<>() {
-                            @Override
-                            protected List<Community> call() {
-                                return searchService.searchCommunities(newValue);
-                            }
-                        };
-
-                        searchTask.setOnSucceeded(event -> {
-                            List<Community> communities = searchTask.getValue();
-                            // Popola il ContextMenu
-                            suggestionsPopup.getItems().clear();
-                            if (communities != null && !communities.isEmpty()) {
-                                for (Community community : communities) {
-                                    Label suggestionLabel = new Label(community.getTitle());
-                                    suggestionLabel.prefWidthProperty().bind(searchField.widthProperty());
-                                    CustomMenuItem item = new CustomMenuItem(suggestionLabel, true);
-                                    // Quando si clicca il suggerimento carica CommunityPage
-                                    item.setOnAction(e -> {
-                                        searchField.setText(community.getTitle());
-                                        suggestionsPopup.hide();
-                                        // Carica la pagina della community
-                                        loadCommunityPage(community);
-                                    });
-                                    suggestionsPopup.getItems().add(item);
-                                }
-                                Platform.runLater(() -> {
-                                    if (searchField.getScene() != null && searchField.getScene().getWindow() != null) {
-                                        suggestionsPopup.show(searchField, Side.BOTTOM, 0, 0);
-                                    }
-                                });
-                            } else {
-                                suggestionsPopup.hide();
-                            }
-                        });
-
-                        searchTask.setOnFailed(event -> {
-                            suggestionsPopup.hide();
-                        });
-
-                        new Thread(searchTask).start();
-                    }
+            CommunitySearchHelper communitySearchHelper = new CommunitySearchHelper(searchField,
+                    searchService::searchCommunities, this::loadCommunityPage, community -> {
+                try {
+                    searchService.subscribeCommunity(community);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
             });
+            communitySearchHelper.setupSearchListener();
+
 
         } catch (Exception e) {
             e.printStackTrace();
