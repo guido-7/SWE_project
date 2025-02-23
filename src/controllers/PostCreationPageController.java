@@ -6,9 +6,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import src.businesslogic.PostCreationService;
 import src.businesslogic.SearchService;
 import src.controllers.helpers.CommunitySearchHelper;
 import src.domainmodel.Community;
+import src.domainmodel.User;
+import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
 
 import java.net.URL;
@@ -32,7 +35,12 @@ public class PostCreationPageController implements Controller, Initializable {
     @FXML
     private TextField titleField;
 
-    PostCreationPageController() {
+    int selectedCommunityId;
+
+    private final PostCreationService postCreationService;
+
+    PostCreationPageController(PostCreationService postCreationService) {
+        this.postCreationService = postCreationService;
 
     }
 
@@ -59,6 +67,7 @@ public class PostCreationPageController implements Controller, Initializable {
         communitySearchBar.setText(community.getTitle());
         communitySearchBar.positionCaret(communitySearchBar.getText().length());
         communitySearchBar.setEditable(false);
+        selectedCommunityId = community.getId();
     }
 
     }

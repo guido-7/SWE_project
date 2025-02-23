@@ -17,6 +17,7 @@ import java.io.IOException;
 import src.controllers.helpers.CommunitySearchHelper;
 import src.domainmodel.*;
 import src.businesslogic.*;
+import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
 
 import java.net.URL;
@@ -66,8 +67,12 @@ public class HomePageController implements Initializable,Controller  {
         try {
             init_data();
 
+            searchField.setOnMouseClicked(e->{
+                searchField.setEditable(true);
+            });
+
             CreatePostButton.setOnMouseClicked(e ->{
-                PostCreationPageController postCreationPageController = new PostCreationPageController();
+                PostCreationPageController postCreationPageController = new PostCreationPageController(new PostCreationService());
                 SceneManager.changeScene("postCreation","/src/view/fxml/PostCreationPage.fxml", postCreationPageController);
             });
             scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
@@ -178,9 +183,10 @@ public class HomePageController implements Initializable,Controller  {
         if (scrollPane.getContent() instanceof Pane) {
             ((Pane) scrollPane.getContent()).getChildren().clear();
         }
-
+        CreatePostButton.setVisible(!(GuestContext.getCurrentGuest().getRole() == Role.GUEST));
         System.out.println("Initializing data...");
         searchField.clear();
+        searchField.setEditable(false);
         List<Post> post = feedService.getFeed();
         if(!(post ==null) ){
             posts = new ArrayList<>(feedService.getFeed());
