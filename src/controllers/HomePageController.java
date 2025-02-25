@@ -39,7 +39,7 @@ public class HomePageController implements Initializable,Controller  {
     @FXML
     ImageView userProfileAccess;
     @FXML
-    private Button CreatePostButton;
+    private Button createPostButton;
 
     User user;
     List<Post> posts;
@@ -71,7 +71,7 @@ public class HomePageController implements Initializable,Controller  {
                 searchField.setEditable(true);
             });
 
-            CreatePostButton.setOnMouseClicked(e ->{
+            createPostButton.setOnMouseClicked(e ->{
                 PostCreationPageController postCreationPageController = new PostCreationPageController(new PostCreationService());
                 SceneManager.changeScene("postCreation","/src/view/fxml/PostCreationPage.fxml", postCreationPageController);
             });
@@ -90,12 +90,9 @@ public class HomePageController implements Initializable,Controller  {
                 }
             });
             communitySearchHelper.setupSearchListener();
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void loadPosts(List<Post> newPosts) {
@@ -183,7 +180,7 @@ public class HomePageController implements Initializable,Controller  {
         if (scrollPane.getContent() instanceof Pane) {
             ((Pane) scrollPane.getContent()).getChildren().clear();
         }
-        CreatePostButton.setVisible(!(GuestContext.getCurrentGuest().getRole() == Role.GUEST));
+        createPostButton.setVisible(!(GuestContext.getCurrentGuest().getRole() == Role.GUEST));
         System.out.println("Initializing data...");
         searchField.clear();
         searchField.setEditable(false);
