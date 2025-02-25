@@ -82,13 +82,7 @@ public class HomePageController implements Initializable,Controller  {
             });
 
             CommunitySearchHelper communitySearchHelper = new CommunitySearchHelper(searchField,
-                    searchService::searchCommunities, this::loadCommunityPage, community -> {
-                try {
-                    searchService.subscribeCommunity(community);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+                    searchService::searchCommunities, this::loadCommunityPage);
             communitySearchHelper.setupSearchListener();
         } catch (Exception e) {
             e.printStackTrace();
