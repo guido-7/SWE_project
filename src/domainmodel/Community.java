@@ -17,6 +17,15 @@ public class Community {
         this.description = description;
     }
 
+    public Community(int id, String title, String description, int subscribers, int monthlyVisits, int score) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.subscribers = subscribers;
+        this.monthlyVisits = monthlyVisits;
+        this.score = score;
+    }
+
     public String getDescription() {
         return description;
     }
