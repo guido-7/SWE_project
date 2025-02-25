@@ -19,6 +19,7 @@ import src.domainmodel.*;
 import src.businesslogic.*;
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
+import src.utils.LoadingPost;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -38,6 +39,8 @@ public class HomePageController implements Initializable,Controller  {
     private Button login;
     @FXML
     ImageView userProfileAccess;
+    @FXML
+    private Button createCommunityButton;
     @FXML
     private Button createPostButton;
 
@@ -63,9 +66,15 @@ public class HomePageController implements Initializable,Controller  {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         userProfileAccess.setVisible(false);
+        createCommunityButton.setVisible(false);
 
         try {
             init_data();
+            createCommunityButton.setOnMouseClicked(e->{
+                CommunityCreationService communityCreationService = new CommunityCreationService();
+                CommunityCreationPageController communityCreationPageController = new CommunityCreationPageController(communityCreationService);
+                SceneManager.changeScene("Community creation","/src/view/fxml/CommunityCreationPage.fxml",communityCreationPageController);
+            });
 
             searchField.setOnMouseClicked(e->{
                 searchField.setEditable(true);
@@ -90,18 +99,7 @@ public class HomePageController implements Initializable,Controller  {
     }
 
     private void loadPosts(List<Post> newPosts) {
-        for (Post post : newPosts) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Post.fxml"));
-                PostController postController = new PostController(new PostService(post));
-                fxmlLoader.setController(postController);
-                VBox vBox = fxmlLoader.load();
-                postController.setData(post);
-                postsContainer.getChildren().add(vBox);
-            } catch (IOException | SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        LoadingPost.LoadPosts(newPosts,postsContainer);
     }
 
     private void loadMorePosts() {
@@ -174,7 +172,9 @@ public class HomePageController implements Initializable,Controller  {
         if (scrollPane.getContent() instanceof Pane) {
             ((Pane) scrollPane.getContent()).getChildren().clear();
         }
-        createPostButton.setVisible(!(GuestContext.getCurrentGuest().getRole() == Role.GUEST));
+        boolean isUser = !(GuestContext.getCurrentGuest().getRole() == Role.GUEST);
+        createPostButton.setVisible(isUser);
+        createCommunityButton.setVisible(isUser);
         System.out.println("Initializing data...");
         searchField.clear();
         searchField.setEditable(false);

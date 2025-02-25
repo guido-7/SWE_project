@@ -20,7 +20,10 @@
                   <Image url="@../images/Logo.png" />
                </image>
             </ImageView>
-            <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <Pane prefHeight="66.0" prefWidth="130.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Button fx:id="createCommunityButton" layoutX="22.0" layoutY="15.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" styleClass="login-button" stylesheets="@../css/HomePage.css" text="New Community" />
+               </children></Pane>
             <TextField fx:id="searchField" prefHeight="26.0" prefWidth="320.0" promptText="Search Community" stylesheets="@../css/SearchField.css" />
             <Pane prefWidth="99.0" HBox.hgrow="ALWAYS" />
             <Button fx:id="createPostButton" mnemonicParsing="false" onMouseClicked="#handleLoginButton" prefHeight="35.0" styleClass="login-button" stylesheets="@../css/HomePage.css" text="Create Post">
