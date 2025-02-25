@@ -208,4 +208,25 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
         }
         return rules;
     }
+
+    public void saveRules(int CommunityId,Map<Integer,ArrayList<String>> rulesMapping) {
+        for ( Integer key : rulesMapping.keySet() ) {
+            ArrayList<String> titleAndContent = rulesMapping.get(key);
+            String title = titleAndContent.getFirst();
+            String content = titleAndContent.getLast();
+            String sql = "INSERT INTO Rules (community_id,title, content, priority) VALUES ( ?, ?, ? , ? )";
+            try (Connection connection = DBConnection.open_connection();
+                 PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setInt(1, CommunityId);
+                    statement.setString(2,title);
+                    statement.setString(3,content);
+                    statement.setInt(4, key);
+                    statement.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+
+            }
+        }
+    }
 }
+
