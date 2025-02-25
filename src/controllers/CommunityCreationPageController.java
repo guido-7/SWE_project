@@ -2,6 +2,7 @@ package src.controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import src.businesslogic.CommunityCreationService;
@@ -46,6 +47,9 @@ public class CommunityCreationPageController implements Controller, Initializabl
     @FXML
     private TextField RuleTitle3;
 
+    @FXML
+    private ImageView exitButton;
+
     private final CommunityCreationService communityCreationService;
 
     public CommunityCreationPageController(CommunityCreationService communityCreationService){
@@ -61,7 +65,6 @@ public class CommunityCreationPageController implements Controller, Initializabl
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         createButton.setOnMouseClicked(e -> {
             String title = titleField.getText();
             String description = descriptionArea.getText();
@@ -84,5 +87,11 @@ public class CommunityCreationPageController implements Controller, Initializabl
             }
             SceneManager.changeScene("home", "/src/view/fxml/HomePage.fxml",null);
         });
+
+        exitButton.setOnMouseClicked(e -> {
+            SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
+        });
+
     }
+
 }
