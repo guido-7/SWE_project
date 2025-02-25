@@ -22,26 +22,20 @@ public class PostCreationPageController implements Controller, Initializable {
 
     @FXML
     private TextField communitySearchBar;
-
     @FXML
     private TextArea contentArea;
-
     @FXML
     private ImageView exitButton;
-
     @FXML
     private Button postButton;
-
     @FXML
     private TextField titleField;
 
     int selectedCommunityId;
-
     private final PostCreationService postCreationService;
 
     PostCreationPageController(PostCreationService postCreationService) {
         this.postCreationService = postCreationService;
-
     }
 
     @Override
@@ -58,9 +52,8 @@ public class PostCreationPageController implements Controller, Initializable {
         });
         SearchService searchService = new SearchService();
         CommunitySearchHelper communitySearchHelper = new CommunitySearchHelper(communitySearchBar,
-                searchService::searchSubscribedCommunities, this::selectCommunity,null);
+                searchService::searchSubscribedCommunities, this::selectCommunity);
         communitySearchHelper.setupSearchListener();
-
     }
 
     private void selectCommunity(Community community) {
@@ -69,6 +62,4 @@ public class PostCreationPageController implements Controller, Initializable {
         communitySearchBar.setEditable(false);
         selectedCommunityId = community.getId();
     }
-
-    }
-
+}
