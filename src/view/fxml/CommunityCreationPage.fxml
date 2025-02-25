@@ -4,18 +4,34 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="721.0" prefWidth="935.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
 
     <VBox alignment="TOP_CENTER" layoutX="20.0" layoutY="14.0" prefHeight="667.0" prefWidth="899.0" spacing="10" stylesheets="@../css/CommunityCreationPage.css" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="14.0">
-
-        <Text fx:id="headerTitle" text="Create Community">
-         <VBox.margin>
-            <Insets top="10.0" />
-         </VBox.margin></Text>
+      <HBox prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+      
+              <Text fx:id="headerTitle" text="Create Community">
+               <HBox.margin>
+                  <Insets left="40.0" />
+               </HBox.margin>
+            </Text>
+            <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <ImageView fx:id="exitButton" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/X.jpg" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
 
         <!-- Title Input -->
         <TextField fx:id="titleField" maxWidth="580.0" promptText="Community Title" />
