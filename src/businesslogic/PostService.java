@@ -12,9 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PostService {
-    private Post post;
-    private Integer vote;
-    private PostDAO postDAO = new PostDAO();
+    private  Post post;
+    private final PostDAO postDAO = new PostDAO();
 
 
     public PostService(Post post) throws SQLException {
@@ -25,43 +24,34 @@ public class PostService {
         return post;
     }
 
-    private boolean canLike(Guest guest) {
-        return guest.getRole() != Role.GUEST;
+    public void toggleLike(User user) throws SQLException {
+        toggleLikeDislike(user,"like");
     }
 
-    public void toggleLike(Guest guest) throws SQLException {
-        toggleLikeDislike(guest,"like");
+    public void toggleDislike(User user) throws SQLException {
+        toggleLikeDislike(user,"dislike");
     }
 
-    public void toggleDislike(Guest guest) throws SQLException {
-        toggleLikeDislike(guest,"dislike");
-    }
-
-    private void toggleLikeDislike(Guest guest, String likelihood) throws SQLException {
+    private void toggleLikeDislike(User guest, String likelihood) throws SQLException {
         UserDAO userDAO = new UserDAO();
-        if (!canLike(guest)) return;
-        User currentUser = (User)guest;
-        Integer userVote = getVote(currentUser);
+        Integer userVote = getVote((User)guest);
         switch (likelihood) {
             case "like":
                 // userVote == 1
                 if (userVote == null || userVote == 0){
-                    //voteInfo.put("post_type", userVote);
-                    Map<String, Object> voteInfo = Map.of("user_id", currentUser.getId(), "post_id", post.getId(), "community_id", post.getCommunityId(), "vote_type", 1);
+                    Map<String, Object> voteInfo = Map.of("user_id", ((User)guest).getId(), "post_id", post.getId(), "community_id", post.getCommunityId(), "vote_type", 1);
                     userDAO.insertPostVotes(voteInfo); // PostVotes
                 } else {
-                    Map<String, Object> voteInfo = Map.of("user_id", currentUser.getId(), "post_id", post.getId());
+                    Map<String, Object> voteInfo = Map.of("user_id", ((User)guest).getId(), "post_id", post.getId());
                     userDAO.removePostVotes(voteInfo);
                 }
                 break;
             case "dislike":
-                //if (userVote == 0)
                 if (userVote == null || userVote == 1) {
-                    //voteInfo.put("post_type", userVote);
-                    Map<String, Object> voteInfo = Map.of("user_id", currentUser.getId(), "post_id", post.getId(), "community_id", post.getCommunityId(), "vote_type", 0);
+                    Map<String, Object> voteInfo = Map.of("user_id", ((User)guest).getId(), "post_id", post.getId(), "community_id", post.getCommunityId(), "vote_type", 0);
                     userDAO.insertPostVotes(voteInfo);
                 } else {
-                    Map<String, Object> voteInfo = Map.of("user_id", currentUser.getId(), "post_id", post.getId());
+                    Map<String, Object> voteInfo = Map.of("user_id", ((User)guest).getId(), "post_id", post.getId());
                     userDAO.removePostVotes(voteInfo);
                 }
                 break;
@@ -103,4 +93,5 @@ public class PostService {
     public boolean isDisliked(int userId){
         return postDAO.isDisliked(userId,post.getId());
     }
+
 }

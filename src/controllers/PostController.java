@@ -91,7 +91,10 @@ public class PostController implements Controller, Initializable {
     private void handleLikeButton() {
         try {
             Guest guest = GuestContext.getCurrentGuest();
-            postService.toggleLike(guest);
+            if(guest.getRole() == Role.GUEST)
+                return;
+            User user = (User) guest;
+            postService.toggleLike(user);
             updateScore();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -101,7 +104,10 @@ public class PostController implements Controller, Initializable {
     private void handleDislikeButton() {
         try {
             Guest guest = GuestContext.getCurrentGuest();
-            postService.toggleDislike(guest);
+            if(guest.getRole() == Role.GUEST)
+                return;
+            User user = (User) guest;
+            postService.toggleDislike(user);
             updateScore();
         } catch (SQLException e) {
             e.printStackTrace();
