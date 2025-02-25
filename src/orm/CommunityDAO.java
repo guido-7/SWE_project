@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.*;
 
 public class CommunityDAO extends BaseDAO<Community, Integer> {
-
-
     @Override
     protected String getFindByIdQuery() {
         return "SELECT * FROM Community WHERE id = ?";
@@ -31,7 +29,10 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
         int id = resultSet.getInt("id");
         String title = resultSet.getString("title");
         String description = resultSet.getString("description");
-        return new Community(id, title, description);
+        int subscribers = resultSet.getInt("subs");
+        int monthlyVisits = resultSet.getInt("visits");
+        int score = resultSet.getInt("scores");
+        return new Community(id, title, description, subscribers, monthlyVisits, score);
     }
 
     @Override
@@ -142,7 +143,6 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
                             int reported_user_id = (int) data.getLast();
                             String reported_nickname = userDAO.getNicknameById(reported_user_id);
                             reports.add(new PostWarnings(sender_id, sender_nickname,content, post_id, reported_nickname,title));
-
                 }
                 return reports;
             }
@@ -186,7 +186,6 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
         }
         return reports;
     }
-
 
     public List<Rule> getCommunityRules(int communityId) {
         List<Rule> rules = new ArrayList<>();

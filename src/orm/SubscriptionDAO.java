@@ -12,7 +12,6 @@ import java.util.Map;
 
 public class SubscriptionDAO extends BaseDAO<Subscription, List<Integer>> {
 
-
     @Override
     protected String getFindByIdQuery() {
         return "SELECT * FROM Subscription WHERE user_id = ? AND community_id = ?";
@@ -68,6 +67,7 @@ public class SubscriptionDAO extends BaseDAO<Subscription, List<Integer>> {
         statement.setInt(1, id.get(0)); // user_id
         statement.setInt(2, id.get(1)); // community_id
     }
+
     public ArrayList<Integer> getCommunityIds(int userId,int numberofCommunities){
         String sql = "SELECT community_id FROM Subscription INNER JOIN Community ON Community.id = Subscription.community_id WHERE user_id = ? ORDER BY (scores * 0.6 + visits * 0.4) DESC LIMIT ?";
         ArrayList<Integer> communityIds = new ArrayList<>();
@@ -101,6 +101,10 @@ public class SubscriptionDAO extends BaseDAO<Subscription, List<Integer>> {
 
     public void subscribe(int userId, int communityId) throws SQLException {
         save(Map.of("user_id", userId, "community_id", communityId));
+    }
+
+    public void unsubscribe(int userId, int communityId) throws SQLException {
+        deleteById(List.of(userId, communityId));
     }
 
     public static List<Community> getSubscribedCommunities(String query,int userId) {
