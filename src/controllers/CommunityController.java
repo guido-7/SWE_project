@@ -4,14 +4,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
 import src.businesslogic.PostService;
 import src.businesslogic.SearchService;
@@ -55,6 +52,10 @@ public class CommunityController implements Initializable, Controller {
     private ImageView userProfileAccess;
     @FXML
     private ImageView homePageButton;
+    @FXML
+    private Button subscribeButton;
+    @FXML
+    private Button unsubscribeButton;
 
     private List<Post> posts;
     private final CommunityService communityservice;
@@ -64,14 +65,11 @@ public class CommunityController implements Initializable, Controller {
     private final SearchService searchService = new SearchService();
     private final ContextMenu suggestionsPopup = new ContextMenu();
     private String currentSearchTerm = "";
-    //private SearchService searchCommunityService = new SearchService();
     private int currentCommunityId;
-
 
     public CommunityController(CommunityService communityService) {
         this.communityservice = communityService;
     }
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -98,7 +96,6 @@ public class CommunityController implements Initializable, Controller {
                 }
             });
 
-            // Search field event handlers
             searchField.setOnKeyReleased(event -> {
                 if (event.getCode() == KeyCode.ENTER) {
                     event.consume();
@@ -114,7 +111,6 @@ public class CommunityController implements Initializable, Controller {
                 handleSettingsClick();
             });
 
-            // Search field suggestions
             searchField.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue.isEmpty()) {
                     suggestionsPopup.hide();
@@ -126,6 +122,30 @@ public class CommunityController implements Initializable, Controller {
 
             rules.setOnMouseClicked(event -> loadRules(currentCommunityId));
 
+            subscribeButton.setOnMouseClicked(event -> {
+                try {
+                    if(communityservice.subscribe()) {
+                        setData(communityservice.getCommunity());
+                        subscribeButton.setVisible(false);
+                        unsubscribeButton.setVisible(true);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            unsubscribeButton.setOnMouseClicked(event -> {
+                try {
+                    if (communityservice.unsubscribe()) {
+                        setData(communityservice.getCommunity());
+                        subscribeButton.setVisible(true);
+                        unsubscribeButton.setVisible(false);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,8 +154,6 @@ public class CommunityController implements Initializable, Controller {
     private void handleSettingsClick() {
         SceneManager.changeScene("community settings " + communityservice.getCommunityId(), "/src/view/fxml/CommunitySettings.fxml", new CommunitySettingsController(communityservice));
     }
-
-
 
     private void updateSuggestions(String searchTerm) {
         Task<List<Post>> searchTask = new Task<>() {
@@ -176,7 +194,6 @@ public class CommunityController implements Initializable, Controller {
 
         new Thread(searchTask).start();
     }
-
 
     private void loadPosts(List<Post> newPosts) {
         LoadingPost.LoadPosts(newPosts,postsContainer);
@@ -266,7 +283,6 @@ public class CommunityController implements Initializable, Controller {
             } else {
                 loadPosts(newPosts);
             }
-
             isLoading = false;
         });
 
@@ -281,6 +297,7 @@ public class CommunityController implements Initializable, Controller {
 
     public void setData(Community community) {
         System.out.println("Setting data");
+        //communityservice.refreshCommunity(community);
         community_title.setText(community.getTitle());
         description.setText(community.getDescription());
         num_subscribes.setText(community.getSubscribers() + "");
@@ -311,9 +328,7 @@ public class CommunityController implements Initializable, Controller {
             userProfileAccess.setVisible(true);
             Moderator moderator = communityservice.getModerator(user.getId());
             if (moderator != null && moderator.getRole() == Role.MODERATOR) {
-
                 updateUI();
-
                 return moderator;
             } else return guest;
         }
@@ -322,18 +337,25 @@ public class CommunityController implements Initializable, Controller {
 
     private Guest retriveRightGuest() throws SQLException {
         return getCurrentGuest(GuestContext.getCurrentGuest());
-
     }
+
     private void updateUI(){
         settings.setVisible(true);
     }
-
 
     @Override
     public void init_data() throws SQLException {
         searchField.clear();
         Community currentCommunity = communityservice.getCommunity();
         setData(currentCommunity);
+
+        if (communityservice.isSubscribed()) {
+            subscribeButton.setVisible(false);
+            unsubscribeButton.setVisible(true);
+        } else {
+            subscribeButton.setVisible(true);
+            unsubscribeButton.setVisible(false);
+        }
 
         // get the guest for the page
         Guest guest = retriveRightGuest();
