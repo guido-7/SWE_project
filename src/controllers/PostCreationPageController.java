@@ -50,6 +50,18 @@ public class PostCreationPageController implements Controller, Initializable {
         exitButton.setOnMouseClicked(e -> {
             SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
         });
+        postButton.setOnMouseClicked(e -> {
+            String title = titleField.getText();
+            String content = contentArea.getText();
+            int userId = ((User) GuestContext.getCurrentGuest()).getId();
+            try {
+                postCreationService.createPost(title,content,selectedCommunityId,userId);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
+        });
         SearchService searchService = new SearchService();
         CommunitySearchHelper communitySearchHelper = new CommunitySearchHelper(communitySearchBar,
                 searchService::searchSubscribedCommunities, this::selectCommunity);

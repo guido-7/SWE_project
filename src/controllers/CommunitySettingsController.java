@@ -80,8 +80,9 @@ public class CommunitySettingsController implements Controller {
         });
 
         reported.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getReported_nickname()));
-        setData(communityService.getPostWarnings());
-
+        content.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getContent()));
+        title.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
+        setData(communityService.getWarnings());
     }
 
     private void backToCommunity() {
