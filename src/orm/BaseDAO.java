@@ -23,13 +23,19 @@ public abstract class BaseDAO<T, ID> {
         return Optional.empty();
     }
 
-    public void save(Map<String, Object> parameters) throws SQLException {
+    public int save(Map<String, Object> parameters) throws SQLException {
         String query = getInsertQuery();
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             setInsertParams(statement, parameters);
             statement.executeUpdate();
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1); // Restituisci l'ID generato (long)
+                }
+            }
         }
+        return -1;
     }
 
     public void update(T entity) throws SQLException {
