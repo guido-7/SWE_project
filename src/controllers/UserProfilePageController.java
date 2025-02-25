@@ -84,8 +84,7 @@ public class UserProfilePageController implements Initializable, Controller {
         tempDescription = profileDescription.getText();
 
         try {
-            LoadingPost.LoadPosts(userProfileService.getUserPosts(), UserPostsContainer);
-            LoadingPost.LoadPosts(userProfileService.getSavedPosts(), SavedPostsContainer);
+            init_data();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -156,6 +155,8 @@ public class UserProfilePageController implements Initializable, Controller {
     }
 
     @Override
-    public void init_data() {
+    public void init_data() throws SQLException {
+        LoadingPost.LoadPosts(userProfileService.getUserPosts(), UserPostsContainer);
+        LoadingPost.LoadPosts(userProfileService.getSavedPosts(), SavedPostsContainer);
     }
 }
