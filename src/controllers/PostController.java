@@ -56,7 +56,6 @@ public class PostController implements Controller, Initializable {
         postButton.setOnAction(event -> goToPostPage());
         likeButton.setOnAction(event -> handleLikeButton());
         dislikeButton.setOnAction(event -> handleDislikeButton());
-
     }
 
     private void setDataOnCard(Post post) throws SQLException {
@@ -72,15 +71,13 @@ public class PostController implements Controller, Initializable {
     }
 
     private void checkUserVote() {
-        PostDAO postDAO = new PostDAO();
         Guest guest = GuestContext.getCurrentGuest();
         if (guest.getRole() == Role.GUEST) return;
         User currentUser = (User)guest;
-        isLiked = postDAO.isLiked(currentUser.getId(), postService.getPost().getId());
-        isDisliked = postDAO.isDisliked(currentUser.getId(), postService.getPost().getId());
+        isLiked = postService.isLiked(currentUser.getId());
+        isDisliked = postService.isDisliked(currentUser.getId());
         updateButtonStyles();
     }
-
 
     public void setData(Post post) throws SQLException {
         myVBox.setMaxHeight(180);
@@ -90,7 +87,6 @@ public class PostController implements Controller, Initializable {
     public void setDataPostPage(Post post) throws SQLException {
         myVBox.setMaxHeight(Region.USE_COMPUTED_SIZE);
         setDataOnCard(post);
-
     }
 
     private void handleLikeButton() {
@@ -136,7 +132,6 @@ public class PostController implements Controller, Initializable {
         }
     }
 
-
     private void goToPostPage(){
         String fxmlfile = "/src/view/fxml/PostPage.fxml";
         PostPageController postPageController = new PostPageController(postService);
@@ -153,5 +148,4 @@ public class PostController implements Controller, Initializable {
             e.printStackTrace();
         }
     }
-
 }
