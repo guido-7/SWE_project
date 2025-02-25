@@ -11,7 +11,6 @@ import src.domainmodel.Guest;
 import src.domainmodel.Post;
 import src.domainmodel.Role;
 import src.domainmodel.User;
-import src.orm.PostDAO;
 import src.servicemanager.FormattedTime;
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
