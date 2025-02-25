@@ -4,6 +4,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import src.businesslogic.PostService;
 import src.controllers.PostController;
 import src.domainmodel.Post;
 
@@ -17,8 +18,9 @@ public class LoadingPost {
         for (Post post : newPosts) {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(LoadingPost.class.getResource("/src/view/fxml/Post.fxml"));
+                PostController postController = new PostController(new PostService(post));
+                fxmlLoader.setController(postController);
                 VBox vBox = fxmlLoader.load();
-                PostController postController = fxmlLoader.getController();
                 postController.setData(post);
                 postsContainer.getChildren().add(vBox);
             } catch (IOException | SQLException e) {
