@@ -20,6 +20,7 @@ import src.domainmodel.*;
 
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
+import src.utils.LoadingPost;
 
 import java.io.IOException;
 import java.net.URL;
@@ -178,18 +179,19 @@ public class CommunityController implements Initializable, Controller {
 
 
     private void loadPosts(List<Post> newPosts) {
-        for (Post post : newPosts) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Post.fxml"));
-                PostController postController = new PostController(new PostService(post));
-                fxmlLoader.setController(postController);
-                VBox vBox = fxmlLoader.load();
-                postController.setData(post);
-                postsContainer.getChildren().add(vBox);
-            } catch (IOException | SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        LoadingPost.LoadPosts(newPosts,postsContainer);
+//        for (Post post : newPosts) {
+//            try {
+//                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Post.fxml"));
+//                PostController postController = new PostController(new PostService(post));
+//                fxmlLoader.setController(postController);
+//                VBox vBox = fxmlLoader.load();
+//                postController.setData(post);
+//                postsContainer.getChildren().add(vBox);
+//            } catch (IOException | SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     // Reset posts to the initial state after a search
