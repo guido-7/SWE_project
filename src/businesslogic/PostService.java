@@ -88,16 +88,19 @@ public class PostService {
         return commentDAO.getRootComments(post,10,0);
     }
 
-
-
-
     public void refreshPost() {
         try {
-            post = postDAO.retrievePost(post.getId());
+            post = postDAO.findById(post.getId()).orElse(null);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    public boolean isLiked(int userId){
+        return postDAO.isLiked(userId,post.getId());
+    }
 
+    public boolean isDisliked(int userId){
+        return postDAO.isDisliked(userId,post.getId());
+    }
 }
