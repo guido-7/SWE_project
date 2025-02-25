@@ -20,17 +20,14 @@ public class CommunitySearchHelper {
     private final TextField searchField;
     private final ContextMenu suggestionsPopup = new ContextMenu();
     private final Consumer<Community> onCommunitySelected;
-    private final Consumer<Community> onSubscribe;
     private final Function<String, List<Community>> searchFunction;
-    private boolean isOverButton = false;
     private boolean isCommunitySelected = false;
 
     public CommunitySearchHelper(TextField searchField, Function<String, List<Community>> searchFunction,
-                                 Consumer<Community> onCommunitySelected, Consumer<Community> onSubscribe) {
+                                 Consumer<Community> onCommunitySelected) {
         this.searchField = searchField;
         this.searchFunction = searchFunction;
         this.onCommunitySelected = onCommunitySelected;
-        this.onSubscribe = onSubscribe;
     }
 
     public void setupSearchListener() {
@@ -50,7 +47,7 @@ public class CommunitySearchHelper {
                 return searchFunction.apply(query);// action for search
             }
         };
-        searchField.setOnMouseClicked(e->{
+        searchField.setOnMouseClicked(e -> {
             isCommunitySelected = false;
             searchField.setEditable(true);
         });
@@ -65,43 +62,21 @@ public class CommunitySearchHelper {
                     boolean isSubscribed = communityService.isSubscribed();
                     boolean isGuest = GuestContext.getCurrentGuest().getRole() == Role.GUEST;
 
-
-                    // Label con nome community
                     Text communityText = new Text(community.getTitle());
                     if (!isSubscribed) {
                         communityText.setFill(Color.GRAY); // Se non è iscritto, testo grigio
                     }
 
-                    // Bottone "Iscriviti" solo se non iscritto
-                    Button subscribeButton = new Button("Subscribe");
-                    subscribeButton.setVisible(!isSubscribed && !isGuest && !(onSubscribe == null));
-                    subscribeButton.setOnMouseEntered(e->isOverButton = true);
-                    subscribeButton.setOnMouseExited(e->isOverButton = false);
-
-                    subscribeButton.setOnMouseClicked(e -> {
-                        onSubscribe.accept(community);
-                        e.consume();
-                        subscribeButton.setVisible(false);
-                        communityText.setFill(Color.BLACK);
-                    });
-
-
-                    // Contenitore con testo e bottone
-                    HBox suggestionBox = new HBox(10, communityText, subscribeButton);
-                    suggestionBox.prefWidthProperty().bind(searchField.widthProperty());// Larghezza dinamica
-
+                    HBox suggestionBox = new HBox(10, communityText);
+                    suggestionBox.prefWidthProperty().bind(searchField.widthProperty());
                     CustomMenuItem item = new CustomMenuItem(suggestionBox, true);
                     item.setHideOnClick(false);
 
-
                     item.setOnAction(e -> {
-                            if(!isOverButton){
-                            //searchField.setText(community.getTitle());
-                            isCommunitySelected = true;
-                            suggestionsPopup.hide();
-                            onCommunitySelected.accept(community);}
+                        isCommunitySelected = true;
+                        suggestionsPopup.hide();
+                        onCommunitySelected.accept(community);
                     });
-
                     suggestionsPopup.getItems().add(item);
                 }
 
@@ -116,5 +91,3 @@ public class CommunitySearchHelper {
         new Thread(searchTask).start();
     }
 }
-
-
