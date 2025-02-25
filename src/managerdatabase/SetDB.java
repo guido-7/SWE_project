@@ -181,7 +181,6 @@ public class  SetDB {
         DBConnection.query(sql);
     }
 
-
     public static void createBannedUsersTable() {
         String sql = "CREATE TABLE IF NOT EXISTS BannedUsers ("
                 + " user_id INTEGER NOT NULL,"
@@ -219,7 +218,27 @@ public class  SetDB {
                 + " FOREIGN KEY (community_id) REFERENCES Community(id)"
                 + ");";
 
+        String sql2 = "CREATE TRIGGER IF NOT EXISTS update_subs"
+                + " AFTER INSERT ON Subscription"
+                + " FOR EACH ROW"
+                + " BEGIN"
+                + " UPDATE Community"
+                + " SET subs = (SELECT COUNT(*) FROM Subscription WHERE community_id = NEW.community_id)"
+                + " WHERE id = NEW.community_id;"
+                + " END;";
+
+        String sql3 = "CREATE TRIGGER IF NOT EXISTS delete_subs"
+                + " AFTER DELETE ON Subscription"
+                + " FOR EACH ROW"
+                + " BEGIN"
+                + " UPDATE Community"
+                + " SET subs = (SELECT COUNT(*) FROM Subscription WHERE community_id = OLD.community_id)"
+                + " WHERE id = OLD.community_id;"
+                + " END;";
+
         DBConnection.query(sql);
+        DBConnection.query(sql2);
+        DBConnection.query(sql3);
     }
 
     public static void createPostVotesTable() {
