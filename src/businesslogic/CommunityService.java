@@ -10,13 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommunityService {
-
-    CommunityDAO communityDAO = new CommunityDAO();
-    int  noOfPostsTaken;
-    PostDAO postDao = new PostDAO();
     int communityId;
+    int noOfPostsTaken;
     int numberOfPosts = 30;
-
+    PostDAO postDao = new PostDAO();
+    CommunityDAO communityDAO = new CommunityDAO();
 
     public CommunityService(int communityId) {
         this.communityId = communityId;
@@ -89,7 +87,6 @@ public class CommunityService {
         return moderatorDAO.getCommunityModerator(moderatorId, communityId);
     }
 
-
     public boolean isSubscribed() {
         Guest guest =  GuestContext.getCurrentGuest();
         if(guest.getRole() == Role.GUEST) {
@@ -98,6 +95,25 @@ public class CommunityService {
         User user = (User) guest;
         SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
         return subscriptionDAO.isSubscribed(user.getId(),communityId);
+    }
 
+    public boolean subscribe() throws SQLException {
+        Guest guest =  GuestContext.getCurrentGuest();
+        if(guest.getRole() == Role.GUEST)
+            return false;
+        User user = (User) guest;
+        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
+        subscriptionDAO.subscribe(user.getId(), communityId);
+        return true;
+    }
+
+    public boolean unsubscribe() throws SQLException {
+        Guest guest =  GuestContext.getCurrentGuest();
+        if(guest.getRole() == Role.GUEST)
+            return false;
+        User user = (User) guest;
+        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
+        subscriptionDAO.unsubscribe(user.getId(), communityId);
+        return true;
     }
 }
