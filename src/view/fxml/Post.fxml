@@ -6,6 +6,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
 <!-- Questa card mostra il post con titolo, autore, orario, contenuto e area di reazione in basso a destra -->
@@ -19,6 +20,12 @@
         <Label fx:id="username" styleClass="post-author" text="Author" />
       <Label text="·" />
         <Label fx:id="date" styleClass="post-time" text="12:34" />
+      <Pane prefHeight="0.0" prefWidth="291.0" HBox.hgrow="ALWAYS" />
+      <ImageView fx:id="deletePostButton" fitHeight="21.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/delete.png" />
+         </image>
+      </ImageView>
     </HBox>
     <Label fx:id="title" styleClass="post-title" text="Post Title" />
 

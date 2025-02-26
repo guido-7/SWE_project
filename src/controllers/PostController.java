@@ -4,8 +4,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import src.businesslogic.CommunityService;
 import src.businesslogic.PostService;
 import src.domainmodel.Guest;
 import src.domainmodel.Post;
@@ -40,6 +42,8 @@ public class PostController implements Controller, Initializable {
     private Button likeButton;
     @FXML
     private Button dislikeButton;
+    @FXML
+    private ImageView deletePostButton;
 
     private PostService postService;
     private final FormattedTime formatter = new FormattedTime();
@@ -55,7 +59,17 @@ public class PostController implements Controller, Initializable {
         postButton.setOnAction(event -> goToPostPage());
         likeButton.setOnAction(event -> handleLikeButton());
         dislikeButton.setOnAction(event -> handleDislikeButton());
+        deletePostButton.setOnMouseClicked(event -> handleDeletePost());
     }
+
+    private void handleDeletePost() {
+        postService.deletePost(postService.getPost().getId());
+        //CommunityService communityService = new CommunityService(postService.getPost().getCommunityId());
+        //SceneManager.changeScene("CommunityPage", "/src/view/fxml/CommunityPage.fxml", new CommunityController(communityService));
+        SceneManager.loadScene("/src/view/fxml/CommunityPage.fxml", new CommunityController(new CommunityService(postService.getPost().getCommunityId())));
+    }
+
+
 
     private void setDataOnCard(Post post) throws SQLException {
         String communityTitle = postService.getCommunityTitle();
@@ -67,6 +81,22 @@ public class PostController implements Controller, Initializable {
         content.setText(post.getContent());
         scoreLabel.setText(post.getLikes() - post.getDislikes() + "");
         checkUserVote();
+        checkPostVisibility(post);
+    }
+
+    private void checkPostVisibility(Post post) {
+        Guest guest = GuestContext.getCurrentGuest();
+
+        if (guest.getRole() != Role.GUEST) {
+            User user = (User) guest;
+            if (postService.isPostOwner(user.getId())) {
+                deletePostButton.setVisible(true);
+            } else {
+                deletePostButton.setVisible(false);
+            }
+        } else {
+            deletePostButton.setVisible(false);
+        }
     }
 
     private void checkUserVote() {

@@ -29,6 +29,8 @@ public class SceneManager {
 
     public static void loadPrimaryScene(String name, String fileFxml, Controller controller) {
         try {
+            System.out.println("Loading scene: " + name);
+
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fileFxml));
             loader.setController(controller);
             Parent root = loader.load();
@@ -61,6 +63,8 @@ public class SceneManager {
 
     private static Controller changeScene(String name, String fileFxml, Controller controller, Map<String, Scene> cache, Stage stage ,Map<Scene, Controller> Controllers) {
         try {
+            System.out.println("Loading scene: " + name);
+
             if (cache.containsKey(name)) {
                 Scene scene = cache.get(name);
                 System.out.println("Scene from cache");

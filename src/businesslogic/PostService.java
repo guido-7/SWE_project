@@ -94,4 +94,15 @@ public class PostService {
         return postDAO.isDisliked(userId,post.getId());
     }
 
+    public boolean isPostOwner(int id) {
+        return post.getUserId() == id;
+    }
+
+    public void deletePost(int id) {
+        try {
+            postDAO.deleteById(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
