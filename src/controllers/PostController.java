@@ -64,8 +64,6 @@ public class PostController implements Controller, Initializable {
 
     private void handleDeletePost() {
         postService.deletePost(postService.getPost().getId());
-        //CommunityService communityService = new CommunityService(postService.getPost().getCommunityId());
-        //SceneManager.changeScene("CommunityPage", "/src/view/fxml/CommunityPage.fxml", new CommunityController(communityService));
         SceneManager.loadScene("/src/view/fxml/CommunityPage.fxml", new CommunityController(new CommunityService(postService.getPost().getCommunityId())));
     }
 
