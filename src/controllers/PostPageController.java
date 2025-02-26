@@ -5,11 +5,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import src.businesslogic.CommentService;
 import src.businesslogic.PostService;
 import src.domainmodel.Comment;
 import src.domainmodel.Post;
+import src.servicemanager.SceneManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,6 +26,8 @@ public class PostPageController implements Controller, Initializable {
     private ScrollPane scrollPane;
     @FXML
     private TextField searchField;
+    @FXML
+    private ImageView homePageButton;
 
     PostService postService;
     private boolean isLoading = false;
@@ -37,6 +41,10 @@ public class PostPageController implements Controller, Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             init_data();
+            homePageButton.onMouseClickedProperty().set(event -> {
+                SceneManager.changeScene("home", "/src/view/fxml/HomePage.fxml",null);
+            });
+
             scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal.doubleValue() == 1.0 && !isLoading && !allPostsLoaded) {
                     loadMoreRootComments();
@@ -55,7 +63,6 @@ public class PostPageController implements Controller, Initializable {
             VBox vBox = fxmlLoader.load();
             postController.setDataPostPage(post);
             postsContainer.getChildren().add(vBox);
-
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }

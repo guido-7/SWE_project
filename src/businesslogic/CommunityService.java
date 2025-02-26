@@ -116,4 +116,9 @@ public class CommunityService {
         subscriptionDAO.unsubscribe(user.getId(), communityId);
         return true;
     }
+
+    public User getUser(int communityId) throws SQLException {
+        UserDAO userDAO = new UserDAO();
+        return userDAO.findById(communityId).orElse(null);
+    }
 }

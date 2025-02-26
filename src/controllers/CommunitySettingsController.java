@@ -12,10 +12,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import src.businesslogic.CommunityService;
+import src.businesslogic.UserProfileService;
 import src.domainmodel.PostWarnings;
 import javafx.scene.text.Text;
+import src.domainmodel.User;
 import src.servicemanager.SceneManager;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class CommunitySettingsController implements Controller {
@@ -55,7 +58,7 @@ public class CommunitySettingsController implements Controller {
                 super.updateItem(item, empty);
 
                 if (empty || item == null) {
-                    setGraphic(null);  // Nessun grafico quando la cella è vuota
+                    setGraphic(null);
                 } else {
                     text.setText(item);  // Imposta il nome dell'utente come testo
 
@@ -72,6 +75,13 @@ public class CommunitySettingsController implements Controller {
                     // Rendi il testo cliccabile
                     text.setOnMouseClicked(event -> {
                         System.out.println("Vai alla pagina di: " + item);
+                        try {
+                            User user = communityService.getUser(getTableRow().getItem().getSenderId());
+                            UserProfilePageController userProfilePageController = new UserProfilePageController(new UserProfileService(user));
+                            SceneManager.changeScene("profile", "/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
                     });
 
                     setGraphic(text);  // Imposta il testo come contenuto della cella
@@ -96,6 +106,7 @@ public class CommunitySettingsController implements Controller {
 
     @Override
     public void init_data() {
+
     }
 }
 
