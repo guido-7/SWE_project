@@ -89,8 +89,7 @@ public class UserProfilePageController implements Initializable, Controller {
             throw new RuntimeException(e);
         }
 
-        exit.setOnMouseClicked(event-> backToHomePage()
-        );
+        exit.setOnMouseClicked(event-> backToHomePage());
 
         profileDescription.setOnKeyPressed(event -> {
             if (event.isControlDown() && event.getCode() == KeyCode.S) {
@@ -154,8 +153,14 @@ public class UserProfilePageController implements Initializable, Controller {
         SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
     }
 
+    private void clearPosts() {
+        UserPostsContainer.getChildren().clear();
+        SavedPostsContainer.getChildren().clear();
+    }
+
     @Override
     public void init_data() throws SQLException {
+        clearPosts();
         LoadingPost.LoadPosts(userProfileService.getUserPosts(), UserPostsContainer);
         LoadingPost.LoadPosts(userProfileService.getSavedPosts(), SavedPostsContainer);
     }
