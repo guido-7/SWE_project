@@ -14,13 +14,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane prefHeight="650.0" prefWidth="1030.0" stylesheets="@../css/UserProfilePage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="650.0" prefWidth="910.0" stylesheets="@../css/UserProfilePage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <center>
         <StackPane>
             <children>
                 <Pane>
                     <children>
-                        <ScrollPane fx:id="PostPane" fitToWidth="true" layoutX="14.0" layoutY="45.0" prefHeight="481.0" prefWidth="500.0" stylesheets="@../css/ScrollPane.css">
+                        <ScrollPane fx:id="PostPane" fitToWidth="true" layoutY="50.0" prefHeight="470.0" prefWidth="455.0" stylesheets="@../css/ScrollPane.css">
                             <content>
                                 <VBox fx:id="UserPostsContainer" maxWidth="500.0" spacing="10.0">
                                     <padding>
@@ -30,7 +30,7 @@
                             </content>
                         </ScrollPane>
 
-                        <ScrollPane fx:id="SavedPane" fitToWidth="true" layoutX="525.0" layoutY="50.0" prefHeight="470.0" prefWidth="500.0" stylesheets="@../css/ScrollPane.css">
+                        <ScrollPane fx:id="SavedPane" fitToWidth="true" layoutX="455.0" layoutY="50.0" prefHeight="470.0" prefWidth="455.0" stylesheets="@../css/ScrollPane.css">
                             <content>
                                 <VBox fx:id="SavedPostsContainer" maxWidth="500.0" spacing="10.0">
                                     <padding>
@@ -39,8 +39,8 @@
                                 </VBox>
                             </content>
                         </ScrollPane>
-                  <Label fx:id="PostLabel" layoutX="27.0" layoutY="22.0" text="My Posts" />
-                  <Label fx:id="SavedLabel" layoutX="540.0" layoutY="22.0" text="Saved Post" />
+                  <Label fx:id="PostLabel" layoutX="15.0" layoutY="22.0" text="My Posts" />
+                  <Label fx:id="SavedLabel" layoutX="470.0" layoutY="22.0" text="Saved Post" />
                     </children>
                 </Pane>
 

@@ -11,7 +11,7 @@
 
 <!-- Questa card mostra il post con titolo, autore, orario, contenuto e area di reazione in basso a destra -->
 
-<VBox fx:id="myVBox" minHeight="180.0" prefWidth="550.0" spacing="15" styleClass="post-container" stylesheets="@../css/Post.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="myVBox" minHeight="180.0" prefWidth="450.0" spacing="15" styleClass="post-container" stylesheets="@../css/Post.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
 
     <!-- Header: titolo, autore e orario -->
     <HBox alignment="CENTER_LEFT" spacing="10">
@@ -20,17 +20,17 @@
         <Label fx:id="username" styleClass="post-author" text="Author" />
       <Label text="·" />
         <Label fx:id="date" styleClass="post-time" text="12:34" />
-      <Pane prefHeight="0.0" prefWidth="291.0" HBox.hgrow="ALWAYS" />
+      <Pane prefHeight="0.0" prefWidth="100.0" HBox.hgrow="ALWAYS" />
       <ImageView fx:id="deletePostButton" fitHeight="21.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/delete.png" />
          </image>
       </ImageView>
     </HBox>
-    <Label fx:id="title" styleClass="post-title" text="Post Title" />
+    <Label fx:id="title" maxWidth="540.0" styleClass="post-title" text="Post Title" wrapText="true" VBox.vgrow="ALWAYS" />
 
           <!-- Contenuto del post -->
-    <Label fx:id="content" maxWidth="540.0" styleClass="post-content" text="Contenuto del post..." wrapText="true" />
+    <Label fx:id="content" maxWidth="540.0" styleClass="post-content" text="Contenuto del post..." wrapText="true" VBox.vgrow="ALWAYS" />
 
     <!-- Area delle reazioni: like, punteggio, dislike -->
     <HBox alignment="CENTER_RIGHT" spacing="10">
