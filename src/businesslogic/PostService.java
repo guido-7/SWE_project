@@ -1,4 +1,3 @@
-
 package src.businesslogic;
 
 import src.domainmodel.*;
@@ -105,4 +104,25 @@ public class PostService {
             e.printStackTrace();
         }
     }
+
+    public void addSavePost(int userId, int postId) throws SQLException {
+        UserDAO userDAO = new UserDAO();
+        userDAO.addSavedPost(userId, postId);
+        System.out.println("Post saved, user: " + userId + " post: " + postId);
+    }
+
+    public void removeSavePost(int userId, int postId) {
+        UserDAO userDAO = new UserDAO();
+        userDAO.removeSavedPost(userId, postId);
+        System.out.println("Post removed, user: " + userId + " post: " + postId);
+    }
+
+    public boolean isSaved(int userId) throws SQLException {
+        UserDAO userDAO = new UserDAO();
+
+        //String tableName, String columnName, String whereClause, Object... params
+
+        return userDAO.retrieveSingleAttribute("SavedPost", "user_id", "user_id = ? AND post_id = " + post.getId(), userId) != null;
+    }
+
 }
