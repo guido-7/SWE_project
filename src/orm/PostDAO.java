@@ -1,9 +1,7 @@
 package src.orm;
 
 import src.domainmodel.Post;
-import src.domainmodel.User;
 import src.managerdatabase.DBConnection;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,8 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PostDAO extends BaseDAO<Post, Integer>{
-
+public class PostDAO extends BaseDAO<Post, Integer> {
 
     @Override
     protected String getFindByIdQuery() {
@@ -74,6 +71,7 @@ public class PostDAO extends BaseDAO<Post, Integer>{
     protected void setDeleteParams(PreparedStatement statement, Integer id) throws SQLException {
         statement.setInt(1, id);
     }
+
     public ArrayList<Post> getPosts(int CommunityId, int PostCount,int Offset) {
         ArrayList<Post> posts = new ArrayList<>();
         try(Connection connection = DBConnection.open_connection()) {
@@ -90,6 +88,7 @@ public class PostDAO extends BaseDAO<Post, Integer>{
         }
         return posts;
     }
+
     public List<Integer> getCommunityIds(int id , int numberofposts) {
         List<Integer> community_ids = new ArrayList<>();
         try (Connection connection = DBConnection.open_connection()) {
@@ -109,7 +108,7 @@ public class PostDAO extends BaseDAO<Post, Integer>{
     public ArrayList<Object> getTitleAndUserById(int postId, int communityId) {
         ArrayList<Object> data = new ArrayList<>();
         Connection connection = DBConnection.open_connection();
-        try{
+        try {
             PreparedStatement statement = connection.prepareStatement("SELECT title,user_id,content FROM Post WHERE id = ? AND community_id = ?");
             statement.setInt(1, postId);
             statement.setInt(2, communityId);
@@ -126,6 +125,7 @@ public class PostDAO extends BaseDAO<Post, Integer>{
         }
         return data;
     }
+
     public String getTitle(int postId, int communityId) {
         Connection connection = DBConnection.open_connection();
         try {
@@ -180,6 +180,7 @@ public class PostDAO extends BaseDAO<Post, Integer>{
         }
         return posts;
     }
+
     public List<Post> getPostsByUser(int userId) {
         List<Post> posts = new ArrayList<>();
         try (Connection connection = DBConnection.open_connection()) {
@@ -193,6 +194,7 @@ public class PostDAO extends BaseDAO<Post, Integer>{
             e.printStackTrace();}
         return posts;
     }
+
     public List<Post> getSavedPosts(int userId,int limit, int offset) {
         List<Post> posts = new ArrayList<>();
         try (Connection connection = DBConnection.open_connection()) {
@@ -243,6 +245,16 @@ public class PostDAO extends BaseDAO<Post, Integer>{
         return false;
     }
 
-
-
+    public void addPostWarning(Post post, int senderId) {
+        String query = "INSERT INTO PostWarnings (sender_id, post_id, community_id) VALUES (?, ?, ?)";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, senderId);
+            statement.setInt(2, post.getId());
+            statement.setInt(3, post.getCommunityId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
