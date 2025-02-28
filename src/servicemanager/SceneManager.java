@@ -161,7 +161,8 @@ public class SceneManager {
     public static Stage getPrimaryStage(){
         return primaryStage;
     }
-    public void LoadPreviousScene(){
+
+    public static void loadPreviousScene(){
         primaryStage.setScene(previousScene);
         primaryStage.show();
     }
@@ -169,7 +170,6 @@ public class SceneManager {
     public static Scene getPreviousScene() {
         return previousScene;
     }
-
 
     public static void setPreviousScene(Scene currentScene) {
         SceneManager.previousScene = currentScene;
