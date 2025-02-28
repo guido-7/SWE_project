@@ -3,6 +3,7 @@ package src.controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -28,6 +29,8 @@ public class PostPageController implements Controller, Initializable {
     private TextField searchField;
     @FXML
     private ImageView homePageButton;
+    @FXML
+    private Button exitButton;
 
     PostService postService;
     private boolean isLoading = false;
@@ -50,6 +53,11 @@ public class PostPageController implements Controller, Initializable {
                     loadMoreRootComments();
                 }
             });
+
+            exitButton.setOnMouseClicked(event -> {
+                SceneManager.loadPreviousScene();
+            });
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -92,7 +100,7 @@ public class PostPageController implements Controller, Initializable {
         loadPost(currentPost);
 
         List<Comment> rootComments = postService.getRootComments();
-       loadRootComments(rootComments);
+        loadRootComments(rootComments);
     }
 
 }
