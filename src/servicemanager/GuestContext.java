@@ -1,11 +1,22 @@
 package src.servicemanager;
 
+import src.controllers.Controller;
 import src.domainmodel.Guest;
 import src.domainmodel.User;
 
 public class GuestContext {
     private static Guest previousContextGuest;
     private static  Guest currentGuest;
+
+    public static Controller getCurrentController() {
+        return currentController;
+    }
+
+    public static void setCurrentController(Controller currentController) {
+        GuestContext.currentController = currentController;
+    }
+
+    private static Controller currentController;
 
 
 

@@ -2,6 +2,7 @@ package src.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -59,15 +60,31 @@ public class PostController implements Controller, Initializable {
         postButton.setOnAction(event -> goToPostPage());
         likeButton.setOnAction(event -> handleLikeButton());
         dislikeButton.setOnAction(event -> handleDislikeButton());
-        deletePostButton.setOnMouseClicked(event -> handleDeletePost());
+        deletePostButton.setOnMouseClicked(event -> {
+            try {
+                handleDeletePost();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
-    private void handleDeletePost() {
+    private void handleDeletePost() throws SQLException {
         postService.deletePost(postService.getPost().getId());
-        SceneManager.loadScene("/src/view/fxml/CommunityPage.fxml", new CommunityController(new CommunityService(postService.getPost().getCommunityId())));
+        myVBox.getChildren().clear();
+        Controller currentPageController = GuestContext.getCurrentController();
+        if (currentPageController instanceof HomePageController homePageController) {
+            homePageController.getPostsContainer().getChildren().remove(myVBox);
+        }
+        else if (currentPageController instanceof CommunityController communityPageController) {
+            communityPageController.getPostsContainer().getChildren().remove(myVBox);
+        }
+        else if (currentPageController instanceof UserProfilePageController userProfilePageController) {
+            userProfilePageController.getPostsContainer().getChildren().remove(myVBox);
+        }
+
+        SceneManager.getPrimaryStage().show();//  prova
     }
-
-
 
     private void setDataOnCard(Post post) throws SQLException {
         String communityTitle = postService.getCommunityTitle();
@@ -181,4 +198,5 @@ public class PostController implements Controller, Initializable {
             e.printStackTrace();
         }
     }
+
 }

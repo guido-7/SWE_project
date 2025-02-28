@@ -6,12 +6,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -51,6 +50,14 @@ public class UserProfilePageController implements Initializable, Controller {
     private Text savewarning;
     @FXML
     private ImageView exit;
+    @FXML
+    private Label PostLabel;
+    @FXML
+    private Label SavedLabel;
+    @FXML
+    private ScrollPane PostPane;
+    @FXML
+    private ScrollPane SavedPane;
 
     // vars no FXML
     private String description;
@@ -115,7 +122,7 @@ public class UserProfilePageController implements Initializable, Controller {
                 if (confirmed) {
                     tempDescription = profileDescription.getText();
                     if (description == null){
-                        userProfileService.SetDescription(tempDescription);
+                        userProfileService.SaveDescription(tempDescription);
                     }
                     else{
                         userProfileService.updateDescription(tempDescription);
@@ -163,5 +170,31 @@ public class UserProfilePageController implements Initializable, Controller {
         clearPosts();
         LoadingPost.LoadPosts(userProfileService.getUserPosts(), UserPostsContainer);
         LoadingPost.LoadPosts(userProfileService.getSavedPosts(), SavedPostsContainer);
+    }
+
+    public void setText(String text) {
+        PostLabel.setText(text);
+
+    }
+
+    public void deleteSavedPostPane() {
+        ((Pane) SavedPane.getContent()).getChildren().clear();
+        SavedPane.setVisible(false);
+        SavedPane.setMouseTransparent(true);
+        SavedLabel.setVisible(false);
+    }
+
+    public void moveUserPostPaneToCenter() {
+        PostPane.setLayoutX(250);
+        PostLabel.setLayoutX(265);
+        PostLabel.setStyle("-fx-font-weight: bold");
+    }
+
+    public void setNotEditable() {
+        profileDescription.setEditable(false);
+    }
+
+    public VBox getPostsContainer() {
+        return UserPostsContainer;
     }
 }

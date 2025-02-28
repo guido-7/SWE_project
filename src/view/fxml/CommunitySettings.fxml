@@ -22,8 +22,8 @@
             <TableView fx:id="reportsTable" maxWidth="480.0" prefHeight="490.0" prefWidth="402.0" stylesheets="@../css/CommunitySettings.css">
                 <columns>
                     <TableColumn fx:id="reporter" text="Reporter" />
-                    <TableColumn fx:id="content" text="Reported" />
-                    <TableColumn fx:id="reported" prefWidth="168.0" text="Reported Post/Comment" />
+                    <TableColumn fx:id="reported" text="Reported" />
+                    <TableColumn fx:id="content" prefWidth="168.0" text="Reported Post/Comment" />
                     <TableColumn fx:id="title" text="Post Title" />
                 </columns>
             <VBox.margin>

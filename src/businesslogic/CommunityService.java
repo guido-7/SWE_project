@@ -117,8 +117,8 @@ public class CommunityService {
         return true;
     }
 
-    public User getUser(int communityId) throws SQLException {
+    public User getUser(int userId) throws SQLException {
         UserDAO userDAO = new UserDAO();
-        return userDAO.findById(communityId).orElse(null);
+        return userDAO.findById(userId).orElse(null);
     }
 }

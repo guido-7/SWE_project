@@ -21,21 +21,28 @@ public class UserProfileService {
     public String getDescription() throws SQLException {
         return (String) userDAO.retrieveSingleAttribute("UserDescription", "description", "user_id = ?", user.getId());
     }
-    public void SetDescription(String description) throws SQLException {
-        userDAO.insertSingleAttribute("UserDescription", "description",description);
+
+    public void SaveDescription(String description) throws SQLException {
+        String [] columns = {"user_id","description"};
+        userDAO.insertMultipleValues("UserDescription",columns,user.getId(),description);
     }
+
     public void updateDescription(String description) throws SQLException {
         userDAO.updatesingleAttribute("UserDescription", "description", description, "user_id = ?", user.getId());
     }
+
     public List<Post> getUserPosts() throws SQLException {
         PostDAO postDAO = new PostDAO();
         return postDAO.getPostsByUser(user.getId());
     }
+
     public List<Post> getSavedPosts() throws SQLException {
         PostDAO postDAO = new PostDAO();
         return postDAO.getSavedPosts(user.getId(),10,0);
     }
+
     public Map<String,String> getUserInfo() throws SQLException {
         return userDAO.getUserInfo(user.getId());
     }
+
 }

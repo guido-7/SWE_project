@@ -1,6 +1,7 @@
 package src.orm;
 import src.managerdatabase.DBConnection;
 import java.sql.*;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -101,6 +102,24 @@ public abstract class BaseDAO<T, ID> {
             statement.executeUpdate();
         }
     }
+
+    public void insertMultipleValues(String tableName, String[] columnNames, Object... values) throws SQLException {
+        String columnName = String.join(",", columnNames);
+        String placeholders = String.join(",", Collections.nCopies(values.length, "?"));
+        String query = "INSERT INTO " + tableName + " (" + columnName + ") VALUES (" + placeholders + ")";
+
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            for (int i = 0; i < values.length; i++) {
+                statement.setObject(i + 1, values[i]);
+            }
+
+            statement.executeUpdate();
+        }
+    }
+
+
     public void updatesingleAttribute(String tableName, String columnName, Object value, String whereClause, Object... params) throws SQLException {
         String query = "UPDATE " + tableName + " SET " + columnName + " = ? WHERE " + whereClause;
 

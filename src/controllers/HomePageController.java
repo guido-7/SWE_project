@@ -38,7 +38,7 @@ public class HomePageController implements Initializable,Controller  {
     @FXML
     private Button login;
     @FXML
-    ImageView userProfileAccess;
+    private ImageView userProfileAccess;
     @FXML
     private Button createCommunityButton;
     @FXML
@@ -183,5 +183,8 @@ public class HomePageController implements Initializable,Controller  {
             posts = new ArrayList<>(feedService.getFeed());
             loadPosts(posts);
         }
+    }
+    public VBox getPostsContainer(){
+        return postsContainer;
     }
 }

@@ -12,125 +12,86 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane prefHeight="650.0" prefWidth="910.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <center>
-      <StackPane>
-         <children>
-            <HBox>
-               <children>
-                  <Pane maxWidth="85.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
-                          <!-- My Posts Section -->
-                          <VBox prefWidth="550.0" spacing="5" HBox.hgrow="ALWAYS">
-                              <Label text="My Posts">
-                        <padding>
-                           <Insets left="10.0" />
-                        </padding>
-                        <font>
-                           <Font name="System Bold" size="14.0" />
-                        </font></Label>
-                     <ScrollPane fitToWidth="true" stylesheets="@../css/ScrollPane.css" VBox.vgrow="ALWAYS">
-                        <content>
-                           <VBox fx:id="UserPostsContainer" spacing="10.0">
-                              <padding>
-                                 <Insets left="10.0" right="10.0" />
-                              </padding></VBox>
-                        </content>
-                        <VBox.margin>
-                           <Insets />
-                        </VBox.margin>
-                     </ScrollPane>
-                     <HBox.margin>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                     </HBox.margin>
-                          </VBox>
-                  <Pane maxWidth="50.0" prefWidth="0.0" />
-                  <VBox prefWidth="550.0" spacing="5" HBox.hgrow="ALWAYS">
-                     <children>
-                        <Label text="Saved Posts">
-                           <padding>
-                              <Insets left="10.0" />
-                           </padding>
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font></Label>
-                        <ScrollPane fitToWidth="true" stylesheets="@../css/ScrollPane.css" VBox.vgrow="ALWAYS">
-                           <content>
-                              <VBox fx:id="SavedPostsContainer" spacing="10.0">
-                                 <padding>
-                                    <Insets left="10.0" right="10.0" />
-                                 </padding></VBox>
-                           </content>
+<BorderPane prefHeight="650.0" prefWidth="1030.0" stylesheets="@../css/UserProfilePage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <center>
+        <StackPane>
+            <children>
+                <Pane>
+                    <children>
+                        <ScrollPane fx:id="PostPane" fitToWidth="true" layoutX="14.0" layoutY="45.0" prefHeight="481.0" prefWidth="500.0" stylesheets="@../css/ScrollPane.css">
+                            <content>
+                                <VBox fx:id="UserPostsContainer" maxWidth="500.0" spacing="10.0">
+                                    <padding>
+                                        <Insets left="10.0" right="10.0" />
+                                    </padding>
+                                </VBox>
+                            </content>
                         </ScrollPane>
-                     </children>
-                     <HBox.margin>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                     </HBox.margin>
-                  </VBox>
-                  <Pane maxWidth="85.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
-               </children>
-            </HBox>
-            <AnchorPane fx:id="popupContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="300.0">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <StackPane.margin>
-                  <Insets />
-               </StackPane.margin>
-            </AnchorPane>
-         </children>
-      </StackPane>
-   </center>
-   <top>
-         
-                      <!-- Header Section -->
-             <HBox spacing="20" BorderPane.alignment="CENTER">
-         <Pane maxWidth="85.0" HBox.hgrow="ALWAYS" />
-                 <!-- User Picture -->
-                 <ImageView fx:id="userImage" fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
-                     <HBox.margin>
-                         <Insets bottom="10" left="10" right="10" top="10" />
-                     </HBox.margin>
-                  <image>
-                     <Image url="@../images/Logo.png" />
-                  </image>
-                 </ImageView>
-         
-                          <!-- User Information -->
-                 <VBox alignment="CENTER_LEFT" spacing="5">
-                     <Label fx:id="nicknameLabel" prefHeight="18.0" prefWidth="100.0" text="Nickname" />
-                     <Label fx:id="nameLabel" text="Name" />
-                     <Label fx:id="surnameLabel" text="Surname" />
-                 </VBox>
-         
-                          <!-- Profile Description -->
-                 <VBox spacing="5">
-                     <Label text="Profile Description" />
-                  <VBox fx:id="TextAreaContainer" prefHeight="86.0" prefWidth="254.0">
-                     <children>
-                           <TextArea fx:id="profileDescription" focusTraversable="false" prefColumnCount="20" prefRowCount="3" wrapText="true">
-                     <VBox.margin>
+
+                        <ScrollPane fx:id="SavedPane" fitToWidth="true" layoutX="525.0" layoutY="50.0" prefHeight="470.0" prefWidth="500.0" stylesheets="@../css/ScrollPane.css">
+                            <content>
+                                <VBox fx:id="SavedPostsContainer" maxWidth="500.0" spacing="10.0">
+                                    <padding>
+                                        <Insets left="10.0" right="10.0" />
+                                    </padding>
+                                </VBox>
+                            </content>
+                        </ScrollPane>
+                  <Label fx:id="PostLabel" layoutX="27.0" layoutY="22.0" text="My Posts" />
+                  <Label fx:id="SavedLabel" layoutX="540.0" layoutY="22.0" text="Saved Post" />
+                    </children>
+                </Pane>
+
+                <AnchorPane fx:id="popupContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="300.0">
+                    <opaqueInsets>
                         <Insets />
-                     </VBox.margin>
-                  </TextArea>
-                  <Text fx:id="savewarning" strokeType="OUTSIDE" strokeWidth="0.0" text="Press Ctrl+s to save changes!" wrappingWidth="253.33671188354492" />
-                     </children>
-                  </VBox>
-                  <HBox.margin>
-                     <Insets left="50.0" top="10.0" />
-                  </HBox.margin>
-                 </VBox>
-         <Pane prefWidth="250.0" HBox.hgrow="ALWAYS" />
-         <ImageView fx:id="exit" fitHeight="35.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                    </opaqueInsets>
+                    <StackPane.margin>
+                        <Insets />
+                    </StackPane.margin>
+                </AnchorPane>
+            </children>
+        </StackPane>
+    </center>
+
+    <top>
+        <HBox prefHeight="129.0" prefWidth="910.0" spacing="20" BorderPane.alignment="CENTER">
+            <ImageView fx:id="userImage" fitHeight="86.0" fitWidth="74.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../images/Logo.png" />
+                </image>
             <HBox.margin>
-               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
             </HBox.margin>
-            <image>
-               <Image url="@../images/X.jpg" />
-            </image>
-         </ImageView>
-             </HBox>
-   </top>
+            </ImageView>
+
+            <VBox alignment="CENTER_LEFT" prefHeight="130.0" prefWidth="140.0" spacing="5" HBox.hgrow="ALWAYS">
+                <Label fx:id="nicknameLabel" text="Nickname" />
+                <Label fx:id="nameLabel" text="Name" />
+                <Label fx:id="surnameLabel" text="Surname" />
+            </VBox>
+         <Pane prefHeight="130.0" prefWidth="14.0" />
+
+            <VBox spacing="5">
+                <Label text="Profile Description" />
+                <VBox fx:id="TextAreaContainer">
+                    <TextArea fx:id="profileDescription" focusTraversable="false" prefHeight="78.0" prefWidth="330.0" wrapText="true" />
+                    <Text fx:id="savewarning" text="Press Ctrl+s to save changes!" />
+                </VBox>
+            </VBox>
+         <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+         <Pane prefHeight="124.0" prefWidth="223.0" HBox.hgrow="ALWAYS">
+            <children>
+      
+                  <ImageView fx:id="exit" fitHeight="35.0" fitWidth="27.0" layoutX="142.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                          <Image url="@../images/X.jpg" />
+                      </image>
+                  </ImageView>
+            </children>
+         </Pane>
+        </HBox>
+    </top>
 </BorderPane>

@@ -197,18 +197,6 @@ public class CommunityController implements Initializable, Controller {
 
     private void loadPosts(List<Post> newPosts) {
         LoadingPost.LoadPosts(newPosts,postsContainer);
-//        for (Post post : newPosts) {
-//            try {
-//                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Post.fxml"));
-//                PostController postController = new PostController(new PostService(post));
-//                fxmlLoader.setController(postController);
-//                VBox vBox = fxmlLoader.load();
-//                postController.setData(post);
-//                postsContainer.getChildren().add(vBox);
-//            } catch (IOException | SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
     // Reset posts to the initial state after a search
@@ -363,6 +351,10 @@ public class CommunityController implements Initializable, Controller {
 
         posts = new ArrayList<>(communityservice.getPosts());
         loadPosts(posts);
+    }
+
+    public VBox getPostsContainer() {
+        return postsContainer;
     }
 }
 

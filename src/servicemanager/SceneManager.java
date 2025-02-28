@@ -31,6 +31,7 @@ public class SceneManager {
         try {
             System.out.println("Loading scene: " + name);
 
+            GuestContext.setCurrentController(controller);
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fileFxml));
             loader.setController(controller);
             Parent root = loader.load();
@@ -57,8 +58,9 @@ public class SceneManager {
       return changeScene(name, fileFxml, controller, secondarySceneCache, secondaryStage, secondaryControllers);
     }
 
-    public static void loadScene(String filefxml, Controller controller){
+    public static Stage loadScene(String filefxml, Controller controller){
         LoadScene(filefxml, controller, primaryStage);
+        return primaryStage;
     }
 
     private static Controller changeScene(String name, String fileFxml, Controller controller, Map<String, Scene> cache, Stage stage ,Map<Scene, Controller> Controllers) {
@@ -69,11 +71,13 @@ public class SceneManager {
                 Scene scene = cache.get(name);
                 System.out.println("Scene from cache");
                 Controller ctrl = Controllers.get(scene);
+                GuestContext.setCurrentController(ctrl);
                 stage.setScene(scene);
                 ctrl.init_data();
                 stage.show();
                 return ctrl;
             } else {
+                GuestContext.setCurrentController(controller);
                 // Carichiamo dinamicamente la scena
                 FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fileFxml));
                 loader.setController(controller);
@@ -101,6 +105,7 @@ public class SceneManager {
     // Apri una finestra modale (come il login)
     public static void openModal(String name, String fileFxml, Controller controller, Stage owner) {
         try {
+            GuestContext.setCurrentController(controller);
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fileFxml));
             loader.setController(controller);
             Parent root = loader.load();
@@ -134,6 +139,7 @@ public class SceneManager {
 
     private static void LoadScene(String fileFxml, Controller controller, Stage stage) {
         try {
+            GuestContext.setCurrentController(controller);
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fileFxml));
             loader.setController(controller);
             Parent root = loader.load();
@@ -141,11 +147,16 @@ public class SceneManager {
 
             // Cambiamo la scena sulla finestra principale senza creare una nuova Stage
             stage.setScene(scene);
-            stage.show();
+            //primaryStage.show();
+            //stage.show();
+
         } catch (IOException e) {
             System.err.println("Errore nel caricamento della scena: " + fileFxml);
             e.printStackTrace();
         }
+    }
+    public static Stage getPrimaryStage(){
+        return primaryStage;
     }
 
 }

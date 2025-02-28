@@ -11,6 +11,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
 import src.businesslogic.UserProfileService;
 import src.domainmodel.PostWarnings;
@@ -64,7 +65,7 @@ public class CommunitySettingsController implements Controller {
 
                     // Gestisci il passaggio del mouse sopra il testo
                     text.setOnMouseEntered(event -> {
-                        text.setFill(Color.RED);
+                        text.setFill(Color.GREEN);
                     });
 
                     // Gestisci quando il mouse esce dalla cella
@@ -78,7 +79,9 @@ public class CommunitySettingsController implements Controller {
                         try {
                             User user = communityService.getUser(getTableRow().getItem().getSenderId());
                             UserProfilePageController userProfilePageController = new UserProfilePageController(new UserProfileService(user));
-                            SceneManager.changeScene("profile", "/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
+                            Stage primaryStage = SceneManager.loadScene( "/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
+                            manageLookUpUser(userProfilePageController, primaryStage);
+
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
@@ -90,9 +93,56 @@ public class CommunitySettingsController implements Controller {
         });
 
         reported.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getReported_nickname()));
+        reported.setCellFactory(tc -> new TableCell<PostWarnings, String>() {
+            private final Text text = new Text();  // Usando Text per la scritta
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    text.setText(item);  // Imposta il nome dell'utente come testo
+
+                    // Gestisci il passaggio del mouse sopra il testo
+                    text.setOnMouseEntered(event -> {
+                        text.setFill(Color.RED);
+                    });
+
+                    // Gestisci quando il mouse esce dalla cella
+                    text.setOnMouseExited(event -> {
+                        text.setFill(Color.BLACK);  // Torna al colore originale (nero)
+                    });
+
+                    // Rendi il testo cliccabile
+                    text.setOnMouseClicked(event -> {
+                        System.out.println("Vai alla pagina di: " + item);
+                        try {
+                            User user = communityService.getUser(getTableRow().getItem().getReportedId());
+                            UserProfilePageController userProfilePageController = new UserProfilePageController(new UserProfileService(user));
+                            Stage primaryStage = SceneManager.loadScene("/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
+                            manageLookUpUser(userProfilePageController, primaryStage);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+
+                    setGraphic(text);  // Imposta il testo come contenuto della cella
+                }
+            }
+        });
         content.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getContent()));
         title.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
         setData(communityService.getWarnings());
+    }
+
+    private  void manageLookUpUser(UserProfilePageController userProfilePageController, Stage primaryStage) {
+        userProfilePageController.setText("Posts");
+        userProfilePageController.deleteSavedPostPane();
+        userProfilePageController.moveUserPostPaneToCenter();
+        userProfilePageController.setNotEditable();
+        primaryStage.show();
     }
 
     private void backToCommunity() {

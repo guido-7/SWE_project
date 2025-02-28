@@ -142,7 +142,7 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
                             String content = (String) data.get(1);
                             int reported_user_id = (int) data.getLast();
                             String reported_nickname = userDAO.getNicknameById(reported_user_id);
-                            reports.add(new PostWarnings(sender_id, sender_nickname,content, post_id, reported_nickname,title));
+                            reports.add(new PostWarnings(sender_id, sender_nickname,content, post_id, reported_user_id ,reported_nickname,title));
                 }
                 return reports;
             }
@@ -176,7 +176,7 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
 
                     String reported_nickname = userDAO.getNicknameById(reported_user_id);
                     int level= commentDAO.getLevelById(comment_id, post_id);
-                    reports.add(new CommentWarnings(sender_id, sender_nickname, content, post_id, reported_nickname,title, comment_id, level));
+                    reports.add(new CommentWarnings(sender_id, sender_nickname, content, post_id, reported_user_id,reported_nickname,title, comment_id, level));
 
                 }
                 return reports;
