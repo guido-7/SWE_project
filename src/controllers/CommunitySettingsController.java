@@ -4,7 +4,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -19,6 +22,7 @@ import javafx.scene.text.Text;
 import src.domainmodel.User;
 import src.servicemanager.SceneManager;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -50,7 +54,6 @@ public class CommunitySettingsController implements Controller {
         reportsTable.setSelectionModel(null);
 
         reporter.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSender_nickname()));
-
         reporter.setCellFactory(tc -> new TableCell<PostWarnings, String>() {
             private final Text text = new Text();  // Usando Text per la scritta
 
@@ -132,7 +135,53 @@ public class CommunitySettingsController implements Controller {
                 }
             }
         });
-        content.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getContent()));
+        content.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getReducedContent(3)));
+        content.setCellFactory(tc -> new TableCell<PostWarnings, String>() {
+            private final Text text = new Text();  // Usando Text per la scritta
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    text.setText(item);  // Imposta il contenuto del post
+
+                    // Cambia colore al passaggio del mouse
+                    text.setOnMouseEntered(event -> text.setFill(Color.BLUE));
+                    text.setOnMouseExited(event -> text.setFill(Color.BLACK));
+
+                    // Rendi il testo cliccabile
+                    text.setOnMouseClicked(event -> {
+                        System.out.println("Vai alla pagina del post: " + item);
+                        try {
+                            // Ottenere l'oggetto PostWarnings della riga
+                            PostWarnings postWarning = getTableRow().getItem();
+
+                            if (postWarning != null) {
+                                String titoloPost = postWarning.getTitle();
+                                String fullcontent = postWarning.getFullContent();
+
+                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/WarningsPopUp.fxml"));
+                                WarningsPopUpController popUpController = new WarningsPopUpController();
+                                loader.setController(popUpController);
+                                Parent root = loader.load();
+                                popUpController.setData(titoloPost, fullcontent);
+                                Stage stage = new Stage();
+                                stage.setScene(new Scene(root));
+                                stage.show();
+                            }
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                    setGraphic(text);  // Imposta il testo come contenuto della cella
+                }
+            }
+        });
         title.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
         setData(communityService.getWarnings());
     }
