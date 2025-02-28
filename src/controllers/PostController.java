@@ -82,7 +82,6 @@ public class PostController implements Controller, Initializable {
         else if (currentPageController instanceof UserProfilePageController userProfilePageController) {
             userProfilePageController.getPostsContainer().getChildren().remove(myVBox);
         }
-
         SceneManager.getPrimaryStage().show();//  prova
     }
 
@@ -185,6 +184,7 @@ public class PostController implements Controller, Initializable {
     private void goToPostPage(){
         String fxmlfile = "/src/view/fxml/PostPage.fxml";
         PostPageController postPageController = new PostPageController(postService);
+        SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
         SceneManager.loadScene(fxmlfile, postPageController);
     }
 
