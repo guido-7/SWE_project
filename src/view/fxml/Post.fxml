@@ -20,12 +20,21 @@
         <Label fx:id="username" styleClass="post-author" text="Author" />
       <Label text="·" />
         <Label fx:id="date" styleClass="post-time" text="12:34" />
-      <Pane prefHeight="0.0" prefWidth="100.0" HBox.hgrow="ALWAYS" />
+      <Pane prefHeight="0.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
       <ImageView fx:id="deletePostButton" fitHeight="21.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/delete.png" />
          </image>
       </ImageView>
+      <Button fx:id="savePostButton" mnemonicParsing="false" style="-fx-background-color: transparent;">
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/SavedIcon.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
     </HBox>
     <Label fx:id="title" maxWidth="540.0" styleClass="post-title" text="Post Title" wrapText="true" VBox.vgrow="ALWAYS" />
 
