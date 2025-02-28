@@ -19,6 +19,8 @@ public class SceneManager {
     private static Stage primaryStage;
     private static Stage secondaryStage;
 
+    private static Scene previousScene;
+
     public static void setPrimaryStage(Stage stage) {
             primaryStage = stage;
     }
@@ -103,6 +105,7 @@ public class SceneManager {
     }
 
     // Apri una finestra modale (come il login)
+
     public static void openModal(String name, String fileFxml, Controller controller, Stage owner) {
         try {
             GuestContext.setCurrentController(controller);
@@ -124,7 +127,6 @@ public class SceneManager {
             e.printStackTrace();
         }
     }
-
     private static void closeStage(Stage stage){
         stage.close();
     }
@@ -155,9 +157,22 @@ public class SceneManager {
             e.printStackTrace();
         }
     }
+
     public static Stage getPrimaryStage(){
         return primaryStage;
     }
+    public void LoadPreviousScene(){
+        primaryStage.setScene(previousScene);
+        primaryStage.show();
+    }
 
+    public static Scene getPreviousScene() {
+        return previousScene;
+    }
+
+
+    public static void setPreviousScene(Scene currentScene) {
+        SceneManager.previousScene = currentScene;
+    }
 }
 
