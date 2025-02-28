@@ -227,4 +227,28 @@ public class UserDAO extends BaseDAO<User,Integer> {
     public User createUser(String nickname) throws SQLException {
         return findById(getUserId(nickname)).orElse(null);
     }
+
+    public void addSavedPost(int userId, int postId) {
+        String query = "INSERT INTO SavedPost (user_id, post_id) VALUES (?, ?)";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, postId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeSavedPost(int userId, int postId) {
+        String query = "DELETE FROM SavedPost WHERE user_id = ? AND post_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, postId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
