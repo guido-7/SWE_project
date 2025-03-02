@@ -8,26 +8,28 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
+import src.businesslogic.PostService;
 import src.businesslogic.UserProfileService;
 import src.domainmodel.PostWarnings;
 import javafx.scene.text.Text;
 import src.domainmodel.User;
 import src.servicemanager.SceneManager;
+import src.utils.LoadingPost;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class CommunitySettingsController implements Controller {
-
+    @FXML
+    private VBox ModeratorChoiceContainer;
     @FXML
     private TableView<PostWarnings> reportsTable;
     @FXML
@@ -39,9 +41,14 @@ public class CommunitySettingsController implements Controller {
     @FXML
     private TableColumn<PostWarnings, String> title;
     @FXML
+    private TableColumn<Integer,String> reportNo;
+    @FXML
     private ImageView exit;
+    @FXML
+    private ScrollPane scrollPane;
 
     private final CommunityService communityService;
+    ArrayList<PostWarnings> reports;
 
     public CommunitySettingsController(CommunityService communityService) {
         this.communityService = communityService;
@@ -49,10 +56,14 @@ public class CommunitySettingsController implements Controller {
 
     @FXML
     public void initialize() {
+
+        scrollPane.setStyle("-fx-background-color: trasparent;");
+
         exit.setOnMouseClicked(event-> backToCommunity());
 
         reportsTable.setSelectionModel(null);
 
+        reportNo.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(reportsTable.getItems().indexOf(cellData.getValue()) + 1)));
         reporter.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSender_nickname()));
         reporter.setCellFactory(tc -> new TableCell<PostWarnings, String>() {
             private final Text text = new Text();  // Usando Text per la scritta
@@ -182,8 +193,28 @@ public class CommunitySettingsController implements Controller {
                 }
             }
         });
+
         title.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
-        setData(communityService.getWarnings());
+        reports = communityService.getWarnings();
+        buildModeratorDecisionMenu(reports);
+        setData(reports);
+    }
+
+    private void buildModeratorDecisionMenu(ArrayList<PostWarnings> reports) {
+        int i = 1;
+        for (PostWarnings report : reports) {
+
+            try {
+                ModeratorDecisionController moderatorDecisionController = new ModeratorDecisionController(report, communityService);
+                FXMLLoader fxmlLoader = new FXMLLoader(LoadingPost.class.getResource("/src/view/fxml/ModeratorDecisionSnapShot.fxml"));
+                fxmlLoader.setController(moderatorDecisionController);
+                Pane pane = fxmlLoader.load();
+                moderatorDecisionController.setNumber(i++);
+                ModeratorChoiceContainer.getChildren().add(pane);
+            } catch (IOException e) {
+                e.printStackTrace();
+        }
+    }
     }
 
     private  void manageLookUpUser(UserProfilePageController userProfilePageController, Stage primaryStage) {
@@ -206,6 +237,25 @@ public class CommunitySettingsController implements Controller {
     @Override
     public void init_data() {
 
+    }
+    public void removeReport(PostWarnings report,Pane pane) {
+        ModeratorChoiceContainer.getChildren().remove(pane);
+    }
+    public void removeRedundantReports(PostWarnings report) {
+//        int reportedId = report.getReportedId();
+//        for (PostWarnings postWarnings : reports) {
+//            if (postWarnings.getReportedId() == reportedId) {
+//                //removeReportFromTable(postWarnings);
+//
+//            }
+//        }
+// ModeratorChoiceContainer.getChildren().clear();
+    }
+
+    public void removeReportFromTable(PostWarnings report) {
+        ObservableList<PostWarnings> observableReports = reportsTable.getItems();
+        observableReports.remove(report);
+        reportsTable.setItems(observableReports);
     }
 }
 

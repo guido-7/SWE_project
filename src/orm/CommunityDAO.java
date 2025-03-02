@@ -7,6 +7,7 @@ import src.domainmodel.PostWarnings;
 import src.managerdatabase.DBConnection;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -225,6 +226,34 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
                 e.printStackTrace();
 
             }
+        }
+    }
+
+    public void timeOutUser(int reportedId,int communityId, LocalDateTime time) {
+        String sql = "INSERT INTO TIMEOUT (user_id, community_id,end_time_out_date) VALUES (?,?,?)";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, reportedId);
+            statement.setInt(2, communityId);
+            statement.setString(3, time.toString());
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void banUser(int reportedId,int communityId,String banReason) {
+        String sql = "INSERT INTO BannedUsers (user_id, community_id,ban_date,reason) VALUES (?,?,?,?)";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, reportedId);
+            statement.setInt(2, communityId);
+            statement.setString(3, LocalDateTime.now().toString());
+            statement.setString(4, banReason);
+
+
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

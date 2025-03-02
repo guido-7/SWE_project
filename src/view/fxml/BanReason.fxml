@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="281.0" prefWidth="306.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Text fx:id="Title" layoutX="9.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="REASONING THE BAN" wrappingWidth="147.73670196533203" />
+      <TextArea fx:id="banReasonTextArea" layoutX="8.0" layoutY="49.0" prefHeight="192.0" prefWidth="288.0" promptText="Insert ban reason..." />
+      <Button fx:id="banButton" layoutX="100.0" layoutY="248.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="Ban" />
+    </children>
+</Pane>
