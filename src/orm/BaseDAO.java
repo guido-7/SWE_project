@@ -24,7 +24,6 @@ public abstract class BaseDAO<T, ID> {
         return Optional.empty();
     }
 
-    //FIXME - modificare int in optional
     public int save(Map<String, Object> parameters) throws SQLException {
         String query = getInsertQuery();
         try (Connection connection = DBConnection.open_connection();
@@ -53,33 +52,6 @@ public abstract class BaseDAO<T, ID> {
         }
         return -1;
     }
-
-    /*
-    public Optional<?> save(Map<String, Object> parameters) throws SQLException {
-        String query = getInsertQuery();
-        try (Connection connection = DBConnection.open_connection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            setInsertParams(statement, parameters);
-            statement.executeUpdate();
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                ResultSetMetaData metaData = generatedKeys.getMetaData();
-                int columnCount = metaData.getColumnCount();
-                if (generatedKeys.next()) {
-                    if (columnCount == 1) {
-                        return Optional.of(generatedKeys.getInt(1));
-                    } else {
-                        List<Object> primaryKeys = new java.util.ArrayList<>();
-                        for (int i = 1; i <= columnCount; i++) {
-                            primaryKeys.add(generatedKeys.getObject(i));
-                        }
-                        return Optional.of(primaryKeys);
-                    }
-                }
-            }
-        }
-        return Optional.empty();
-    }
-     */
 
     public void update(T entity) throws SQLException {
         String query = getUpdateQuery();
