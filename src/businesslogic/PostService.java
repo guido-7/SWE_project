@@ -5,6 +5,7 @@ import src.orm.CommentDAO;
 import src.orm.CommunityDAO;
 import src.orm.PostDAO;
 import src.orm.UserDAO;
+import src.servicemanager.GuestContext;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -125,4 +126,13 @@ public class PostService {
         return userDAO.retrieveSingleAttribute("SavedPost", "user_id", "user_id = ? AND post_id = " + post.getId(), userId) != null;
     }
 
+    public void signalPost() {
+        User currentUser = (User) GuestContext.getCurrentGuest();
+        postDAO.signalPost(currentUser.getId(),post.getId(),post.getCommunityId());
+    }
+
+    public boolean isAlreadyReported() {
+        User currentUser = (User) GuestContext.getCurrentGuest();
+        return postDAO.isAlreadyReported(currentUser.getId(),post.getId());
+    }
 }

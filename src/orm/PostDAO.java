@@ -257,4 +257,33 @@ public class PostDAO extends BaseDAO<Post, Integer> {
             e.printStackTrace();
         }
     }
+
+    public void signalPost(int senderId, int postId, int communityId) {
+        String query = "INSERT INTO PostWarnings (sender_id, post_id, community_id) VALUES (?, ?, ?)";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, senderId);
+            statement.setInt(2, postId);
+            statement.setInt(3, communityId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+    }
+    }
+
+    public boolean isAlreadyReported(int senderId, int postId) {
+        String query = "SELECT COUNT(*) FROM PostWarnings WHERE sender_id = ? AND post_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, senderId);
+            statement.setInt(2, postId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next())
+                    return resultSet.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+    }
+        return false;
+    }
 }
