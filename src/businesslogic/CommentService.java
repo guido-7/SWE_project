@@ -13,6 +13,7 @@ import java.util.Map;
 public class CommentService {
     Comment comment;
     UserDAO userDAO = new UserDAO();
+    PostDAO postDAO = new PostDAO();
     CommentDAO commentDAO = new CommentDAO();
 
     int noOfCommentsTaken = 0;
@@ -62,7 +63,6 @@ public class CommentService {
         return commentDAO.isDisliked(id, comment.getId(), comment.getPost_id());
     }
 
-
     public void toggleLike(User user) throws SQLException {
         toggleVote(user, "like");
     }
@@ -72,11 +72,8 @@ public class CommentService {
     }
 
     private void toggleVote(User guest, String vote) throws SQLException {
-        UserDAO userDAO = new UserDAO();
-        PostDAO postDAO = new PostDAO();
-        Integer userVote = getVote((User)guest);
+        Integer userVote = getVote( (User) guest);
         Post post = postDAO.findById(comment.getPost_id()).orElse(null);
-
         switch (vote) {
             case "like":
                 if ( userVote == null || userVote == 0) {
@@ -102,7 +99,6 @@ public class CommentService {
     private Integer getVote(User user) throws SQLException {
         UserDAO userDAO = new UserDAO();
         return userDAO.getCommentVote(user.getId(), comment.getId(), comment.getPost_id());
-
     }
 
     public void refreshComment() {

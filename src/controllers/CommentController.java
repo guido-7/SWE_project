@@ -99,6 +99,10 @@ public class CommentController implements Controller, Initializable {
             repliesContainer.getChildren().clear();
         }
         List<Comment> subComments = commentService.getCommentsByLevel();
+        if (!subComments.isEmpty()) {
+            moreComments.setVisible(false);
+            minusComments.setVisible(true);
+        }
         for (Comment comment : subComments) {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Comment.fxml"));

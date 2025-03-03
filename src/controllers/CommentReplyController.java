@@ -34,7 +34,9 @@ public class CommentReplyController implements Controller, Initializable {
                 return;
             } else {
                 try {
-                    addReply();
+                    if(addReply()) {
+                        commentController.loadSubComments();
+                    }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -42,11 +44,13 @@ public class CommentReplyController implements Controller, Initializable {
         });
     }
 
-    public void addReply() throws SQLException {
+    public boolean addReply() throws SQLException {
         if(commentService.addReply(reply)) {
             commentController.removeReplyField();
             commentController.loadSubComments();
+            return true;
         }
+        return false;
     }
 
     public void init_data() {
