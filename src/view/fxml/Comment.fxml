@@ -37,7 +37,7 @@
         <Button fx:id="likeButton" styleClass="like-button" text="Like" />
         <Label fx:id="scoreLabel" styleClass="score-label" text="0" />
         <Button fx:id="dislikeButton" styleClass="dislike-button" text="Dislike" />
-          <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+          <ImageView fx:id="replyToCommButton" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
               <Image url="@../images/ReplyIcon.png" />
           </ImageView>
     </HBox>
