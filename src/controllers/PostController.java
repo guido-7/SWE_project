@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import src.businesslogic.PostService;
 import src.domainmodel.Guest;
 import src.domainmodel.Post;
@@ -16,6 +17,7 @@ import src.servicemanager.FormattedTime;
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
 import src.servicemanager.VoteManager;
+import javafx.scene.layout.HBox;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -46,6 +48,12 @@ public class PostController implements Controller, Initializable {
     private ImageView deletePostButton;
     @FXML
     private Button savePostButton;
+    @FXML
+    private ImageView reportPostButton;
+    @FXML
+    private HBox HboxContainer;
+    @FXML
+    private VBox SignalTextContainer;
 
     private PostService postService;
     private final FormattedTime formatter = new FormattedTime();
@@ -58,7 +66,15 @@ public class PostController implements Controller, Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        reportPostButton.setVisible(false);
+        reportPostButton.setOnMouseClicked(event->{
+            postService.signalPost();
+            HboxContainer.getChildren().remove(reportPostButton);
+            SignalTextContainer.getChildren().add(new Text("Post has been reported"));
+        });
+
         postButton.setOnAction(event -> goToPostPage());
+
         deletePostButton.setOnMouseClicked(event -> {
             try {
                 handleDeletePost();
@@ -121,13 +137,14 @@ public class PostController implements Controller, Initializable {
         scoreLabel.setText(post.getLikes() - post.getDislikes() + "");
         checkPostVisibility();
     }
-
     private void checkPostVisibility() {
         Guest guest = GuestContext.getCurrentGuest();
 
         if (guest.getRole() != Role.GUEST) {
             User user = (User) guest;
+            reportPostButton.setVisible(!postService.isAlreadyReported());
             if (postService.isPostOwner(user.getId())) {
+                reportPostButton.setVisible(false);
                 deletePostButton.setVisible(true);
             } else {
                 deletePostButton.setVisible(false);

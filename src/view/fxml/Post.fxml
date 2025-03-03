@@ -14,13 +14,16 @@
 <VBox fx:id="myVBox" minHeight="180.0" prefWidth="450.0" spacing="15" styleClass="post-container" stylesheets="@../css/Post.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
 
     <!-- Header: titolo, autore e orario -->
-    <HBox alignment="CENTER_LEFT" spacing="10">
+    <HBox fx:id="HboxContainer" alignment="CENTER_LEFT" spacing="10">
       <Label fx:id="community" text="Community" />
       <Label text="·" />
         <Label fx:id="username" styleClass="post-author" text="Author" />
       <Label text="·" />
         <Label fx:id="date" styleClass="post-time" text="12:34" />
-      <Pane prefHeight="0.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
+      <Pane prefHeight="0.0" prefWidth="20.0" HBox.hgrow="ALWAYS">
+         <children>
+            <VBox fx:id="SignalTextContainer" layoutX="45.0" layoutY="7.0" prefHeight="0.0" prefWidth="70.0" />
+         </children></Pane>
       <ImageView fx:id="deletePostButton" fitHeight="21.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/delete.png" />
