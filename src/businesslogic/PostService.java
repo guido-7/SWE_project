@@ -59,7 +59,7 @@ public class PostService {
 
     private Integer getVote(User user) throws SQLException {
         UserDAO userDAO = new UserDAO();
-        return userDAO.getVote(user.getId(),post.getId());
+        return userDAO.getPostVote(user.getId(),post.getId());
     }
 
     public String getCommunityTitle() throws SQLException {

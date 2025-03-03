@@ -2,6 +2,7 @@ package src.orm;
 
 import src.domainmodel.Comment;
 import src.domainmodel.Post;
+import src.domainmodel.User;
 import src.managerdatabase.DBConnection;
 
 import java.sql.*;
@@ -230,10 +231,11 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            }
+        }
         return -1;
     }
-    public List<Comment> getRootComments(Post post , int noOfComment,int offset){
+
+    public List<Comment> getRootComments(Post post, int noOfComment, int offset) {
         Connection connection = DBConnection.open_connection();
         List<Comment> comments = new ArrayList<>();
         try {
@@ -250,11 +252,11 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return comments ;
+        return comments;
     }
 
 
-    public List<Comment> getCommentsByLevel(Comment comment){
+    public List<Comment> getCommentsByLevel(Comment comment) {
         List<Integer> commentsIds = getCommentsIdsByLevel(comment);
         List<Comment> comments = new ArrayList<>();
         try (Connection connection = DBConnection.open_connection()) {
@@ -284,6 +286,37 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
             e.printStackTrace();
         }
         return commentsIds;
+    }
+
+
+    public boolean isLiked(int userId, int commentId, int postId) {
+        String sql = "SELECT * FROM CommentVotes WHERE user_id = ? AND comment_id = ? AND post_id = ? AND vote_type = 1";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, commentId);
+            statement.setInt(3, postId);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isDisliked(int userId, int commentId, int postId) {
+        String sql = "SELECT * FROM CommentVotes WHERE user_id = ? AND comment_id = ?AND post_id = ? AND vote_type = 0";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, commentId);
+            statement.setInt(3, postId);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
 

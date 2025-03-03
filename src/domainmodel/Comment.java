@@ -63,14 +63,6 @@ public class Comment {
         this.id = id;
     }
 
-    public Post getPost() {
-        return post;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
     public LocalDateTime getTime() {
         return time;
     }
@@ -95,4 +87,5 @@ public class Comment {
         if (!is_modified)
             is_modified = true;
     }
+
 }
