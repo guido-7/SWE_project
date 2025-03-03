@@ -132,4 +132,8 @@ public class CommunityService {
         communityDAO.banUser(reportedId,communityId,banReason);
 
     }
+
+    public void removeWarnings(ArrayList<PostWarnings> reports) {
+        communityDAO.removeWarnings(reports,communityId);
+    }
 }

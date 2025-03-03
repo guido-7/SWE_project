@@ -257,12 +257,9 @@ public class CommunitySettingsController implements Controller {
     public void removeReport(Pane pane) {
         ModeratorChoiceContainer.getChildren().remove(pane);
     }
-    public void removeReportFromTable(PostWarnings report) {
-        ObservableList<PostWarnings> observableReports = reportsTable.getItems();
-        observableReports.remove(report);
-        reportsTable.setItems(observableReports);
-    }
+
     public void removeReportsFromTable(ArrayList<PostWarnings> reports) {
+        communityService.removeWarnings(reports);
         ObservableList<PostWarnings> observableReports = reportsTable.getItems();
         observableReports.removeAll(reports);
         reportsTable.setItems(observableReports);

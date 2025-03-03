@@ -256,5 +256,20 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
             e.printStackTrace();
         }
     }
+
+    public void removeWarnings(ArrayList<PostWarnings> reports,int communityId) {
+        String sql = "DELETE FROM PostWarnings WHERE sender_id = ? AND post_id = ? AND community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            for (PostWarnings report : reports) {
+                statement.setInt(1, report.getSenderId());
+                statement.setInt(2, report.getPostId());
+                statement.setInt(3, communityId);
+                statement.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+    }
+    }
 }
 
