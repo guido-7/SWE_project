@@ -26,3 +26,35 @@
     -fx-border-color: #D0D0D0;
     -fx-text-fill: black;
 }
+
+Text {
+    -fx-fill: #C27933;
+}
+
+
+#rules{
+    -fx-text-fill: #C27933;
+}
+
+#rules:hover{
+    -fx-text-fill: #7D3F0F;
+}
+
+#community_title:hover{
+    -fx-fill: #7D3F0F;
+}
+
+#unsubscribeButton, #subscribeButton{
+    -fx-background-color: #C27933;
+    -fx-text-fill: white;
+    -fx-border-color: #C27933;
+    -fx-border-width: 0px 0px 2px 0px;
+    -fx-alignment: center;
+}
+
+#unsubscribeButton:hover, #subscribeButton:hover{
+    -fx-background-color: #7D3F0F;
+    -fx-text-fill: white;
+    -fx-border-color: #7D3F0F;
+    -fx-border-width: 0px 0px 2px 0px;
+}

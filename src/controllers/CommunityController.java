@@ -337,6 +337,11 @@ public class CommunityController implements Initializable, Controller {
         Community currentCommunity = communityservice.getCommunity();
         setData(currentCommunity);
 
+        community_title.setOnMouseClicked(event -> {
+            postsContainer.getChildren().clear();
+            SceneManager.changeScene("community " + currentCommunityId, "/src/view/fxml/CommunityPage.fxml", new CommunityController(communityservice));
+        });
+
         if (communityservice.isSubscribed()) {
             subscribeButton.setVisible(false);
             unsubscribeButton.setVisible(true);
