@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import src.businesslogic.CommentService;
 import src.domainmodel.Comment;
 import src.servicemanager.FormattedTime;
+import src.servicemanager.VoteManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -38,6 +39,7 @@ public class CommentController implements Controller, Initializable {
 
     private final CommentService commentService;
     private final FormattedTime formatter = new FormattedTime();
+    private VoteManager voteManager;
 
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
@@ -47,6 +49,8 @@ public class CommentController implements Controller, Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         moreComments.setVisible(false);
         minusComments.setVisible(false);
+        voteManager = new VoteManager(scoreLabel, likeButton, dislikeButton, commentService);
+
         init_data();
 
         moreComments.setOnMouseClicked(event -> {
@@ -61,6 +65,7 @@ public class CommentController implements Controller, Initializable {
             moreComments.setVisible(true);
             repliesContainer.getChildren().clear();
         });
+
     }
 
     public void setData(Comment comment) {
@@ -70,13 +75,6 @@ public class CommentController implements Controller, Initializable {
         content.setText(commentService.getCommentText());
         date.setText(formatter.getFormattedTime(comment.getTime()));
         scoreLabel.setText(comment.getLikes() - comment.getDislikes() + "");
-    }
-
-    @Override
-    public void init_data() {
-        if(commentService.hasSubComments()) {
-            moreComments.setVisible(true);
-        }
     }
 
     private void loadSubComments() {
@@ -93,6 +91,16 @@ public class CommentController implements Controller, Initializable {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void init_data() {
+        if(commentService.hasSubComments()) {
+            moreComments.setVisible(true);
+        }
+        commentService.refreshComment();
+        setData(commentService.getComment());
+        voteManager.checkUserVote();
     }
 
 }

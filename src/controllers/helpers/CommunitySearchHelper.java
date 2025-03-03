@@ -23,8 +23,7 @@ public class CommunitySearchHelper {
     private final Function<String, List<Community>> searchFunction;
     private boolean isCommunitySelected = false;
 
-    public CommunitySearchHelper(TextField searchField, Function<String, List<Community>> searchFunction,
-                                 Consumer<Community> onCommunitySelected) {
+    public CommunitySearchHelper(TextField searchField, Function<String, List<Community>> searchFunction, Consumer<Community> onCommunitySelected) {
         this.searchField = searchField;
         this.searchFunction = searchFunction;
         this.onCommunitySelected = onCommunitySelected;

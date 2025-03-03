@@ -15,6 +15,7 @@ import src.domainmodel.User;
 import src.servicemanager.FormattedTime;
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
+import src.servicemanager.VoteManager;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -48,8 +49,7 @@ public class PostController implements Controller, Initializable {
 
     private PostService postService;
     private final FormattedTime formatter = new FormattedTime();
-    private boolean isLiked = false;
-    private boolean isDisliked = false;
+    private VoteManager voteManager;
     private boolean isSaved = false;
 
     public PostController(PostService postService) {
@@ -59,8 +59,6 @@ public class PostController implements Controller, Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         postButton.setOnAction(event -> goToPostPage());
-        likeButton.setOnAction(event -> handleLikeButton());
-        dislikeButton.setOnAction(event -> handleDislikeButton());
         deletePostButton.setOnMouseClicked(event -> {
             try {
                 handleDeletePost();
@@ -76,6 +74,9 @@ public class PostController implements Controller, Initializable {
                 throw new RuntimeException(e);
             }
         });
+
+        voteManager = new VoteManager(scoreLabel, likeButton, dislikeButton, postService);
+
     }
 
     private void handleDeletePost() throws SQLException {
@@ -118,8 +119,6 @@ public class PostController implements Controller, Initializable {
         title.setText(post.getTitle());
         content.setText(post.getContent());
         scoreLabel.setText(post.getLikes() - post.getDislikes() + "");
-        checkUserVote();
-        checkSavedPost();
         checkPostVisibility();
     }
 
@@ -138,17 +137,6 @@ public class PostController implements Controller, Initializable {
             deletePostButton.setVisible(false);
             savePostButton.setVisible(false);
         }
-    }
-
-    private void checkUserVote() {
-        Guest guest = GuestContext.getCurrentGuest();
-        if (guest.getRole() == Role.GUEST) {
-            return;
-        }
-        User currentUser = (User) guest;
-        isLiked = postService.isLiked(currentUser.getId());
-        isDisliked = postService.isDisliked(currentUser.getId());
-        updateButtonStyles();
     }
 
     private void checkSavedPost() throws SQLException {
@@ -179,55 +167,6 @@ public class PostController implements Controller, Initializable {
         setDataOnCard(post);
     }
 
-    private void handleLikeButton() {
-        try {
-            Guest guest = GuestContext.getCurrentGuest();
-            if(guest.getRole() == Role.GUEST)
-                return;
-            User user = (User) guest;
-            postService.toggleLike(user);
-            updateScore();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void handleDislikeButton() {
-        try {
-            Guest guest = GuestContext.getCurrentGuest();
-            if(guest.getRole() == Role.GUEST)
-                return;
-            User user = (User) guest;
-            postService.toggleDislike(user);
-            updateScore();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateScore() throws SQLException {
-        init_data();
-        Post updatedPost = postService.getPost();
-        scoreLabel.setText(updatedPost.getLikes() - updatedPost.getDislikes() + "");
-    }
-
-    private void updateButtonStyles() {
-        // Rimuove tutte le classi esistenti
-        likeButton.getStyleClass().removeAll("selected", "unselected");
-        dislikeButton.getStyleClass().removeAll("selected", "unselected");
-
-        if (isLiked) {
-            likeButton.getStyleClass().add("selected");
-            dislikeButton.getStyleClass().add("unselected");
-        } else if (isDisliked) {
-            dislikeButton.getStyleClass().add("selected");
-            likeButton.getStyleClass().add("unselected");
-        } else {
-            likeButton.getStyleClass().add("unselected");
-            dislikeButton.getStyleClass().add("unselected");
-        }
-    }
-
     private void goToPostPage() {
         String fxmlfile = "/src/view/fxml/PostPage.fxml";
         PostPageController postPageController = new PostPageController(postService);
@@ -240,7 +179,8 @@ public class PostController implements Controller, Initializable {
         try {
             postService.refreshPost();
             setData(postService.getPost());
-            checkUserVote();
+            //checkUserVote();
+            voteManager.checkUserVote();
         } catch (SQLException e) {
             e.printStackTrace();
         }

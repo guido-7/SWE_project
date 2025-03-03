@@ -197,4 +197,8 @@ public class UserProfilePageController implements Initializable, Controller {
     public VBox getPostsContainer() {
         return UserPostsContainer;
     }
+
+    public  ImageView getExitButton() {
+        return exit;
+    }
 }

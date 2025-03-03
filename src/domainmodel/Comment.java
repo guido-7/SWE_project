@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 public class Comment {
     private int id;
-    private Post post;
-    private User user;
     private final int post_id;
     private final int level;
     private final int user_id;
@@ -50,28 +48,12 @@ public class Comment {
         return level;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Post getPost() {
-        return post;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public LocalDateTime getTime() {

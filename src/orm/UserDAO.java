@@ -108,9 +108,14 @@ public class UserDAO extends BaseDAO<User,Integer> {
         }
     }
 
-    public Integer getVote(int userId, int postId) throws SQLException {
+    public Integer getPostVote(int userId, int postId) throws SQLException {
         return (Integer) retrieveSingleAttribute("PostVotes","vote_type","user_id = ? " +
                 "AND post_id = ? ",userId,postId);
+    }
+
+    public Integer getCommentVote(int userId, int commentId, int postId) throws SQLException {
+        return (Integer) retrieveSingleAttribute("CommentVotes","vote_type","user_id = ? " +
+                "AND comment_id = ? and post_id = ? ",userId,commentId,postId);
     }
 
     public boolean isValidUser(String email, String password) throws SQLException {
@@ -251,4 +256,35 @@ public class UserDAO extends BaseDAO<User,Integer> {
             e.printStackTrace();
         }
     }
+
+    public void insertCommentVotes(Map<String, Object> voteInfo) {
+        String query = "INSERT OR REPLACE INTO CommentVotes (user_id, comment_id, post_id, community_id, vote_type) VALUES (?, ?, ?, ?, ?)";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, (int) voteInfo.get("user_id"));
+            statement.setInt(2, (int) voteInfo.get("comment_id"));
+            statement.setInt(3, (int) voteInfo.get("post_id"));
+            statement.setInt(4, (int) voteInfo.get("community_id"));
+            statement.setInt(5, (int) voteInfo.get("vote_type"));
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+       }
+    }
+
+
+    public void removeCommentVotes(Map<String, Object> voteInfo) {
+        String query = "DELETE FROM CommentVotes WHERE user_id = ? AND comment_id = ? AND post_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, (int) voteInfo.get("user_id"));
+            statement.setInt(2, (int) voteInfo.get("comment_id"));
+            statement.setInt(3, (int) voteInfo.get("post_id"));
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

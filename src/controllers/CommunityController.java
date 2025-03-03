@@ -152,7 +152,9 @@ public class CommunityController implements Initializable, Controller {
     }
     @FXML
     private void handleSettingsClick() {
-        SceneManager.changeScene("community settings " + communityservice.getCommunityId(), "/src/view/fxml/CommunitySettings.fxml", new CommunitySettingsController(communityservice));
+        CommunitySettingsController communitySettingsController = new  CommunitySettingsController(communityservice);
+        GuestContext.setCurrentController(communitySettingsController);
+        SceneManager.changeScene("community settings " + communityservice.getCommunityId(), "/src/view/fxml/CommunitySettings.fxml", communitySettingsController);
     }
 
     private void updateSuggestions(String searchTerm) {
@@ -336,6 +338,11 @@ public class CommunityController implements Initializable, Controller {
         searchField.clear();
         Community currentCommunity = communityservice.getCommunity();
         setData(currentCommunity);
+
+        community_title.setOnMouseClicked(event -> {
+            postsContainer.getChildren().clear();
+            SceneManager.changeScene("community " + currentCommunityId, "/src/view/fxml/CommunityPage.fxml", new CommunityController(communityservice));
+        });
 
         if (communityservice.isSubscribed()) {
             subscribeButton.setVisible(false);

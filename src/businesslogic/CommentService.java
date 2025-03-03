@@ -2,10 +2,14 @@ package src.businesslogic;
 
 import src.domainmodel.Comment;
 import src.domainmodel.Post;
+import src.domainmodel.User;
 import src.orm.CommentDAO;
+import src.orm.PostDAO;
 import src.orm.UserDAO;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class CommentService {
     Comment comment;
@@ -49,5 +53,65 @@ public class CommentService {
             return true;
         }
         return false;
+    }
+
+    public boolean isLiked(int id) {
+        return commentDAO.isLiked(id, comment.getId(), comment.getPost_id());
+    }
+
+    public boolean isDisliked(int id) {
+        return commentDAO.isDisliked(id, comment.getId(), comment.getPost_id());
+    }
+
+
+    public void toggleLike(User user) throws SQLException {
+        toggleVote(user, "like");
+    }
+
+    public void toggleDislike(User user) throws SQLException {
+        toggleVote(user, "dislike");
+    }
+
+    private void toggleVote(User guest, String vote) throws SQLException {
+
+        UserDAO userDAO = new UserDAO();
+        PostDAO postDAO = new PostDAO();
+        Integer userVote = getVote((User)guest);
+        Post post = postDAO.findById(comment.getPost_id()).orElse(null);
+
+        switch (vote) {
+            case "like":
+                if ( userVote == null || userVote == 0) {
+                    Map<String, Object> voteInfo = Map.of("user_id", guest.getId(), "post_id", comment.getPost_id(), "comment_id", comment.getId(), "community_id", post.getCommunityId(), "vote_type", 1);
+                    userDAO.insertCommentVotes(voteInfo);
+                } else {
+                    Map<String, Object> voteInfo = Map.of("user_id", guest.getId(), "comment_id", comment.getId(), "post_id", comment.getPost_id());
+                    userDAO.removeCommentVotes(voteInfo);
+                }
+                break;
+            case "dislike":
+                if ( userVote == null || userVote == 1) {
+                    Map<String, Object> voteInfo = Map.of("user_id", guest.getId(), "post_id", comment.getPost_id(), "comment_id", comment.getId(), "community_id", post.getCommunityId(), "vote_type", 0);
+                    userDAO.insertCommentVotes(voteInfo);
+                } else {
+                    Map<String, Object> voteInfo = Map.of("user_id", guest.getId(), "comment_id", comment.getId(), "post_id", comment.getPost_id());
+                    userDAO.removeCommentVotes(voteInfo);
+                }
+                break;
+        }
+    }
+
+    private Integer getVote(User user) throws SQLException {
+        UserDAO userDAO = new UserDAO();
+        return userDAO.getCommentVote(user.getId(), comment.getId(), comment.getPost_id());
+
+    }
+
+    public void refreshComment() {
+        try {
+            comment = commentDAO.findById(List.of(comment.getPost_id(),comment.getId())).orElse(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

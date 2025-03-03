@@ -79,6 +79,7 @@ public class PostPageController implements Controller, Initializable {
     private void loadRootComments(List<Comment> rootComments) {
         for (Comment comment : rootComments) {
             try {
+                comment.setPost(postService.getPost());
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Comment.fxml"));
                 CommentController commentController = new CommentController(new CommentService(comment));
                 fxmlLoader.setController(commentController);
