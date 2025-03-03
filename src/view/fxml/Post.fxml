@@ -25,6 +25,17 @@
          <image>
             <Image url="@../images/delete.png" />
          </image>
+         <HBox.margin>
+            <Insets right="5.0" />
+         </HBox.margin>
+      </ImageView>
+      <ImageView fx:id="reportPostButton" fitHeight="21.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/report.png" />
+         </image>
+         <HBox.margin>
+            <Insets right="1.0" />
+         </HBox.margin>
       </ImageView>
       <Button fx:id="savePostButton" mnemonicParsing="false" style="-fx-background-color: transparent;">
          <graphic>
