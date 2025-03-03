@@ -1,11 +1,10 @@
 package src.businesslogic;
 
-import src.domainmodel.Comment;
-import src.domainmodel.Post;
-import src.domainmodel.User;
+import src.domainmodel.*;
 import src.orm.CommentDAO;
 import src.orm.PostDAO;
 import src.orm.UserDAO;
+import src.servicemanager.GuestContext;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -73,7 +72,6 @@ public class CommentService {
     }
 
     private void toggleVote(User guest, String vote) throws SQLException {
-
         UserDAO userDAO = new UserDAO();
         PostDAO postDAO = new PostDAO();
         Integer userVote = getVote((User)guest);
@@ -113,5 +111,19 @@ public class CommentService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean addReply(String reply) throws SQLException {
+        Guest guest = GuestContext.getCurrentGuest();
+        if (guest.getRole() == Role.GUEST)
+            return false;
+        User user = (User) guest;
+        Comment newComment = new Comment(comment.getPost_id(),
+                comment.getLevel() + 1,
+                user.getId(),
+                reply,
+                comment.getCommunity_id());
+        boolean isOk = commentDAO.save(newComment, comment.getId(), comment.getLevel());
+        return isOk;
     }
 }

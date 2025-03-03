@@ -35,11 +35,14 @@ public class CommentController implements Controller, Initializable {
     @FXML
     private ImageView minusComments;
     @FXML
+    private ImageView replyToCommButton;
+    @FXML
     private VBox repliesContainer;
 
     private final CommentService commentService;
     private final FormattedTime formatter = new FormattedTime();
     private VoteManager voteManager;
+    boolean isReplying = false;
 
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
@@ -50,7 +53,6 @@ public class CommentController implements Controller, Initializable {
         moreComments.setVisible(false);
         minusComments.setVisible(false);
         voteManager = new VoteManager(scoreLabel, likeButton, dislikeButton, commentService);
-
         init_data();
 
         moreComments.setOnMouseClicked(event -> {
@@ -63,9 +65,22 @@ public class CommentController implements Controller, Initializable {
         minusComments.setOnMouseClicked(event -> {
             minusComments.setVisible(false);
             moreComments.setVisible(true);
-            repliesContainer.getChildren().clear();
+            if (isReplying) {
+                repliesContainer.getChildren().remove(1, repliesContainer.getChildren().size());
+            } else {
+                repliesContainer.getChildren().clear();
+            }
         });
 
+        replyToCommButton.setOnMouseClicked(event -> {
+            if(isReplying){
+                isReplying = false;
+                repliesContainer.getChildren().removeFirst();
+            } else {
+                isReplying = true;
+                loadReplyBox();
+            }
+        });
     }
 
     public void setData(Comment comment) {
@@ -77,7 +92,12 @@ public class CommentController implements Controller, Initializable {
         scoreLabel.setText(comment.getLikes() - comment.getDislikes() + "");
     }
 
-    private void loadSubComments() {
+    public void loadSubComments() {
+        if(isReplying) {
+            repliesContainer.getChildren().remove(1, repliesContainer.getChildren().size());
+        } else {
+            repliesContainer.getChildren().clear();
+        }
         List<Comment> subComments = commentService.getCommentsByLevel();
         for (Comment comment : subComments) {
             try {
@@ -93,6 +113,27 @@ public class CommentController implements Controller, Initializable {
         }
     }
 
+    private void loadReplyBox() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommentReply.fxml"));
+            CommentReplyController commentReplyController = new CommentReplyController(this);
+            fxmlLoader.setController(commentReplyController);
+            VBox replyBox = fxmlLoader.load();
+            repliesContainer.getChildren().addFirst(replyBox);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeReplyField() {
+        isReplying = false;
+        repliesContainer.getChildren().removeFirst();
+    }
+
+    public CommentService getCommentService() {
+        return commentService;
+    }
+
     @Override
     public void init_data() {
         if(commentService.hasSubComments()) {
@@ -102,5 +143,4 @@ public class CommentController implements Controller, Initializable {
         setData(commentService.getComment());
         voteManager.checkUserVote();
     }
-
 }

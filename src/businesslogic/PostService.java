@@ -119,9 +119,6 @@ public class PostService {
 
     public boolean isSaved(int userId) throws SQLException {
         UserDAO userDAO = new UserDAO();
-
-        //String tableName, String columnName, String whereClause, Object... params
-
         return userDAO.retrieveSingleAttribute("SavedPost", "user_id", "user_id = ? AND post_id = " + post.getId(), userId) != null;
     }
 
