@@ -2,7 +2,6 @@ package src.orm;
 
 import src.domainmodel.Comment;
 import src.domainmodel.Post;
-import src.domainmodel.User;
 import src.managerdatabase.DBConnection;
 
 import java.sql.*;
@@ -35,14 +34,15 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         int likes = resultSet.getInt("likes");
         int dislikes = resultSet.getInt("dislikes");
         String content = resultSet.getString("content");
+        int community_id = resultSet.getInt("community_id");
         int user_id = resultSet.getInt("user_id");
         boolean is_modified = resultSet.getBoolean("is_modified");
-        return new Comment(id, post_id, level, user_id, content, likes, dislikes, time, is_modified);
+        return new Comment(id, post_id, level, user_id, content, community_id, likes, dislikes, time, is_modified);
     }
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO Comment (post_id, level, user_id, content, time,community_id) VALUES (?, ?, ?, ?, ?, ?)";
+        return "INSERT INTO Comment (post_id, level, user_id, content, time, community_id) VALUES (?, ?, ?, ?, ?, ?)";
         //section-->logica-->comment.save()-->commento padre e commenti figli-->commento to a child-->
         //comment(paretent.getlevle+1,parent.)
     }
@@ -116,28 +116,18 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
 
         try {
             conn = DBConnection.open_connection();
-            conn.prepareStatement("PRAGMA foreign_keys = ON").executeUpdate();
             conn.setAutoCommit(false);  // Start transaction
 
             // 1. Insert the comment
-            String insertSQL = """
-                INSERT INTO Comment (post_id, level, user_id, content)
-                VALUES (?, ?, ?, ?)
-            """;
-
-            stmt = conn.prepareStatement(insertSQL);
-            stmt.setInt(1, comment.getPost_id());
-            stmt.setInt(2, comment.getLevel());
-            stmt.setInt(3, comment.getUser_id());
-            stmt.setString(4, comment.getContent());
-            stmt.executeUpdate();
-
-            conn.commit();
-
+            save(conn, Map.of("post_id", comment.getPost_id(),
+                    "level", comment.getLevel() + 1,
+                    "user_id", comment.getUser_id(),
+                    "content", comment.getContent(),
+                    "community_id", comment.getCommunity_id()));
 
             // 2. Get the generated ID
             String getIdSQL = """
-                SELECT id 
+                SELECT id
                 FROM Comment 
                 WHERE rowid = last_insert_rowid()
             """;
@@ -288,7 +278,6 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         return commentsIds;
     }
 
-
     public boolean isLiked(int userId, int commentId, int postId) {
         String sql = "SELECT * FROM CommentVotes WHERE user_id = ? AND comment_id = ? AND post_id = ? AND vote_type = 1";
         try (Connection connection = DBConnection.open_connection();
@@ -319,6 +308,3 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         return false;
     }
 }
-
-
-
