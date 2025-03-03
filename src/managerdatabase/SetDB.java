@@ -5,6 +5,7 @@ import src.domainmodel.Post;
 import src.domainmodel.User;
 import src.orm.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -401,6 +402,19 @@ public class SetDB {
             communityDAO.save(params);
         }
         System.out.println("Communities created");
+
+        // create fake rules
+        for (int communityId = 1; communityId <= numberofCommunity; communityId++) {
+            Map<Integer, ArrayList<String>> ruleParams = new HashMap<>();
+            for (int j = 1; j <= 3; j++) {
+                ArrayList<String> rule = new ArrayList<>();
+                rule.add("Rule Title " + j);
+                rule.add("Rule Content " + j);
+                ruleParams.put(j, rule);
+            }
+            communityDAO.saveRules(communityId, ruleParams);
+        }
+        System.out.println("Rules created");
 
         // create fake subscriptions
         for (int i = 1; i <= numberofUsers; i++) {
