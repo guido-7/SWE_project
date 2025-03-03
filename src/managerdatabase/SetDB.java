@@ -18,6 +18,7 @@ public class SetDB {
         final int numberofPosts = 40;
         final int numberofCommunities = 10;
         final int numberofUser = 100;
+        final int numberofComments = 40;
 
         generatefakedata(numberofPosts, numberofCommunities, numberofUser, numberofComments);
     }
