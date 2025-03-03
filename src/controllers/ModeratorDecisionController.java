@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class ModeratorDecisionController implements Controller, Initializable {
@@ -55,12 +56,16 @@ public class ModeratorDecisionController implements Controller, Initializable {
     @FXML
     private Text ReportNoText;
 
-    private final PostWarnings warning;
+    private final ArrayList<PostWarnings> warning;
     private  final CommunityService communityService;
+    private final int reportedId;
+    private final String reportedNickname;
 
-    ModeratorDecisionController (PostWarnings postWarnings, CommunityService communityService) {
+    ModeratorDecisionController (ArrayList<PostWarnings> postWarnings, CommunityService communityService) {
         this.warning = postWarnings;
         this.communityService = communityService;
+        reportedId = warning.getFirst().getReportedId();
+        reportedNickname = warning.getFirst().getReported_nickname();
     }
 
     @Override
@@ -71,13 +76,13 @@ public class ModeratorDecisionController implements Controller, Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         warningsText.setVisible(false);
-        UserText.setText(warning.getReported_nickname());
+        UserText.setText(reportedNickname);
 
         BanButton.setOnMouseClicked(event -> {
             try {
                 BanUserCallback banUserCallBack = this::removeDecidedReport;
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/BanReason.fxml"));
-                BanReasonController banReasonController = new BanReasonController(warning.getReportedId(), warning.getReported_nickname(), communityService, banUserCallBack);
+                BanReasonController banReasonController = new BanReasonController(reportedId, reportedNickname, communityService, banUserCallBack);
                 loader.setController(banReasonController);
                 Parent root = loader.load();
                 Stage stage = new Stage();
@@ -95,7 +100,7 @@ public class ModeratorDecisionController implements Controller, Initializable {
             warningsText.setVisible(false);
             LocalDateTime time = getTime();
             if (time != null) {
-                communityService.timeOutUser(warning.getReportedId(), time);
+                communityService.timeOutUser(reportedId, time);
                 removeDecidedReport();
             }
         });
@@ -127,8 +132,8 @@ public class ModeratorDecisionController implements Controller, Initializable {
     }
     public void removeDecidedReport() {
         CommunitySettingsController ctrl = (CommunitySettingsController)GuestContext.getCurrentController();
-        ctrl.removeReport(warning, pane);
-        ctrl.removeReportFromTable(warning);
+        ctrl.removeReport(pane);
+        ctrl.removeReportsFromTable(warning);
     }
     public void setNumber(int number) {
         ReportNoText.setText(String.valueOf(number));

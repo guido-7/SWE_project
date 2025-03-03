@@ -7,6 +7,16 @@ import src.domainmodel.User;
 public class GuestContext {
     private static Guest previousContextGuest;
     private static  Guest currentGuest;
+    private static Controller currentController;
+    private static Controller previousContextController;
+
+    public static Controller getPreviousContextController() {
+        return previousContextController;
+    }
+
+    public static void setPreviousContextController(Controller previousContextController) {
+        GuestContext.previousContextController = previousContextController;
+    }
 
     public static Controller getCurrentController() {
         return currentController;
@@ -15,8 +25,6 @@ public class GuestContext {
     public static void setCurrentController(Controller currentController) {
         GuestContext.currentController = currentController;
     }
-
-    private static Controller currentController;
 
 
 

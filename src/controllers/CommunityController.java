@@ -152,7 +152,9 @@ public class CommunityController implements Initializable, Controller {
     }
     @FXML
     private void handleSettingsClick() {
-        SceneManager.changeScene("community settings " + communityservice.getCommunityId(), "/src/view/fxml/CommunitySettings.fxml", new CommunitySettingsController(communityservice));
+        CommunitySettingsController communitySettingsController = new  CommunitySettingsController(communityservice);
+        GuestContext.setCurrentController(communitySettingsController);
+        SceneManager.changeScene("community settings " + communityservice.getCommunityId(), "/src/view/fxml/CommunitySettings.fxml", communitySettingsController);
     }
 
     private void updateSuggestions(String searchTerm) {

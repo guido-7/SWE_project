@@ -20,12 +20,13 @@ import src.businesslogic.UserProfileService;
 import src.domainmodel.PostWarnings;
 import javafx.scene.text.Text;
 import src.domainmodel.User;
+import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
 import src.utils.LoadingPost;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.*;
 
 public class CommunitySettingsController implements Controller {
     @FXML
@@ -56,8 +57,6 @@ public class CommunitySettingsController implements Controller {
 
     @FXML
     public void initialize() {
-
-        scrollPane.setStyle("-fx-background-color: trasparent;");
 
         exit.setOnMouseClicked(event-> backToCommunity());
 
@@ -93,8 +92,10 @@ public class CommunitySettingsController implements Controller {
                         try {
                             User user = communityService.getUser(getTableRow().getItem().getSenderId());
                             UserProfilePageController userProfilePageController = new UserProfilePageController(new UserProfileService(user));
+                            SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
                             Stage primaryStage = SceneManager.loadScene( "/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
-                            manageLookUpUser(userProfilePageController, primaryStage);
+                            manageLookUpUser(userProfilePageController);
+                            primaryStage.show();
 
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
@@ -135,8 +136,10 @@ public class CommunitySettingsController implements Controller {
                         try {
                             User user = communityService.getUser(getTableRow().getItem().getReportedId());
                             UserProfilePageController userProfilePageController = new UserProfilePageController(new UserProfileService(user));
+                            SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
                             Stage primaryStage = SceneManager.loadScene("/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
-                            manageLookUpUser(userProfilePageController, primaryStage);
+                            manageLookUpUser(userProfilePageController);
+                            primaryStage.show();
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
@@ -201,28 +204,41 @@ public class CommunitySettingsController implements Controller {
     }
 
     private void buildModeratorDecisionMenu(ArrayList<PostWarnings> reports) {
-        int i = 1;
+        Map<Integer , ArrayList<PostWarnings>> reportedUserCount = new HashMap<>(); // (reported_id , warningsOfUser)
         for (PostWarnings report : reports) {
-
-            try {
-                ModeratorDecisionController moderatorDecisionController = new ModeratorDecisionController(report, communityService);
-                FXMLLoader fxmlLoader = new FXMLLoader(LoadingPost.class.getResource("/src/view/fxml/ModeratorDecisionSnapShot.fxml"));
-                fxmlLoader.setController(moderatorDecisionController);
-                Pane pane = fxmlLoader.load();
-                moderatorDecisionController.setNumber(i++);
-                ModeratorChoiceContainer.getChildren().add(pane);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (reportedUserCount.containsKey(report.getReportedId())) {
+                reportedUserCount.get(report.getReportedId()).add(report);
+            } else {
+                ArrayList<PostWarnings> warnings = new ArrayList<>();
+                warnings.add(report);
+                reportedUserCount.put(report.getReportedId(),warnings);
+            }
         }
-    }
+
+        Set<Integer> reportedIds = reportedUserCount.keySet();
+        for (Integer reportedId : reportedIds){
+                try {
+                    ArrayList<PostWarnings> reportedReports = reportedUserCount.get(reportedId);
+                    ModeratorDecisionController moderatorDecisionController = new ModeratorDecisionController(reportedReports, communityService);
+                    FXMLLoader fxmlLoader = new FXMLLoader(LoadingPost.class.getResource("/src/view/fxml/ModeratorDecisionSnapShot.fxml"));
+                    fxmlLoader.setController(moderatorDecisionController);
+                    Pane pane = fxmlLoader.load();
+                    moderatorDecisionController.setNumber(reportedReports.size());
+                    ModeratorChoiceContainer.getChildren().add(pane);
+
+                } catch (IOException e) {
+
+                    e.printStackTrace();
+                }
+            }
     }
 
-    private  void manageLookUpUser(UserProfilePageController userProfilePageController, Stage primaryStage) {
+    private  void manageLookUpUser(UserProfilePageController userProfilePageController) {
         userProfilePageController.setText("Posts");
         userProfilePageController.deleteSavedPostPane();
         userProfilePageController.moveUserPostPaneToCenter();
         userProfilePageController.setNotEditable();
-        primaryStage.show();
+        userProfilePageController.getExitButton().setOnMouseClicked(event -> SceneManager.loadPreviousScene());
     }
 
     private void backToCommunity() {
@@ -238,24 +254,19 @@ public class CommunitySettingsController implements Controller {
     public void init_data() {
 
     }
-    public void removeReport(PostWarnings report,Pane pane) {
+    public void removeReport(Pane pane) {
         ModeratorChoiceContainer.getChildren().remove(pane);
     }
-    public void removeRedundantReports(PostWarnings report) {
-//        int reportedId = report.getReportedId();
-//        for (PostWarnings postWarnings : reports) {
-//            if (postWarnings.getReportedId() == reportedId) {
-//                //removeReportFromTable(postWarnings);
-//
-//            }
-//        }
-// ModeratorChoiceContainer.getChildren().clear();
-    }
-
     public void removeReportFromTable(PostWarnings report) {
         ObservableList<PostWarnings> observableReports = reportsTable.getItems();
         observableReports.remove(report);
         reportsTable.setItems(observableReports);
     }
+    public void removeReportsFromTable(ArrayList<PostWarnings> reports) {
+        ObservableList<PostWarnings> observableReports = reportsTable.getItems();
+        observableReports.removeAll(reports);
+        reportsTable.setItems(observableReports);
+    }
+
 }
 
