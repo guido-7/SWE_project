@@ -6,6 +6,7 @@ import src.servicemanager.GuestContext;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,5 +121,15 @@ public class CommunityService {
     public User getUser(int userId) throws SQLException {
         UserDAO userDAO = new UserDAO();
         return userDAO.findById(userId).orElse(null);
+    }
+
+    public void timeOutUser(int reportedId, LocalDateTime time) {
+        communityDAO.timeOutUser(reportedId,communityId ,time);
+
+    }
+
+    public void banUser(int reportedId,String banReason) {
+        communityDAO.banUser(reportedId,communityId,banReason);
+
     }
 }

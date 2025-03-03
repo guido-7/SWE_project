@@ -27,9 +27,8 @@ public class PostWarnings {
     public int getPostId() {
         return postId;
     }
-    public String getContent(){
-        return StringManager.reduceStringToFiveWords(content);
-    }
+    public String getReducedContent(int n){return StringManager.reduceStringToNWords(content,n);}
+    public String getFullContent(){return content;}
     public String getSender_nickname(){
         return sender_nickname;
     }

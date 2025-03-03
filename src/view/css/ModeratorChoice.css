@@ -1,0 +1,20 @@
+.button {
+    -fx-background-color: #F8F8F8;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: E0E0E0;
+    -fx-padding: 5px 10px;
+    -fx-border-width: 1px;
+    -fx-text-fill: #333333;
+    -fx-font-size: 12px;
+}
+.post-container {
+    -fx-padding: 5;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 1;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    /* Per dare un effetto card, puoi aggiungere anche un'ombra */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.5, 0, 2);
+}

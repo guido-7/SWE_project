@@ -1,4 +1,4 @@
-package src.Interface;
+package src.FunctionalInterfaces;
 
 import java.sql.SQLException;
 

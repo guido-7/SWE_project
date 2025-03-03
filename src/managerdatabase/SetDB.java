@@ -18,7 +18,6 @@ public class SetDB {
         final int numberofPosts = 40;
         final int numberofCommunities = 10;
         final int numberofUser = 100;
-        final int numberofComments = 40;
 
         generatefakedata(numberofPosts, numberofCommunities, numberofUser, numberofComments);
     }
@@ -41,6 +40,7 @@ public class SetDB {
         createUserDescription();
         createSavedPost();
         createCommentVotesTable();
+        createTimeOutTable();
     }
 
     public static void createCommunityTable() {
@@ -358,6 +358,18 @@ public class SetDB {
                 + " PRIMARY KEY (user_id, post_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
                 + " FOREIGN KEY (post_id) REFERENCES Post(id)"
+                + ");";
+
+        DBConnection.query(sql);
+    }
+    public static void createTimeOutTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS TimeOut ("
+                + " user_id INTEGER NOT NULL,"
+                + " community_id INTEGER NOT NULL,"
+                + " end_time_out_date TEXT,"
+                + " PRIMARY KEY (user_id, community_id),"
+                + " FOREIGN KEY (user_id) REFERENCES User(id),"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
                 + ");";
 
         DBConnection.query(sql);

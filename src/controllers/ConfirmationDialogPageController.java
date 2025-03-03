@@ -1,10 +1,8 @@
 package src.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.stage.Stage;
-import javafx.scene.layout.AnchorPane;
 
-import src.Interface.BackMessage;
+import src.FunctionalInterfaces.BackMessage;
 
 import java.sql.SQLException;
 
