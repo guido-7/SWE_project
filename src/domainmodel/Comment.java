@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 public class Comment {
     private int id;
+    private Post post;
+    private User user;
     private final int post_id;
     private final int level;
     private final int user_id;
@@ -83,5 +85,13 @@ public class Comment {
     public void setModifyFlag() {
         if (!is_modified)
             is_modified = true;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
