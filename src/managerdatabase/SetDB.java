@@ -1,10 +1,12 @@
 package src.managerdatabase;
 
+import src.domainmodel.Comment;
 import src.domainmodel.Post;
 import src.domainmodel.User;
 import src.orm.*;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SetDB {
@@ -16,8 +18,9 @@ public class SetDB {
         final int numberofPosts = 40;
         final int numberofCommunities = 10;
         final int numberofUser = 100;
+        final int numberofComments = 40;
 
-        generatefakedata(numberofPosts, numberofCommunities, numberofUser);
+        generatefakedata(numberofPosts, numberofCommunities, numberofUser, numberofComments);
     }
 
     public static void createDB() {
@@ -37,6 +40,7 @@ public class SetDB {
         createPostwarningsTable();
         createUserDescription();
         createSavedPost();
+        createCommentVotesTable();
     }
 
     public static void createCommunityTable() {
@@ -279,6 +283,45 @@ public class SetDB {
         DBConnection.query(sql3);
     }
 
+    public static void createCommentVotesTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS CommentVotes ("
+                + " user_id INTEGER NOT NULL,"
+                + " comment_id INTEGER NOT NULL,"
+                + " post_id INTEGER NOT NULL,"
+                + " community_id INTEGER NOT NULL,"
+                + " vote_type INTEGER DEFAULT 0 CHECK (vote_type IN (0, 1)),"
+                + " PRIMARY KEY (user_id, comment_id, post_id),"
+                + " FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE,"
+                + " FOREIGN KEY (comment_id, post_id) REFERENCES Comment(id, post_id) ON DELETE CASCADE,"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
+                + ");";
+
+        String sql2 = "CREATE TRIGGER IF NOT EXISTS update_comment_likes_dislikes"
+                + " AFTER INSERT ON CommentVotes"
+                + " FOR EACH ROW"
+                + " BEGIN"
+                + " UPDATE Comment"
+                + " SET likes = (SELECT COUNT(*) FROM CommentVotes WHERE comment_id = NEW.comment_id AND post_id = NEW.post_id AND vote_type = 1),"
+                + " dislikes = (SELECT COUNT(*) FROM CommentVotes WHERE comment_id = NEW.comment_id AND post_id = NEW.post_id AND vote_type = 0)"
+                + " WHERE id = NEW.comment_id AND post_id = NEW.post_id;"
+                + " END;";
+
+        String sql3 = "CREATE TRIGGER IF NOT EXISTS delete_comment_likes_dislikes"
+                + " AFTER DELETE ON CommentVotes"
+                + " FOR EACH ROW"
+                + " BEGIN"
+                + " UPDATE Comment"
+                + " SET likes = (SELECT COUNT(*) FROM CommentVotes WHERE comment_id = OLD.comment_id AND post_id = OLD.post_id AND vote_type = 1),"
+                + " dislikes = (SELECT COUNT(*) FROM CommentVotes WHERE comment_id = OLD.comment_id AND post_id = OLD.post_id AND vote_type = 0)"
+                + " WHERE id = OLD.comment_id AND post_id = OLD.post_id;"
+                + " END;";
+
+        DBConnection.query(sql);
+        DBConnection.query(sql2);
+        DBConnection.query(sql3);
+    }
+
+
     public static void createPostwarningsTable() {
         String sql = "CREATE TABLE IF NOT EXISTS PostWarnings ("
                 + " sender_id INTEGER NOT NULL,"
@@ -320,7 +363,7 @@ public class SetDB {
         DBConnection.query(sql);
     }
 
-    public static void generatefakedata(final int numberofPosts, final int numberofCommunity, final int numberofUsers) throws SQLException {
+    public static void generatefakedata(final int numberofPosts, final int numberofCommunity, final int numberofUsers, final int numberofComments) throws SQLException {
         UserDAO userDAO = new UserDAO();
         CommunityDAO communityDAO = new CommunityDAO();
         SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
@@ -369,7 +412,7 @@ public class SetDB {
         System.out.println("Posts created");
 
         // create fake PostVotes
-        for (int i = 1; i <= (numberofUsers * 2); i++) {
+        for (int i = 1; i <= (numberofPosts * 2); i++) {
             Post p1 = postDAO.findById((int) ((Math.random() * numberofPosts) + 1)).orElse(null);
             Map<String, Object> params1 = new HashMap<>();
             params1.put("user_id", (i % numberofUsers) + 1);
@@ -393,6 +436,19 @@ public class SetDB {
             commentDAO.save(params);
         }
         System.out.println("Comments created\n");
+
+        // create fake CommentVotes
+        for (int i = 1; i <= (numberofComments)-1; i++) {
+            Comment c1 = commentDAO.findById( List.of(i%numberofComments, 1)).orElse(null);
+            Map<String, Object> params1 = new HashMap<>();
+            params1.put("user_id", (i % numberofUsers) + 1);
+            params1.put("comment_id", c1.getId());
+            params1.put("post_id", c1.getPost_id());
+            params1.put("vote_type", (int) (Math.random() * 2));
+            Post post = postDAO.findById(c1.getPost_id()).orElse(null);
+            params1.put("community_id", post.getCommunityId());
+            userDAO.insertCommentVotes(params1);
+        }
 
         // create fake Post Warnings
         for (int i = 1; i <= (numberofPosts / 2); i++) {
