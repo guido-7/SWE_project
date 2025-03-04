@@ -7,12 +7,17 @@ import java.time.temporal.ChronoUnit;
 public class FormattedTime {
     public String getFormattedTime(LocalDateTime time) {
         LocalDateTime now = LocalDateTime.now();
+        long minutesAgo = ChronoUnit.MINUTES.between(time, now);
+        long hoursAgo = ChronoUnit.HOURS.between(time, now);
+        long daysAgo = ChronoUnit.DAYS.between(time, now);
 
-        if (time.isAfter(now.minusHours(24))) { // Oggi
-            long hoursAgo = ChronoUnit.HOURS.between(time, now);
+        if (minutesAgo < 1) {
+            return "Just now";
+        } else if (minutesAgo < 60) { // Meno di un'ora
+            return minutesAgo + " min ago";
+        } else if (hoursAgo < 24) { // Oggi
             return hoursAgo + "h ago";
-        } else if (time.isAfter(now.minusDays(7))) { // Ultima settimana
-            long daysAgo = ChronoUnit.DAYS.between(time, now);
+        } else if (daysAgo < 7) { // Ultima settimana
             return daysAgo + "d ago";
         } else if (time.getYear() == now.getYear()) { // Stesso anno
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM");
@@ -21,7 +26,6 @@ public class FormattedTime {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
             return time.format(formatter);
         }
-
     }
 
 }
