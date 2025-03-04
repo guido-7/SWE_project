@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class HomePageController implements Initializable,Controller  {
-
     @FXML
     private VBox postsContainer;
     @FXML
@@ -42,7 +41,6 @@ public class HomePageController implements Initializable,Controller  {
     @FXML
     private Button createPostButton;
 
-    User user;
     List<Post> posts;
     private FeedService feedService;
     private Boolean isLoading = false;
@@ -51,7 +49,7 @@ public class HomePageController implements Initializable,Controller  {
 
     private final SearchService searchService = new SearchService();
 
-    public HomePageController(){}
+    public HomePageController() {}
 
     public HomePageController(FeedService feedService) {
         this.feedService = feedService;
@@ -60,11 +58,12 @@ public class HomePageController implements Initializable,Controller  {
         this.feedService = feedService;
     }
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         userProfileAccess.setVisible(false);
+        userProfileAccess.setManaged(false);
         createCommunityButton.setVisible(false);
+        createCommunityButton.setManaged(false);
 
         try {
             init_data();
@@ -82,6 +81,7 @@ public class HomePageController implements Initializable,Controller  {
                 PostCreationPageController postCreationPageController = new PostCreationPageController(new PostCreationService());
                 SceneManager.changeScene("postCreation","/src/view/fxml/PostCreationPage.fxml", postCreationPageController);
             });
+
             scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal.doubleValue() == 1.0 && !isLoading && !allPostsLoaded) {
                     loadMorePosts();
@@ -90,7 +90,6 @@ public class HomePageController implements Initializable,Controller  {
 
             CommunitySearchHelper communitySearchHelper = new CommunitySearchHelper(searchField, searchService::searchCommunities, this::loadCommunityPage);
             communitySearchHelper.setupSearchListener();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,7 +101,6 @@ public class HomePageController implements Initializable,Controller  {
 
     private void loadMorePosts() {
         isLoading = true;
-
         if (!postsContainer.getChildren().contains(progressIndicator)) {
             postsContainer.getChildren().add(progressIndicator);
         }
@@ -160,6 +158,7 @@ public class HomePageController implements Initializable,Controller  {
 
     public void setLoginButtonVisibility(boolean visibility){
         login.setVisible(visibility);
+        login.setManaged(visibility);
     }
 
     public void openProfilePage() throws IOException {
@@ -169,6 +168,7 @@ public class HomePageController implements Initializable,Controller  {
 
     public void setUserProfileAccessVisibility(boolean visibility){
         userProfileAccess.setVisible(visibility);
+        userProfileAccess.setManaged(visibility);
     }
 
     @Override
@@ -178,7 +178,9 @@ public class HomePageController implements Initializable,Controller  {
         }
         boolean isUser = !(GuestContext.getCurrentGuest().getRole() == Role.GUEST);
         createPostButton.setVisible(isUser);
+        createPostButton.setManaged(isUser);
         createCommunityButton.setVisible(isUser);
+        createCommunityButton.setManaged(isUser);
         System.out.println("Initializing data...");
         searchField.clear();
         searchField.setEditable(false);
@@ -192,5 +194,4 @@ public class HomePageController implements Initializable,Controller  {
     public VBox getPostsContainer(){
         return postsContainer;
     }
-
 }
