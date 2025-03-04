@@ -67,6 +67,8 @@ public class PostController implements Controller, Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         reportPostButton.setVisible(false);
+        reportPostButton.setManaged(false);
+
         reportPostButton.setOnMouseClicked(event->{
             postService.signalPost();
             HboxContainer.getChildren().remove(reportPostButton);
@@ -90,9 +92,7 @@ public class PostController implements Controller, Initializable {
                 throw new RuntimeException(e);
             }
         });
-
         voteManager = new VoteManager(scoreLabel, likeButton, dislikeButton, postService);
-
     }
 
     private void handleDeletePost() throws SQLException {
@@ -137,41 +137,31 @@ public class PostController implements Controller, Initializable {
         scoreLabel.setText(post.getLikes() - post.getDislikes() + "");
         checkPostVisibility();
     }
+
     private void checkPostVisibility() {
         Guest guest = GuestContext.getCurrentGuest();
 
         if (guest.getRole() != Role.GUEST) {
             User user = (User) guest;
             reportPostButton.setVisible(!postService.isAlreadyReported());
+            reportPostButton.setManaged(!postService.isAlreadyReported());
             if (postService.isPostOwner(user.getId())) {
                 reportPostButton.setVisible(false);
+                reportPostButton.setManaged(false);
                 deletePostButton.setVisible(true);
+                deletePostButton.setManaged(true);
             } else {
                 deletePostButton.setVisible(false);
+                deletePostButton.setManaged(false);
             }
             savePostButton.setVisible(true);
+            savePostButton.setManaged(true);
         } else {
             deletePostButton.setVisible(false);
+            deletePostButton.setManaged(false);
             savePostButton.setVisible(false);
+            savePostButton.setManaged(false);
         }
-    }
-
-    private void checkSavedPost() throws SQLException {
-        Guest guest = GuestContext.getCurrentGuest();
-        if (guest.getRole() == Role.GUEST) {
-            return;
-        }
-        User currentUser = (User) guest;
-        isSaved = postService.isSaved(currentUser.getId());
-        ImageView image;
-        if (isSaved) {
-            image = new ImageView("/src/view/images/SavedClickIcon.png");
-        } else {
-            image = new ImageView("/src/view/images/SavedIcon.png");
-        }
-        image.setFitHeight(20);
-        image.setFitWidth(20);
-        savePostButton.setGraphic(image);
     }
 
     public void setData(Post post) throws SQLException {

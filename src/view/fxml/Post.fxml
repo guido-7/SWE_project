@@ -15,44 +15,37 @@
 
     <!-- Header: titolo, autore e orario -->
     <HBox fx:id="HboxContainer" alignment="CENTER_LEFT" spacing="10">
-      <Label fx:id="community" text="Community" />
-      <Label text="·" />
+        <Label fx:id="community" text="Community" />
+        <Label text="·" />
         <Label fx:id="username" styleClass="post-author" text="Author" />
-      <Label text="·" />
+        <Label text="·" />
         <Label fx:id="date" styleClass="post-time" text="12:34" />
-      <Pane prefHeight="0.0" prefWidth="20.0" HBox.hgrow="ALWAYS">
-         <children>
+        <Pane prefHeight="0.0" prefWidth="20.0" HBox.hgrow="ALWAYS">
             <VBox fx:id="SignalTextContainer" layoutX="45.0" layoutY="7.0" prefHeight="0.0" prefWidth="70.0" />
-         </children></Pane>
-      <ImageView fx:id="deletePostButton" fitHeight="21.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
-         <image>
+        </Pane>
+        <ImageView fx:id="deletePostButton" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+            <HBox.margin>
+                <Insets />
+            </HBox.margin>
             <Image url="@../images/delete.png" />
-         </image>
-         <HBox.margin>
-            <Insets right="5.0" />
-         </HBox.margin>
-      </ImageView>
-      <ImageView fx:id="reportPostButton" fitHeight="21.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/report.png" />
-         </image>
-         <HBox.margin>
-            <Insets right="1.0" />
-         </HBox.margin>
-      </ImageView>
-      <Button fx:id="savePostButton" mnemonicParsing="false" style="-fx-background-color: transparent;">
-         <graphic>
-            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/SavedIcon.png" />
-               </image>
-            </ImageView>
-         </graphic>
-      </Button>
+        </ImageView>
+        <ImageView fx:id="reportPostButton" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+            <Image url="@../images/WarningPostIcon.png" />
+            <HBox.margin>
+                <Insets left="5.0" />
+            </HBox.margin>
+        </ImageView>
+        <Button fx:id="savePostButton" mnemonicParsing="false" style="-fx-background-color: transparent;">
+            <graphic>
+                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../images/SavedIcon.png" />
+                </ImageView>
+            </graphic>
+        </Button>
     </HBox>
     <Label fx:id="title" maxWidth="540.0" styleClass="post-title" text="Post Title" wrapText="true" VBox.vgrow="ALWAYS" />
 
-          <!-- Contenuto del post -->
+    <!-- Contenuto del post -->
     <Label fx:id="content" maxWidth="540.0" styleClass="post-content" text="Contenuto del post..." wrapText="true" VBox.vgrow="ALWAYS" />
 
     <!-- Area delle reazioni: like, punteggio, dislike -->
@@ -60,17 +53,15 @@
         <Button fx:id="likeButton" styleClass="like-button" text="Like" />
         <Label fx:id="scoreLabel" styleClass="score-label" text="0" />
         <Button fx:id="dislikeButton" styleClass="dislike-button" text="Dislike" />
-      <Button fx:id="postButton" mnemonicParsing="false" styleClass="comment-button">
-         <graphic>
-            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/Comment.png" />
-               </image>
-            </ImageView>
-         </graphic>
-         <HBox.margin>
-            <Insets />
-         </HBox.margin>
-      </Button>
+        <Button fx:id="postButton" mnemonicParsing="false" styleClass="comment-button">
+            <graphic>
+                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../images/Comment.png" />
+                </ImageView>
+            </graphic>
+            <HBox.margin>
+                <Insets />
+            </HBox.margin>
+        </Button>
     </HBox>
 </VBox>
