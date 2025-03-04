@@ -2,7 +2,6 @@ package src.controllers;
 
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -22,7 +21,6 @@ import src.servicemanager.SceneManager;
 import src.utils.LoadingPost;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -90,9 +88,9 @@ public class HomePageController implements Initializable,Controller  {
                 }
             });
 
-            CommunitySearchHelper communitySearchHelper = new CommunitySearchHelper(searchField,
-                    searchService::searchCommunities, this::loadCommunityPage);
+            CommunitySearchHelper communitySearchHelper = new CommunitySearchHelper(searchField, searchService::searchCommunities, this::loadCommunityPage);
             communitySearchHelper.setupSearchListener();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -143,7 +141,13 @@ public class HomePageController implements Initializable,Controller  {
 
     private void loadCommunityPage(Community community){
         CommunityService communityService = new CommunityService(community.getId());
-        SceneManager.changeScene("community " + community.getId(), "/src/view/fxml/CommunityPage.fxml", new CommunityController(communityService));
+        if(!communityService.checkBannedUser()) {
+            SceneManager.changeScene("community " + community.getId(), "/src/view/fxml/CommunityPage.fxml", new CommunityController(communityService));
+        } else {
+            Stage stage = (Stage) searchField.getScene().getWindow();
+            BannedService bannedService = new BannedService(community.getId());
+            SceneManager.openModal("banned", "/src/view/fxml/BannedMessage.fxml", new BannedController(bannedService),stage);
+        }
     }
 
     public void handleLoginButton() {
@@ -184,7 +188,9 @@ public class HomePageController implements Initializable,Controller  {
             loadPosts(posts);
         }
     }
+
     public VBox getPostsContainer(){
         return postsContainer;
     }
+
 }

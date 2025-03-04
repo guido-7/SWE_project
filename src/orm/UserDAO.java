@@ -272,7 +272,6 @@ public class UserDAO extends BaseDAO<User,Integer> {
        }
     }
 
-
     public void removeCommentVotes(Map<String, Object> voteInfo) {
         String query = "DELETE FROM CommentVotes WHERE user_id = ? AND comment_id = ? AND post_id = ?";
         try (Connection connection = DBConnection.open_connection();
@@ -286,5 +285,24 @@ public class UserDAO extends BaseDAO<User,Integer> {
         }
     }
 
+    public HashMap<String, String> getBannedInfo(int userId, int communityId) {
+        String query = "SELECT ban_date, reason FROM BannedUsers WHERE user_id = ? and community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, communityId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    HashMap<String, String> bannedInfo = new HashMap<>();
+                    bannedInfo.put("ban_date", resultSet.getString("ban_date"));
+                    bannedInfo.put("reason", resultSet.getString("reason"));
+                    return bannedInfo;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }

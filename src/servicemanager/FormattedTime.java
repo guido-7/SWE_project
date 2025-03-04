@@ -28,4 +28,22 @@ public class FormattedTime {
         }
     }
 
+    public String getBanTime(LocalDateTime time) {
+        LocalDateTime now = LocalDateTime.now();
+        long daysAgo = ChronoUnit.DAYS.between(now,time);
+
+        if(daysAgo < 1) {
+            return "Today, "+time.getHour()+":"+time.getMinute();
+        } else if (daysAgo < 7) { // Ultima settimana
+            return daysAgo + "d ago";
+        } else if (time.getYear() == now.getYear()) { // Stesso anno
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM");
+            return time.format(formatter);
+        } else { // Anni precedenti
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+            return time.format(formatter);
+        }
+
+    }
+
 }

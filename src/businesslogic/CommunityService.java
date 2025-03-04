@@ -4,7 +4,6 @@ import src.domainmodel.*;
 import src.orm.*;
 import src.servicemanager.GuestContext;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -131,6 +130,14 @@ public class CommunityService {
     public void banUser(int reportedId,String banReason) {
         communityDAO.banUser(reportedId,communityId,banReason);
 
+    }
+
+    public boolean checkBannedUser() {
+        Guest guest =  GuestContext.getCurrentGuest();
+        if(guest.getRole() == Role.GUEST)
+            return false;
+        User user = (User) guest;
+        return communityDAO.isBanned(user.getId(),communityId);
     }
 
     public void removeWarnings(ArrayList<PostWarnings> reports) {

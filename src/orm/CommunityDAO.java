@@ -271,5 +271,20 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
             e.printStackTrace();
     }
     }
+
+    public boolean isBanned(int id, int communityId) {
+        String sql = "SELECT * FROM BannedUsers WHERE user_id = ? AND community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            statement.setInt(2, communityId);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }
 
