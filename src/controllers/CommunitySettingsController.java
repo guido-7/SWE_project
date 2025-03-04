@@ -250,10 +250,6 @@ public class CommunitySettingsController implements Controller {
         reportsTable.setItems(observableReports);
     }
 
-    @Override
-    public void init_data() {
-
-    }
     public void removeReport(Pane pane) {
         ModeratorChoiceContainer.getChildren().remove(pane);
     }
@@ -263,6 +259,11 @@ public class CommunitySettingsController implements Controller {
         ObservableList<PostWarnings> observableReports = reportsTable.getItems();
         observableReports.removeAll(reports);
         reportsTable.setItems(observableReports);
+    }
+
+    @Override
+    public void init_data() {
+
     }
 
 }
