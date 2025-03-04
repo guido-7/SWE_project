@@ -19,7 +19,7 @@ public class BannedController implements Initializable, Controller {
     @FXML
     private Button closeButton;
 
-    private BannedService bannedService;
+    private final BannedService bannedService;
 
     public BannedController(BannedService bannedService) {
         this.bannedService = bannedService;

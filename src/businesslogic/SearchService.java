@@ -1,7 +1,6 @@
 package src.businesslogic;
 
 import src.domainmodel.Community;
-import src.domainmodel.Guest;
 import src.domainmodel.Post;
 import src.domainmodel.User;
 import src.orm.CommunityDAO;
@@ -11,7 +10,6 @@ import src.servicemanager.GuestContext;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 public class SearchService {
     private final CommunityDAO communityDAO;

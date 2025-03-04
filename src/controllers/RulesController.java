@@ -30,9 +30,9 @@ public class RulesController implements Controller {
         content.setText(ruleContent);
     }
 
-
     @Override
     public void init_data() {
 
     }
+
 }

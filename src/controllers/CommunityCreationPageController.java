@@ -56,13 +56,6 @@ public class CommunityCreationPageController implements Controller, Initializabl
         this.communityCreationService = communityCreationService;
     }
 
-
-
-    @Override
-    public void init_data() throws SQLException {
-
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         createButton.setOnMouseClicked(e -> {
@@ -91,6 +84,11 @@ public class CommunityCreationPageController implements Controller, Initializabl
         exitButton.setOnMouseClicked(e -> {
             SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
         });
+
+    }
+
+    @Override
+    public void init_data() throws SQLException {
 
     }
 

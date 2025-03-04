@@ -287,7 +287,6 @@ public class CommunityController implements Initializable, Controller {
 
     public void setData(Community community) {
         System.out.println("Setting data");
-        //communityservice.refreshCommunity(community);
         community_title.setText(community.getTitle());
         description.setText(community.getDescription());
         num_subscribes.setText(community.getSubscribers() + "");
@@ -333,6 +332,10 @@ public class CommunityController implements Initializable, Controller {
         settings.setVisible(true);
     }
 
+    public VBox getPostsContainer() {
+        return postsContainer;
+    }
+
     @Override
     public void init_data() throws SQLException {
         searchField.clear();
@@ -360,9 +363,6 @@ public class CommunityController implements Initializable, Controller {
         loadPosts(posts);
     }
 
-    public VBox getPostsContainer() {
-        return postsContainer;
-    }
 }
 
 

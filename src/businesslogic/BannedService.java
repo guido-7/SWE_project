@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 public class BannedService {
-    private int communityId;
+    private final int communityId;
 
     public BannedService(int communityId) {
         this.communityId = communityId;

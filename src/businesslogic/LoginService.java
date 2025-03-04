@@ -37,10 +37,6 @@ public class LoginService {
         }
     }
 
-    /**
-     * Validates username and password.
-     * @return error message if invalid, otherwise null.
-     */
     private String validateInput(String username, String password) {
         if (username.isEmpty() && password.isEmpty()) return "Please enter both username and password.";
         if (username.isEmpty()) return "Please enter username.";
@@ -49,17 +45,11 @@ public class LoginService {
         return null;
     }
 
-    /**
-     * Displays an error message.
-     */
     private void showError(Label errorLabel, String message) {
         errorLabel.setOpacity(1);
         errorLabel.setText(message);
     }
 
-    /**
-     * Initializes user session and navigates to the home page.
-     */
     private void initializeUserSession(User user,HomePageController homePageController) {
         GuestContext.setCurrentGuest(user);
 

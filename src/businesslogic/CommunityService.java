@@ -124,12 +124,10 @@ public class CommunityService {
 
     public void timeOutUser(int reportedId, LocalDateTime time) {
         communityDAO.timeOutUser(reportedId,communityId ,time);
-
     }
 
     public void banUser(int reportedId,String banReason) {
         communityDAO.banUser(reportedId,communityId,banReason);
-
     }
 
     public boolean checkBannedUser() {

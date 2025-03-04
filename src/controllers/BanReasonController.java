@@ -19,7 +19,6 @@ public class BanReasonController implements Initializable {
     @FXML
     private Button banButton;
 
-
     private final CommunityService communityService;
     private final String nickname;
     private final int reportedId;
@@ -31,6 +30,7 @@ public class BanReasonController implements Initializable {
         this.reportedId = reportedId;
         this.banUserCallback = banUserCallBack;
     }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         banButton.setText("Ban"+ nickname );
@@ -40,7 +40,6 @@ public class BanReasonController implements Initializable {
             communityService.banUser(reportedId,banReason);
             banUserCallback.execute();
             ((Stage) banButton.getScene().getWindow()).close(); // Chiude la finestra
-
 
         });
 

@@ -17,8 +17,8 @@ public class CommentReplyController implements Controller, Initializable {
     @FXML
     private Button sendButton;
 
-    private CommentController commentController;
-    private CommentService commentService;
+    private final CommentController commentController;
+    private final CommentService commentService;
     private String reply;
 
     public CommentReplyController(CommentController commentController) {
@@ -53,6 +53,8 @@ public class CommentReplyController implements Controller, Initializable {
         return false;
     }
 
+    @Override
     public void init_data() {
+
     }
 }

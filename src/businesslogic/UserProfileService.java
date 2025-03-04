@@ -31,12 +31,12 @@ public class UserProfileService {
         userDAO.updatesingleAttribute("UserDescription", "description", description, "user_id = ?", user.getId());
     }
 
-    public List<Post> getUserPosts() throws SQLException {
+    public List<Post> getUserPosts() {
         PostDAO postDAO = new PostDAO();
         return postDAO.getPostsByUser(user.getId());
     }
 
-    public List<Post> getSavedPosts() throws SQLException {
+    public List<Post> getSavedPosts() {
         PostDAO postDAO = new PostDAO();
         return postDAO.getSavedPosts(user.getId(),10,0);
     }

@@ -1,11 +1,9 @@
 package src.controllers;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -13,12 +11,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
+
 import src.businesslogic.UserProfileService;
-import src.domainmodel.PermitsManager;
-import src.domainmodel.User;
 import src.servicemanager.SceneManager;
 import src.utils.LoadingPost;
 
@@ -59,7 +53,6 @@ public class UserProfilePageController implements Initializable, Controller {
     @FXML
     private ScrollPane SavedPane;
 
-    // vars no FXML
     private String description;
     private String tempDescription;
 
@@ -165,13 +158,6 @@ public class UserProfilePageController implements Initializable, Controller {
         SavedPostsContainer.getChildren().clear();
     }
 
-    @Override
-    public void init_data() throws SQLException {
-        clearPosts();
-        LoadingPost.LoadPosts(userProfileService.getUserPosts(), UserPostsContainer);
-        LoadingPost.LoadPosts(userProfileService.getSavedPosts(), SavedPostsContainer);
-    }
-
     public void setText(String text) {
         PostLabel.setText(text);
 
@@ -201,4 +187,12 @@ public class UserProfilePageController implements Initializable, Controller {
     public  ImageView getExitButton() {
         return exit;
     }
+
+    @Override
+    public void init_data() throws SQLException {
+        clearPosts();
+        LoadingPost.LoadPosts(userProfileService.getUserPosts(), UserPostsContainer);
+        LoadingPost.LoadPosts(userProfileService.getSavedPosts(), SavedPostsContainer);
+    }
+
 }
