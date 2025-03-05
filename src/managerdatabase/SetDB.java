@@ -92,7 +92,7 @@ public class SetDB {
                 + ");";
 
         // case scenario I insert a new rule of priority 8 with 10 at the moment
-        String trigger = "CREATE TRIGGER IF NOT EXISTS AdjustPriority "
+        String InsertTrigger = "CREATE TRIGGER IF NOT EXISTS InsertAdjustPriority "
                 + "BEFORE INSERT ON Rules "
                 + "FOR EACH ROW "
                 + "WHEN NEW.priority IS NOT NULL "
@@ -103,9 +103,21 @@ public class SetDB {
                 + "AND priority >= NEW.priority; "
                 + "END;";
 
+        String DeleteTrigger = "CREATE TRIGGER IF NOT EXISTS DeleteAdjustPriority "
+                + "BEFORE DELETE ON Rules "
+                + "FOR EACH ROW "
+                + "WHEN NEW.priority IS NOT NULL "
+                + "BEGIN "
+                + "UPDATE Rules "
+                + "SET priority = priority - 1 "
+                + "WHERE community_id = NEW.community_id "
+                + "AND priority <= NEW.priority; "
+                + "END;";
+
 
         DBConnection.query(sql);
-        DBConnection.query(trigger);
+        DBConnection.query(InsertTrigger);
+        DBConnection.query(DeleteTrigger);
     }
 
     public static void createRulesTable() {

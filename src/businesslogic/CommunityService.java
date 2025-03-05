@@ -160,4 +160,10 @@ public class CommunityService {
     public int getLastPriority() {
         return communityDAO.getLastPriority(communityId);
     }
+
+    public void deleteRule(int ruleId) throws SQLException {
+        RulesDAO rulesDAO = new RulesDAO();
+        ArrayList<Integer> primaryKeysIds = new ArrayList<>(List.of(ruleId,communityId));
+        rulesDAO.deleteById(primaryKeysIds);
+    }
 }

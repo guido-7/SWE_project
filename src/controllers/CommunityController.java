@@ -311,6 +311,7 @@ public class CommunityController implements Initializable, Controller {
             List<Rule> rules = communityservice.getCommunityRules(communityId);
             if (rules.isEmpty()) {
                 Text text = new Text("No rules for this community");
+                text.setStyle("-fx-fill: red; -fx-font-weight: bold;");
                 TextNoRules.getChildren().add(text);
 
                 PauseTransition pause = new PauseTransition(Duration.seconds(5));
@@ -321,7 +322,7 @@ public class CommunityController implements Initializable, Controller {
             postsContainer.getChildren().clear();
             for (Rule rule : rules) {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/RulesPage.fxml"));
-                    RulesController rulesController = new RulesController();
+                    RulesController rulesController = new RulesController(communityservice,rule.getId());
                     fxmlLoader.setController(rulesController);
                     VBox vBox = fxmlLoader.load();
                     rulesController.setRuleData(community_title.getText(), rule.getTitle(), rule.getContent());
@@ -355,15 +356,6 @@ public class CommunityController implements Initializable, Controller {
             }
 
         }
-//        if (guest.getRole() == Role.USER) {
-//            User user = (User) guest;
-//            userProfileAccess.setVisible(true);
-//            Moderator moderator = communityservice.getModerator(user.getId());
-//            if (moderator != null && moderator.getRole() == Role.MODERATOR) {
-//                updateUI();
-//                return moderator;
-//            } else return guest;
-//        }
         return guest;
     }
 
