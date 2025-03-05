@@ -1,17 +1,18 @@
 package src.controllers;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import src.businesslogic.SignUpService;
 import src.servicemanager.SceneManager;
-import java.io.IOException;
 
-public class SignUpController implements Controller {
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class SignUpController implements Controller, Initializable {
 
     @FXML
     private TextField name;
@@ -37,11 +38,22 @@ public class SignUpController implements Controller {
     @FXML
     private Label not_password;
 
-    private final SignUpService signUpService = new SignUpService();
+    @FXML
+    private Button SignUpButton;
 
     @FXML
+    private ImageView backButton;
+
+    private final SignUpService signUpService = new SignUpService();
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        SignUpButton.setOnAction(e -> handleSignUpButtonAction());
+        backButton.setOnMouseClicked(e -> back());
+    }
+
     private void handleSignUpButtonAction() {
-        System.out.println("Register link clicked!");
+        System.out.println("Register button clicked!");
 
         String nicknameId = nickname.getText();
         String surnameId = surname.getText();
@@ -53,7 +65,6 @@ public class SignUpController implements Controller {
         signUpService.registerUser(nicknameId, nameId, surnameId, password, not_username, not_name, not_surname, not_password);
     }
 
-    @FXML
     private void back() {
         System.out.println("Back button clicked!");
         SceneManager.changeSecondaryScene("login", "/src/view/fxml/Login.fxml", new LoginController());
@@ -66,12 +77,13 @@ public class SignUpController implements Controller {
         not_password.setOpacity(0);
     }
 
-    @FXML
     public static void openSignUpPage(Stage stage) {
         SceneManager.changeSecondaryScene("signup", "/src/view/fxml/SignUp.fxml", new SignUpController());
     }
 
     @Override
     public void init_data() {
+
     }
+
 }
