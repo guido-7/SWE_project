@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
-<VBox fx:id="RuleContainer" prefHeight="180.0" prefWidth="850.0" spacing="15" stylesheets="@../css/RulesPage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="RuleContainer" prefHeight="180.0" prefWidth="645.0" spacing="15" stylesheets="@../css/RulesPage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <HBox>
       <children>
          <Circle radius="7.0" stroke="BLACK" strokeType="INSIDE">
@@ -20,7 +23,7 @@
          </Label>
          <Pane prefHeight="27.0" prefWidth="164.0">
             <children>
-               <VBox fx:id="deleteRuleIconContainer" layoutX="82.0" layoutY="5.0" prefHeight="0.0" prefWidth="82.0" />
+               <VBox fx:id="deleteRuleIconContainer" layoutX="3.0" layoutY="3.0" prefHeight="2.0" prefWidth="57.0" />
             </children>
          </Pane>
       </children>
