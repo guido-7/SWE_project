@@ -18,14 +18,11 @@ import java.util.List;
 
 public class RulesController implements Controller {
     @FXML
-    private Label community_title;
-    @FXML
     private Label rule_title;
     @FXML
     private Label content;
 
     public void setRuleData(String communityID, String ruleTitle, String ruleContent) {
-        community_title.setText(communityID);
         rule_title.setText(ruleTitle);
         content.setText(ruleContent);
     }

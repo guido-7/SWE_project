@@ -141,4 +141,23 @@ public class CommunityService {
     public void removeWarnings(ArrayList<PostWarnings> reports) {
         communityDAO.removeWarnings(reports,communityId);
     }
+
+    public void addRule(String title, String content, int priority) {
+        //change priority to other Rule i.e. if I add a rule of priority 1 ; the actual rule with
+        // priority 1 will be changed to 2
+        //maybe add a trigger for that in the database
+        communityDAO.addRule(communityId, title, content, priority);
+    }
+
+    public Admin isAdmin(int userId) throws SQLException {
+        AdminDAO adminDAO = new AdminDAO();
+        boolean isAdmin = adminDAO.isAdmin(userId,communityId);
+        if (!isAdmin)
+            return null;
+        return adminDAO.findById(userId).orElse(null);
+    }
+
+    public int getLastPriority() {
+        return communityDAO.getLastPriority(communityId);
+    }
 }

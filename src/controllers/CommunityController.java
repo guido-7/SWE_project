@@ -4,11 +4,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
+import src.FunctionalInterfaces.BanUserCallback;
 import src.businesslogic.CommunityService;
 import src.businesslogic.PostService;
 import src.businesslogic.SearchService;
@@ -24,8 +28,10 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
-
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 public class CommunityController implements Initializable, Controller {
 
     @FXML
@@ -56,6 +62,10 @@ public class CommunityController implements Initializable, Controller {
     private Button subscribeButton;
     @FXML
     private Button unsubscribeButton;
+    @FXML
+    private VBox TextNoRules;
+    @FXML
+    private Button AddRuleButton;
 
     private List<Post> posts;
     private final CommunityService communityservice;
@@ -73,6 +83,7 @@ public class CommunityController implements Initializable, Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        AddRuleButton.setVisible(false);
         settings.setVisible(false);
         userProfileAccess.setVisible(false);
         this.currentCommunityId = communityservice.getCommunityId();
@@ -296,7 +307,17 @@ public class CommunityController implements Initializable, Controller {
     @FXML
     public void loadRules(int communityId) {
         try {
+
             List<Rule> rules = communityservice.getCommunityRules(communityId);
+            if (rules.isEmpty()) {
+                Text text = new Text("No rules for this community");
+                TextNoRules.getChildren().add(text);
+
+                PauseTransition pause = new PauseTransition(Duration.seconds(5));
+                pause.setOnFinished(event -> TextNoRules.getChildren().remove(text));
+                pause.play();
+                return;
+            }
             postsContainer.getChildren().clear();
             for (Rule rule : rules) {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/RulesPage.fxml"));
@@ -312,23 +333,66 @@ public class CommunityController implements Initializable, Controller {
     }
 
     private Guest getCurrentGuest(Guest guest) throws SQLException {
-        if (guest.getRole() == Role.USER) {
+        Role role = guest.getRole();
+        if (Objects.requireNonNull(role) == Role.USER) {
             User user = (User) guest;
             userProfileAccess.setVisible(true);
-            Moderator moderator = communityservice.getModerator(user.getId());
-            if (moderator != null && moderator.getRole() == Role.MODERATOR) {
-                updateUI();
-                return moderator;
-            } else return guest;
+            userProfileAccess.setVisible(true);
+
+            Moderator communityModerator = communityservice.getModerator(user.getId());
+
+            if (communityModerator != null && communityModerator.getRole() == Role.MODERATOR) {
+                updateModeratorUI();
+                return communityModerator;
+            } else {
+                Admin admin = communityservice.isAdmin(user.getId());
+                if (admin != null && admin.getRole() == Role.ADMIN) {
+                    updateAdminUI();
+                    return admin;
+                }
+
+                return guest;
+            }
+
         }
+//        if (guest.getRole() == Role.USER) {
+//            User user = (User) guest;
+//            userProfileAccess.setVisible(true);
+//            Moderator moderator = communityservice.getModerator(user.getId());
+//            if (moderator != null && moderator.getRole() == Role.MODERATOR) {
+//                updateUI();
+//                return moderator;
+//            } else return guest;
+//        }
         return guest;
+    }
+
+    private void updateAdminUI() {
+        updateModeratorUI();
+        AddRuleButton.setVisible(true);
+        AddRuleButton.setOnMouseClicked(event->handleAddRuleClick());
+
+    }
+
+    private void handleAddRuleClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/AddRule.fxml"));
+            AddRuleController addRuleController = new AddRuleController(communityservice);
+            loader.setController(addRuleController);
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Guest retriveRightGuest() throws SQLException {
         return getCurrentGuest(GuestContext.getCurrentGuest());
     }
 
-    private void updateUI(){
+    private void updateModeratorUI(){
         settings.setVisible(true);
     }
 

@@ -87,7 +87,7 @@
                                         </Text>
                                         <Text fx:id="num_subscribes" layoutX="112.0" layoutY="114.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
                                         <Text fx:id="num_monthly_visits" layoutX="122.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-                                        <Label fx:id="rules" layoutX="26.0" layoutY="185.0" text="Rules">
+                                        <Label fx:id="rules" layoutX="26.0" layoutY="194.0" text="Rules">
                                             <font>
                                                 <Font name="Arial Black" size="12.0" />
                                             </font>
@@ -106,6 +106,12 @@
                                     </Button>
                                  </children>
                               </StackPane>
+                              <VBox fx:id="TextNoRules" layoutX="26.0" layoutY="215.0" prefHeight="0.0" prefWidth="100.0" />
+                              <Button fx:id="AddRuleButton" layoutX="81.0" layoutY="185.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="72.0" text="+ Rule">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Button>
                                     </children>
                                     <padding>
                                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

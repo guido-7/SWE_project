@@ -214,18 +214,19 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
             ArrayList<String> titleAndContent = rulesMapping.get(key);
             String title = titleAndContent.getFirst();
             String content = titleAndContent.getLast();
-            String sql = "INSERT INTO Rules (community_id,title, content, priority) VALUES ( ?, ?, ? , ? )";
-            try (Connection connection = DBConnection.open_connection();
-                 PreparedStatement statement = connection.prepareStatement(sql)) {
-                    statement.setInt(1, CommunityId);
-                    statement.setString(2,title);
-                    statement.setString(3,content);
-                    statement.setInt(4, key);
-                    statement.execute();
-            } catch (SQLException e) {
-                e.printStackTrace();
-
-            }
+            addRule(CommunityId,title,content,key);
+//            String sql = "INSERT INTO Rules (community_id,title, content, priority) VALUES ( ?, ?, ? , ? )";
+//            try (Connection connection = DBConnection.open_connection();
+//                 PreparedStatement statement = connection.prepareStatement(sql)) {
+//                    statement.setInt(1, CommunityId);
+//                    statement.setString(2,title);
+//                    statement.setString(3,content);
+//                    statement.setInt(4, key);
+//                    statement.execute();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//
+//            }
         }
     }
 
@@ -257,7 +258,7 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
         }
     }
 
-    public void removeWarnings(ArrayList<PostWarnings> reports,int communityId) {
+    public void removeWarnings(ArrayList<PostWarnings> reports, int communityId) {
         String sql = "DELETE FROM PostWarnings WHERE sender_id = ? AND post_id = ? AND community_id = ?";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -269,7 +270,21 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
     }
+
+    public void addRule(int communityId, String title, String content, int priority) {
+        String sql = "INSERT INTO Rules (community_id, title, content, priority) VALUES (?,?,?,?)";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, communityId);
+            statement.setString(2, title);
+            statement.setString(3, content);
+            statement.setInt(4, priority);
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isBanned(int id, int communityId) {
@@ -286,5 +301,19 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
         return false;
     }
 
+    public int getLastPriority(int communityId) {
+        String sql = "SELECT MAX(priority) FROM Rules WHERE community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, communityId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1) + 1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
 }
 

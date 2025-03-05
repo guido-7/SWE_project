@@ -27,7 +27,6 @@ public class SetDB {
     public static void createDB() {
         createUserTable();
         createCommunityTable();
-        createAdminTable();
         createCommentTable();
         createPostTable();
         createBannedUsersTable();
@@ -43,6 +42,7 @@ public class SetDB {
         createSavedPost();
         createCommentVotesTable();
         createTimeOutTable();
+        createAdminTable();
     }
 
     public static void createCommunityTable() {
@@ -84,11 +84,27 @@ public class SetDB {
 
     public static void createAdminTable() {
         String sql = "CREATE TABLE IF NOT EXISTS Admin ("
-                + " id INTEGER PRIMARY KEY NOT NULL,"
-                + " FOREIGN KEY (id) REFERENCES User(id)"
+                + " user_id INTEGER PRIMARY KEY NOT NULL,"
+                + " community_id INTEGER NOT NULL,"
+                + " FOREIGN KEY (user_id) REFERENCES User(id),"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
                 + ");";
 
+        // case scenario I insert a new rule of priority 8 with 10 at the moment
+        String trigger = "CREATE TRIGGER IF NOT EXISTS AdjustPriority "
+                + "BEFORE INSERT ON Rules "
+                + "FOR EACH ROW "
+                + "WHEN NEW.priority IS NOT NULL "
+                + "BEGIN "
+                + "UPDATE Rules "
+                + "SET priority = priority + 1 "
+                + "WHERE community_id = NEW.community_id "
+                + "AND priority >= NEW.priority; "
+                + "END;";
+
+
         DBConnection.query(sql);
+        DBConnection.query(trigger);
     }
 
     public static void createRulesTable() {
