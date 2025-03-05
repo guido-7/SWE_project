@@ -14,7 +14,7 @@
 <StackPane prefHeight="700.0" prefWidth="600.0" stylesheets="@../css/SignUp.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" >
    <children>
       <VBox alignment="CENTER" spacing="32.0">
-         <ImageView fx:id="backButton" fitHeight="33.0" fitWidth="35.0" onMouseClicked="#back" pickOnBounds="true" preserveRatio="true">
+         <ImageView fx:id="backButton" fitHeight="33.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
             <image>
                <Image url="@../images/X.jpg" />
             </image>
@@ -43,7 +43,7 @@
 
          <PasswordField fx:id="password_id" alignment="CENTER" promptText="password" />
 
-         <Button fx:id="SignUpButton" onAction="#handleSignUpButtonAction" prefWidth="150.0" text="Create account">
+         <Button fx:id="SignUpButton" prefWidth="150.0" text="Create account">
             <VBox.margin>
                <Insets top="45.0" />
             </VBox.margin></Button>

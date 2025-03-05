@@ -67,19 +67,21 @@ public class HomePageController implements Initializable,Controller  {
 
         try {
             init_data();
-            createCommunityButton.setOnMouseClicked(e->{
-                CommunityCreationService communityCreationService = new CommunityCreationService();
-                CommunityCreationPageController communityCreationPageController = new CommunityCreationPageController(communityCreationService);
-                SceneManager.changeScene("Community creation","/src/view/fxml/CommunityCreationPage.fxml",communityCreationPageController);
-            });
 
-            searchField.setOnMouseClicked(e->{
-                searchField.setEditable(true);
-            });
+            createCommunityButton.setOnMouseClicked(e -> openCommunityCreationPage());
 
-            createPostButton.setOnMouseClicked(e ->{
-                PostCreationPageController postCreationPageController = new PostCreationPageController(new PostCreationService());
-                SceneManager.changeScene("postCreation","/src/view/fxml/PostCreationPage.fxml", postCreationPageController);
+            searchField.setOnMouseClicked(e -> searchField.setEditable(true));
+
+            createPostButton.setOnMouseClicked(e -> openPostCreationPage());
+
+            login.setOnMouseClicked(e -> handleLoginButton());
+
+            userProfileAccess.setOnMouseClicked(e -> {
+                try {
+                    openProfilePage();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             });
 
             scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
@@ -146,6 +148,17 @@ public class HomePageController implements Initializable,Controller  {
             BannedService bannedService = new BannedService(community.getId());
             SceneManager.openModal("banned", "/src/view/fxml/BannedMessage.fxml", new BannedController(bannedService),stage);
         }
+    }
+
+    private void openCommunityCreationPage() {
+        CommunityCreationService communityCreationService = new CommunityCreationService();
+        CommunityCreationPageController communityCreationPageController = new CommunityCreationPageController(communityCreationService);
+        SceneManager.changeScene("Community creation", "/src/view/fxml/CommunityCreationPage.fxml", communityCreationPageController);
+    }
+
+    private void openPostCreationPage() {
+        PostCreationPageController postCreationPageController = new PostCreationPageController(new PostCreationService());
+        SceneManager.changeScene("postCreation", "/src/view/fxml/PostCreationPage.fxml", postCreationPageController);
     }
 
     public void handleLoginButton() {

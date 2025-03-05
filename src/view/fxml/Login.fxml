@@ -61,14 +61,14 @@
          <Hyperlink text="Forgot your password?" />
          <Label fx:id="errorLabel" text="errore" />
 
-         <Button fx:id="login_button" onAction="#handleLoginButtonAction" prefWidth="100.0" text="Login">
+         <Button fx:id="login_button"  prefWidth="100.0" text="Login">
             <VBox.margin>
                <Insets />
             </VBox.margin></Button>
 
          <HBox alignment="CENTER" spacing="5">
             <Label text="Not a member?" />
-            <Hyperlink fx:id="sign_up" onAction="#handleSignUpButtonAction" text="Sign Up" />
+            <Hyperlink fx:id="sign_up" text="Sign Up" />
          </HBox>
       </VBox>
    </children>

@@ -28,18 +28,18 @@
             <Pane prefWidth="20.0" HBox.hgrow="ALWAYS" />
             <TextField fx:id="searchField" prefHeight="26.0" prefWidth="320.0" promptText="Search Community" stylesheets="@../css/SearchField.css" />
             <Pane prefWidth="20.0" HBox.hgrow="ALWAYS" />
-            <Button fx:id="createPostButton" mnemonicParsing="false" onMouseClicked="#handleLoginButton" prefHeight="35.0" styleClass="login-button" stylesheets="@../css/HomePage.css" text="Create Post">
+            <Button fx:id="createPostButton" mnemonicParsing="false"  prefHeight="35.0" styleClass="login-button" stylesheets="@../css/HomePage.css" text="Create Post">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
             </Button>
             <Pane prefHeight="200.0" prefWidth="3.0" />
-            <Button fx:id="login" mnemonicParsing="false" onMouseClicked="#handleLoginButton" prefHeight="35.0" styleClass="login-button" stylesheets="@../css/HomePage.css" text="Login">
+            <Button fx:id="login" mnemonicParsing="false" prefHeight="35.0" styleClass="login-button" stylesheets="@../css/HomePage.css" text="Login">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin></Button>
             <Pane maxWidth="-Infinity" prefWidth="5.0" HBox.hgrow="NEVER" />
-            <ImageView fx:id="userProfileAccess" fitHeight="35.0" fitWidth="35.0" onMouseClicked="#openProfilePage" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="userProfileAccess" fitHeight="35.0" fitWidth="35.0"  pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
                   <Insets left="5.0" right="20.0" />
                </HBox.margin>

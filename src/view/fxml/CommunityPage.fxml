@@ -169,10 +169,6 @@
                                 <Insets left="10.0" right="10.0" />
                             </padding>
                         </VBox>
-                        <!-- rulesContainer visible when necessary -->
-                        <!--         <VBox fx:id="rulesContainer" alignment="CENTER" prefWidth="645.0" spacing="10.0" styleClass="background" visible="false" managed="false">
-                                     <Label text="Community Rules" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-                                 </VBox> -->
                     </content>
                 </ScrollPane>
 

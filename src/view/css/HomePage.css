@@ -1,18 +1,22 @@
 .background{
     -fx-background-color: #fff;
 }
-.login-button {
-    -fx-background-color: #F8F8F8;
+
+#createCommunityButton, #createPostButton, #login {
+    -fx-background-color: #C27933;
+    -fx-border-color: #C27933;
+    -fx-text-fill: white;
+    -fx-border-width: 0px 0px 2px 0px;
+    -fx-alignment: center;
     -fx-background-radius: 20;
     -fx-border-radius: 20;
-    -fx-border-color: E0E0E0;
     -fx-padding: 8px 15px;
-    -fx-border-width: 1px;
-    -fx-text-fill: #333333;
     -fx-font-size: 12px;
 }
 
-.login-button:hover {
-    -fx-background-color: #F0F0F0;
-    -fx-border-color: #D0D0D0;
+#createCommunityButton:hover, #createPostButton:hover, #login:hover {
+    -fx-background-color: #7D3F0F;
+    -fx-text-fill: white;
+    -fx-border-color: #7D3F0F;
+    -fx-border-width: 0px 0px 2px 0px;
 }
