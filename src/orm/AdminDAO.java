@@ -24,12 +24,13 @@ public class AdminDAO extends BaseDAO<Admin,Integer>{
 
     @Override
     protected String getInsertQuery() {
-        return userDAO.getInsertQuery();
+        return "INSERT INTO Admin (user_id, community_id) VALUES (?, ?)";
     }
 
     @Override
     protected void setInsertParams(PreparedStatement statement, Map<String, Object> parameters) throws SQLException {
-        userDAO.setInsertParams(statement, parameters);
+        statement.setInt(1, (int) parameters.get("user_id"));
+        statement.setInt(2, (int) parameters.get("community_id"));
     }
 
     @Override

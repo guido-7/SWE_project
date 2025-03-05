@@ -1,6 +1,10 @@
 package src.businesslogic;
 
+import src.domainmodel.User;
+import src.orm.AdminDAO;
 import src.orm.CommunityDAO;
+import src.orm.SubscriptionDAO;
+import src.servicemanager.GuestContext;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,5 +23,17 @@ public class CommunityCreationService {
 
     public void saveRules(int CommunityId,Map<Integer,ArrayList<String>> rulesMapping) {
         communityDAO.saveRules(CommunityId,rulesMapping);
+    }
+
+    public void SubscribeToCommunity(int communityId) throws SQLException {
+        int userId = ((User) (GuestContext.getCurrentGuest())).getId();
+        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
+        subscriptionDAO.save(Map.of("user_id",userId,"community_id",communityId));
+    }
+
+    public void AddAdmin(int communityId) throws SQLException {
+        int userId = ((User) (GuestContext.getCurrentGuest())).getId();
+        AdminDAO adminDAO = new AdminDAO();
+        adminDAO.save(Map.of("user_id",userId,"community_id",communityId));
     }
 }

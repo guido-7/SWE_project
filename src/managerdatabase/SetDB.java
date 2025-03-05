@@ -84,8 +84,9 @@ public class SetDB {
 
     public static void createAdminTable() {
         String sql = "CREATE TABLE IF NOT EXISTS Admin ("
-                + " user_id INTEGER PRIMARY KEY NOT NULL,"
+                + " user_id INTEGER NOT NULL,"
                 + " community_id INTEGER NOT NULL,"
+                + " PRIMARY KEY (user_id, community_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
                 + " FOREIGN KEY (community_id) REFERENCES Community(id)"
                 + ");";
