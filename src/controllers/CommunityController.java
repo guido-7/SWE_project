@@ -4,16 +4,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
-import src.FunctionalInterfaces.BanUserCallback;
 import src.businesslogic.CommunityService;
 import src.businesslogic.PostService;
 import src.businesslogic.SearchService;
@@ -27,10 +28,8 @@ import src.utils.LoadingPost;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
+
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 public class CommunityController implements Initializable, Controller {
@@ -71,6 +70,8 @@ public class CommunityController implements Initializable, Controller {
     private Button deleteCommunityButton;
     @FXML
     private AnchorPane PopUpDeleteCommunityContainer;
+    @FXML
+    private VBox pinnedPostsContainer;
 
     private List<Post> posts;
     private final CommunityService communityservice;
@@ -363,9 +364,28 @@ public class CommunityController implements Initializable, Controller {
 
                 return guest;
             }
-
         }
         return guest;
+    }
+
+    public void loadPinnedPost(Map<Integer, String> postIds_title)  {
+        if (postIds_title.isEmpty()) {
+            return;
+        }
+        for(var key : postIds_title.keySet()) {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/PinnedPost.fxml"));
+            PinnedPostController pinnedPostController = new PinnedPostController(communityservice);
+            fxmlLoader.setController(pinnedPostController);
+            HBox pinnedPost = null;
+            try {
+                pinnedPost = fxmlLoader.load();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            pinnedPostController.setPostTitle(postIds_title.get(key));
+            pinnedPostController.setPostId(key);
+            pinnedPostsContainer.getChildren().add(pinnedPost);
+        }
     }
 
     private void updateAdminUI() {
@@ -381,7 +401,6 @@ public class CommunityController implements Initializable, Controller {
                 throw new RuntimeException(e);
             }
         });
-
 
     }
 
@@ -463,6 +482,14 @@ public class CommunityController implements Initializable, Controller {
 
         posts = new ArrayList<>(communityservice.getPosts());
         loadPosts(posts);
+
+        List<Integer> pinnedPosts = communityservice.getPinnedPosts();
+        Map<Integer, String> pinnedPostsTitle = new HashMap<>();
+        for (Integer pinnedPostId : pinnedPosts) {
+            pinnedPostsTitle.put(pinnedPostId, communityservice.getPostTitle(pinnedPostId));
+        }
+        loadPinnedPost(pinnedPostsTitle);
+
     }
 
 }

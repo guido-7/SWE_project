@@ -170,4 +170,17 @@ public class CommunityService {
     public void deleteCommunity() throws SQLException {
         communityDAO.deleteById(communityId);
     }
+
+    public List<Integer> getPinnedPosts() {
+        return postDao.getPinnedPosts(communityId);
+    }
+
+    public String getPostTitle(Integer pinnedPostId) throws SQLException {
+        return (String) postDao.retrieveSingleAttribute("Post", "title", "id = ?", pinnedPostId);
+    }
+
+    public Post getPost(Integer postId) throws SQLException {
+        return postDao.findById(postId).orElse(null);
+    }
+
 }

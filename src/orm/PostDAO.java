@@ -72,9 +72,9 @@ public class PostDAO extends BaseDAO<Post, Integer> {
         statement.setInt(1, id);
     }
 
-    public ArrayList<Post> getPosts(int CommunityId, int PostCount,int Offset) {
+    public ArrayList<Post> getPosts(int CommunityId, int PostCount, int Offset) {
         ArrayList<Post> posts = new ArrayList<>();
-        try(Connection connection = DBConnection.open_connection()) {
+        try (Connection connection = DBConnection.open_connection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE community_id = ? ORDER BY (time * 0.6 + likes * 0.4)    DESC LIMIT ? OFFSET ?");
             statement.setInt(1, CommunityId);
             statement.setInt(2, PostCount);
@@ -89,7 +89,7 @@ public class PostDAO extends BaseDAO<Post, Integer> {
         return posts;
     }
 
-    public List<Integer> getCommunityIds(int id , int numberofposts) {
+    public List<Integer> getCommunityIds(int id, int numberofposts) {
         List<Integer> community_ids = new ArrayList<>();
         try (Connection connection = DBConnection.open_connection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE community_id = ? ORDER BY time DESC LIMIT ?");
@@ -139,7 +139,7 @@ public class PostDAO extends BaseDAO<Post, Integer> {
         } catch (SQLException e) {
             e.printStackTrace();
 
-    }
+        }
         return null;
     }
 
@@ -191,11 +191,12 @@ public class PostDAO extends BaseDAO<Post, Integer> {
                 posts.add(mapResultSetToEntity(resultSet));
             }
         } catch (SQLException e) {
-            e.printStackTrace();}
+            e.printStackTrace();
+        }
         return posts;
     }
 
-    public List<Post> getSavedPosts(int userId,int limit, int offset) {
+    public List<Post> getSavedPosts(int userId, int limit, int offset) {
         List<Post> posts = new ArrayList<>();
         try (Connection connection = DBConnection.open_connection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE id IN (SELECT post_id FROM SavedPost WHERE user_id = ?) LIMIT ? OFFSET ?");
@@ -268,7 +269,7 @@ public class PostDAO extends BaseDAO<Post, Integer> {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-    }
+        }
     }
 
     public boolean isAlreadyReported(int senderId, int postId) {
@@ -283,8 +284,48 @@ public class PostDAO extends BaseDAO<Post, Integer> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-    }
+        }
         return false;
     }
 
+    public List<Integer> getPinnedPosts(int communityId) {
+        List<Integer> postIds = new ArrayList<>();
+        String query = "SELECT post_id FROM PinnedPost WHERE community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, communityId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    postIds.add(resultSet.getInt("post_id"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore nel recupero dei post pinnati", e);
+        }
+        return postIds;
+    }
+
+        public void insertPinnedPost(Map<String, Object> params1) {
+        String query = "INSERT INTO PinnedPost (post_id, community_id) VALUES ( ?, ?)";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, (Integer) params1.get("post_id"));
+            statement.setInt(2, (Integer) params1.get("community_id"));
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removePinnedPost(int postId, int communityId) {
+        String query = "DELETE FROM PinnedPost WHERE post_id = ? and community_id= ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, postId);
+            statement.setInt(2, communityId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
