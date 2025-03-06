@@ -14,7 +14,7 @@ import java.util.Map;
 public class PostService {
     private  Post post;
     private final PostDAO postDAO = new PostDAO();
-
+    private int offset = 0;
 
     public PostService(Post post) throws SQLException {
         this.post = post;
@@ -75,7 +75,16 @@ public class PostService {
 
     public List<Comment> getRootComments() {
         CommentDAO commentDAO = new CommentDAO();
-        return commentDAO.getRootComments(post,10,0);
+        List<Comment> rC = commentDAO.getRootComments(post,10, 0);
+        offset = 10;
+        return rC;
+    }
+
+    public List<Comment> getNextRootComments() {
+        CommentDAO commentDAO = new CommentDAO();
+        List<Comment> rC = commentDAO.getRootComments(post,10, offset);
+        offset += 10;
+        return rC;
     }
 
     public void refreshPost() {
