@@ -1,7 +1,6 @@
 package src.controllers;
 
 import javafx.fxml.FXML;
-
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
@@ -9,14 +8,10 @@ import javafx.scene.image.ImageView;
 
 import src.businesslogic.CommunityService;
 import src.domainmodel.Role;
-
 import src.servicemanager.GuestContext;
-
 import java.sql.SQLException;
 
-
 public class RulesController implements Controller {
-
     @FXML
     private Label rule_title;
     @FXML
@@ -25,7 +20,6 @@ public class RulesController implements Controller {
     private VBox deleteRuleIconContainer;
     @FXML
     private VBox RuleContainer;
-    @FXML
 
     private final CommunityService communityService;
     private final int ruleId;
@@ -34,7 +28,6 @@ public class RulesController implements Controller {
         this.communityService = communityService;
         this.ruleId = ruleId;
     }
-
 
     public void setRuleData(String communityID, String ruleTitle, String ruleContent) {
         rule_title.setText(ruleTitle);
@@ -52,19 +45,16 @@ public class RulesController implements Controller {
             });
             deleteRuleIconContainer.getChildren().add(deleteIcon);
         }
-
     }
 
     private void handleDeleteRule() throws SQLException {
         CommunityController communityController = (CommunityController) GuestContext.getCurrentController();
         communityController.getPostsContainer().getChildren().remove(RuleContainer);
         communityService.deleteRule(ruleId);
-
     }
 
     @Override
     public void init_data() {
-
     }
 
 }
