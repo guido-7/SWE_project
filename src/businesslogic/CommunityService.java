@@ -166,4 +166,21 @@ public class CommunityService {
         ArrayList<Integer> primaryKeysIds = new ArrayList<>(List.of(ruleId,communityId));
         rulesDAO.deleteById(primaryKeysIds);
     }
+
+    public void deleteCommunity() throws SQLException {
+        communityDAO.deleteById(communityId);
+    }
+
+    public List<Integer> getPinnedPosts() {
+        return postDao.getPinnedPosts(communityId);
+    }
+
+    public String getPostTitle(Integer pinnedPostId) throws SQLException {
+        return (String) postDao.retrieveSingleAttribute("Post", "title", "id = ?", pinnedPostId);
+    }
+
+    public Post getPost(Integer postId) throws SQLException {
+        return postDao.findById(postId).orElse(null);
+    }
+
 }

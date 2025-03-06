@@ -4,15 +4,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
-import src.FunctionalInterfaces.BanUserCallback;
 import src.businesslogic.CommunityService;
 import src.businesslogic.PostService;
 import src.businesslogic.SearchService;
@@ -26,10 +28,8 @@ import src.utils.LoadingPost;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
+
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 public class CommunityController implements Initializable, Controller {
@@ -66,6 +66,12 @@ public class CommunityController implements Initializable, Controller {
     private VBox TextNoRules;
     @FXML
     private Button AddRuleButton;
+    @FXML
+    private Button deleteCommunityButton;
+    @FXML
+    private AnchorPane PopUpDeleteCommunityContainer;
+    @FXML
+    private VBox pinnedPostsContainer;
 
     private List<Post> posts;
     private final CommunityService communityservice;
@@ -83,6 +89,10 @@ public class CommunityController implements Initializable, Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        PopUpDeleteCommunityContainer.setVisible(false);
+        PopUpDeleteCommunityContainer.setMouseTransparent(true);
+        deleteCommunityButton.setVisible(false);
+        unsubscribeButton.setVisible(false);
         AddRuleButton.setVisible(false);
         settings.setVisible(false);
         userProfileAccess.setVisible(false);
@@ -354,15 +364,70 @@ public class CommunityController implements Initializable, Controller {
 
                 return guest;
             }
-
         }
         return guest;
+    }
+
+    public void loadPinnedPost(Map<Integer, String> postIds_title)  {
+        if (postIds_title.isEmpty()) {
+            return;
+        }
+        for(var key : postIds_title.keySet()) {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/PinnedPost.fxml"));
+            PinnedPostController pinnedPostController = new PinnedPostController(communityservice);
+            fxmlLoader.setController(pinnedPostController);
+            HBox pinnedPost = null;
+            try {
+                pinnedPost = fxmlLoader.load();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            pinnedPostController.setPostTitle(postIds_title.get(key));
+            pinnedPostController.setPostId(key);
+            pinnedPostsContainer.getChildren().add(pinnedPost);
+        }
     }
 
     private void updateAdminUI() {
         updateModeratorUI();
         AddRuleButton.setVisible(true);
         AddRuleButton.setOnMouseClicked(event->handleAddRuleClick());
+        deleteCommunityButton.setVisible(true);
+        deleteCommunityButton.setOnMouseClicked(event -> {
+            try {
+                openConfirmationDialog();
+
+            }catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+    }
+
+    private void openConfirmationDialog() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/ConfirmationDialog.fxml"));
+        Parent popUp = loader.load();
+        ConfirmationDialogPageController confirmationDialogPageController = loader.getController();
+        confirmationDialogPageController.setQuestion("Do you really want to delete your community?");
+
+        confirmationDialogPageController.setCallback(choice->{
+            if(choice){
+                communityservice.deleteCommunity();
+                SceneManager.changeScene("home", "/src/view/fxml/HomePage.fxml",null);
+            }
+            closePopup();
+        });
+        PopUpDeleteCommunityContainer.getChildren().clear();
+        PopUpDeleteCommunityContainer.getChildren().add(popUp);
+        PopUpDeleteCommunityContainer.setMouseTransparent(false);
+        PopUpDeleteCommunityContainer.setVisible(true);
+
+    }
+
+    private void closePopup() {
+        PopUpDeleteCommunityContainer.getChildren().clear();
+        PopUpDeleteCommunityContainer.setMouseTransparent(true);
+        PopUpDeleteCommunityContainer.setVisible(false);
 
     }
 
@@ -417,6 +482,14 @@ public class CommunityController implements Initializable, Controller {
 
         posts = new ArrayList<>(communityservice.getPosts());
         loadPosts(posts);
+
+        List<Integer> pinnedPosts = communityservice.getPinnedPosts();
+        Map<Integer, String> pinnedPostsTitle = new HashMap<>();
+        for (Integer pinnedPostId : pinnedPosts) {
+            pinnedPostsTitle.put(pinnedPostId, communityservice.getPostTitle(pinnedPostId));
+        }
+        loadPinnedPost(pinnedPostsTitle);
+
     }
 
 }

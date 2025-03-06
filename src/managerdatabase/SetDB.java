@@ -43,6 +43,7 @@ public class SetDB {
         createCommentVotesTable();
         createTimeOutTable();
         createAdminTable();
+        createPinnedPostTable();
     }
 
     public static void createCommunityTable() {
@@ -88,7 +89,7 @@ public class SetDB {
                 + " community_id INTEGER NOT NULL,"
                 + " PRIMARY KEY (user_id, community_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
-                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id) ON DELETE CASCADE"
                 + ");";
 
         DBConnection.query(sql);
@@ -102,7 +103,7 @@ public class SetDB {
                 + " content TEXT,"
                 + " priority INTEGER DEFAULT 0,"
                 + " PRIMARY KEY (id, community_id),"
-                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id) ON DELETE CASCADE"
                 + ");";
 
         String sql2 = "CREATE TRIGGER IF NOT EXISTS AutoIncrementRulesId "
@@ -160,6 +161,18 @@ public class SetDB {
                 + " dislikes INTEGER DEFAULT 0,"
                 + " is_modified INTEGER DEFAULT 0 CHECK (is_modified IN (0, 1)),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id) ON DELETE CASCADE"
+                + ");";
+
+        DBConnection.query(sql);
+    }
+
+    public static void createPinnedPostTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS PinnedPost ("
+                + " post_id INTEGER NOT NULL,"
+                + " community_id INTEGER NOT NULL,"
+                + " PRIMARY KEY (post_id, community_id),"
+                + " FOREIGN KEY (post_id) REFERENCES Post(id),"
                 + " FOREIGN KEY (community_id) REFERENCES Community(id)"
                 + ");";
 
@@ -181,7 +194,7 @@ public class SetDB {
                 + " PRIMARY KEY (id, post_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
                 + " FOREIGN KEY (post_id) REFERENCES Post(id),"
-                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id) ON DELETE CASCADE"
                 + ");";
 
         String sql2 = "CREATE TRIGGER IF NOT EXISTS AutoIncrementCommentId "
@@ -229,7 +242,7 @@ public class SetDB {
                 + " reason TEXT,"
                 + " PRIMARY KEY (user_id, community_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
-                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id) ON DELETE CASCADE"
                 + ");";
 
         DBConnection.query(sql);
@@ -242,7 +255,7 @@ public class SetDB {
                 + " assigned_date TEXT,"
                 + " PRIMARY KEY (user_id, community_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
-                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id) ON DELETE CASCADE"
                 + ");";
 
         DBConnection.query(sql);
@@ -255,7 +268,7 @@ public class SetDB {
                 + " subscription_date TEXT,"
                 + " PRIMARY KEY (user_id, community_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
-                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id) ON DELETE CASCADE"
                 + ");";
 
         String sql2 = "CREATE TRIGGER IF NOT EXISTS update_subs"
@@ -290,7 +303,7 @@ public class SetDB {
                 + " PRIMARY KEY (user_id, post_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE,"
                 + " FOREIGN KEY (post_id) REFERENCES Post(id) ON DELETE CASCADE,"
-                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id) ON DELETE CASCADE"
                 + ");";
 
         String sql2 = "CREATE TRIGGER IF NOT EXISTS update_post_likes_dislikes"
@@ -328,7 +341,7 @@ public class SetDB {
                 + " PRIMARY KEY (user_id, comment_id, post_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE,"
                 + " FOREIGN KEY (comment_id, post_id) REFERENCES Comment(id, post_id) ON DELETE CASCADE,"
-                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id) ON DELETE CASCADE"
                 + ");";
 
         String sql2 = "CREATE TRIGGER IF NOT EXISTS update_comment_likes_dislikes"
@@ -364,7 +377,7 @@ public class SetDB {
                 + " PRIMARY KEY (sender_id, post_id),"
                 + " FOREIGN KEY (sender_id) REFERENCES User(id),"
                 + " FOREIGN KEY (post_id) REFERENCES Post(id),"
-                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id) ON DELETE CASCADE"
                 + ");";
 
         DBConnection.query(sql);
@@ -378,7 +391,7 @@ public class SetDB {
                 + " community_id INTEGER NOT NULL,"
                 + " PRIMARY KEY (sender_id, comment_id,post_id),"
                 + " FOREIGN KEY (sender_id) REFERENCES User(id),"
-                + " FOREIGN KEY (community_id) REFERENCES Community(id),"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id) ON DELETE CASCADE,"
                 + " FOREIGN KEY (comment_id,post_id) REFERENCES Comment(id,post_id)"
                 + ");";
 
@@ -404,7 +417,7 @@ public class SetDB {
                 + " end_time_out_date TEXT,"
                 + " PRIMARY KEY (user_id, community_id),"
                 + " FOREIGN KEY (user_id) REFERENCES User(id),"
-                + " FOREIGN KEY (community_id) REFERENCES Community(id)"
+                + " FOREIGN KEY (community_id) REFERENCES Community(id) ON DELETE CASCADE"
                 + ");";
 
         DBConnection.query(sql);
@@ -482,6 +495,15 @@ public class SetDB {
             userDAO.insertPostVotes(params1);
         }
         System.out.println("Posts created\n");
+
+        // create fake PinnedPosts
+        for (int i = 1; i <= (numberofCommunity); i++) {
+            Post p1 = postDAO.findById((int) ((Math.random() * numberofPosts) + 1)).orElse(null);
+            Map<String, Object> params1 = new HashMap<>();
+            params1.put("post_id", p1.getId());
+            params1.put("community_id", i);
+            postDAO.insertPinnedPost(params1);
+        }
 
         // create fake comments
         for (int i = 1; i <= (numberofPosts * 2); i++) {

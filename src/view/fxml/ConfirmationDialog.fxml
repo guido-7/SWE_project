@@ -11,7 +11,7 @@
       <VBox alignment="CENTER" layoutX="10.0" layoutY="6.0" spacing="20" styleClass="dialog-root" stylesheets="@../css/ConfirmationDialog.css">
       
           <!-- Confirmation Message -->
-          <Label text="Do you really want to change your description?" />
+          <Label fx:id="QuestionLabel" text="Do you really want to change your description?" />
       
           <!-- Button Section -->
           <HBox alignment="CENTER" spacing="20">

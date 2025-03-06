@@ -186,7 +186,6 @@ public class PostController implements Controller, Initializable {
         try {
             postService.refreshPost();
             setData(postService.getPost());
-            //checkUserVote();
             voteManager.checkUserVote();
         } catch (SQLException e) {
             e.printStackTrace();
