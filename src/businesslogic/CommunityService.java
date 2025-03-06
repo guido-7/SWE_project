@@ -166,4 +166,8 @@ public class CommunityService {
         ArrayList<Integer> primaryKeysIds = new ArrayList<>(List.of(ruleId,communityId));
         rulesDAO.deleteById(primaryKeysIds);
     }
+
+    public void deleteCommunity() throws SQLException {
+        communityDAO.deleteById(communityId);
+    }
 }

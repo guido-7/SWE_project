@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.input.KeyCode;
@@ -66,6 +67,10 @@ public class CommunityController implements Initializable, Controller {
     private VBox TextNoRules;
     @FXML
     private Button AddRuleButton;
+    @FXML
+    private Button deleteCommunityButton;
+    @FXML
+    private AnchorPane PopUpDeleteCommunityContainer;
 
     private List<Post> posts;
     private final CommunityService communityservice;
@@ -83,6 +88,10 @@ public class CommunityController implements Initializable, Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        PopUpDeleteCommunityContainer.setVisible(false);
+        PopUpDeleteCommunityContainer.setMouseTransparent(true);
+        deleteCommunityButton.setVisible(false);
+        unsubscribeButton.setVisible(false);
         AddRuleButton.setVisible(false);
         settings.setVisible(false);
         userProfileAccess.setVisible(false);
@@ -363,6 +372,43 @@ public class CommunityController implements Initializable, Controller {
         updateModeratorUI();
         AddRuleButton.setVisible(true);
         AddRuleButton.setOnMouseClicked(event->handleAddRuleClick());
+        deleteCommunityButton.setVisible(true);
+        deleteCommunityButton.setOnMouseClicked(event -> {
+            try {
+                openConfirmationDialog();
+
+            }catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+
+    }
+
+    private void openConfirmationDialog() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/ConfirmationDialog.fxml"));
+        Parent popUp = loader.load();
+        ConfirmationDialogPageController confirmationDialogPageController = loader.getController();
+        confirmationDialogPageController.setQuestion("Do you really want to delete your community?");
+
+        confirmationDialogPageController.setCallback(choice->{
+            if(choice){
+                communityservice.deleteCommunity();
+                SceneManager.changeScene("home", "/src/view/fxml/HomePage.fxml",null);
+            }
+            closePopup();
+        });
+        PopUpDeleteCommunityContainer.getChildren().clear();
+        PopUpDeleteCommunityContainer.getChildren().add(popUp);
+        PopUpDeleteCommunityContainer.setMouseTransparent(false);
+        PopUpDeleteCommunityContainer.setVisible(true);
+
+    }
+
+    private void closePopup() {
+        PopUpDeleteCommunityContainer.getChildren().clear();
+        PopUpDeleteCommunityContainer.setMouseTransparent(true);
+        PopUpDeleteCommunityContainer.setVisible(false);
 
     }
 
