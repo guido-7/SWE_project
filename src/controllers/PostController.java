@@ -55,7 +55,7 @@ public class PostController implements Controller, Initializable {
     @FXML
     private VBox SignalTextContainer;
 
-    private PostService postService;
+    private final PostService postService;
     private final FormattedTime formatter = new FormattedTime();
     private VoteManager voteManager;
     private boolean isSaved = false;
