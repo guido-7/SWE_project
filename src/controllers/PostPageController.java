@@ -1,11 +1,10 @@
 package src.controllers;
 
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import src.businesslogic.CommentService;
@@ -35,6 +34,7 @@ public class PostPageController implements Controller, Initializable {
     PostService postService;
     private boolean isLoading = false;
     private boolean allPostsLoaded = false;
+    private ProgressIndicator progressIndicator = new ProgressIndicator();
 
     public PostPageController(PostService postService) {
         this.postService = postService;
@@ -93,6 +93,36 @@ public class PostPageController implements Controller, Initializable {
     }
 
     private void loadMoreRootComments() {
+        isLoading = true;
+        if (!postsContainer.getChildren().contains(progressIndicator)) {
+            postsContainer.getChildren().add(progressIndicator);
+        }
+
+        Task<List<Comment>> task = new Task<>() {
+            @Override
+            protected List<Comment> call() {
+                return postService.getNextRootComments();
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            List<Comment> newComments = task.getValue();
+            postsContainer.getChildren().remove(progressIndicator);
+            if (newComments.isEmpty()) {
+                allPostsLoaded = true;
+                Label noMoreContent = new Label("No more comment available");
+                postsContainer.getChildren().add(noMoreContent);
+            } else {
+                loadRootComments(newComments);
+            }
+            isLoading = false;
+        });
+
+        task.setOnFailed(event -> {
+            isLoading = false;
+            postsContainer.getChildren().remove(progressIndicator);
+        });
+        new Thread(task).start();
     }
 
     @Override

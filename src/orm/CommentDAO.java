@@ -110,7 +110,7 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         PreparedStatement stmt = null;
         ResultSet rs = null;
 
-        if ((parentLevel + 1) != comment.getLevel()) {
+        if (parentLevel != null && (parentLevel + 1) != comment.getLevel()) {
             return false;
         }
 
@@ -120,7 +120,7 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
 
             // 1. Insert the comment
             save(conn, Map.of("post_id", comment.getPost_id(),
-                    "level", comment.getLevel() + 1,
+                    "level", comment.getLevel(),
                     "user_id", comment.getUser_id(),
                     "content", comment.getContent(),
                     "community_id", comment.getCommunity_id()));

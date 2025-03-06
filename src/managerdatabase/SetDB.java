@@ -519,18 +519,27 @@ public class SetDB {
         }
         System.out.println("Comments created\n");
 
+        // create 25 comment under in the same post
+        Post p = postDAO.findById(1).orElse(null);
+        for (int i = 1; i <= 25; i++) {
+            Comment c = new Comment(p.getId(), 0, 1, "Ciao", p.getCommunityId());
+            commentDAO.save(c, null, null);
+        }
+        System.out.println("Comments under the same post created\n");
+
         // create fake CommentVotes
-        for (int i = 1; i <= (numberofComments)-1; i++) {
-            Comment c1 = commentDAO.findById( List.of(i%numberofComments, 1)).orElse(null);
+        for (int i = 1; i <= (numberofComments) - 1; i++) {
+            Comment c = commentDAO.findById( List.of(i%numberofComments, 1)).orElse(null);
             Map<String, Object> params1 = new HashMap<>();
             params1.put("user_id", (i % numberofUsers) + 1);
-            params1.put("comment_id", c1.getId());
-            params1.put("post_id", c1.getPost_id());
+            params1.put("comment_id", c.getId());
+            params1.put("post_id", c.getPost_id());
             params1.put("vote_type", (int) (Math.random() * 2));
-            Post post = postDAO.findById(c1.getPost_id()).orElse(null);
+            Post post = postDAO.findById(c.getPost_id()).orElse(null);
             params1.put("community_id", post.getCommunityId());
             userDAO.insertCommentVotes(params1);
         }
+        System.out.println("Add Comment Votes\n");
 
         // create fake Post Warnings
         for (int i = 1; i <= (numberofPosts / 2); i++) {
