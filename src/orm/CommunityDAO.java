@@ -214,7 +214,7 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
             ArrayList<String> titleAndContent = rulesMapping.get(key);
             String title = titleAndContent.getFirst();
             String content = titleAndContent.getLast();
-            addRule(CommunityId,title,content,key);
+            addRule(CommunityId,title,content,key+1);
 //            String sql = "INSERT INTO Rules (community_id,title, content, priority) VALUES ( ?, ?, ? , ? )";
 //            try (Connection connection = DBConnection.open_connection();
 //                 PreparedStatement statement = connection.prepareStatement(sql)) {

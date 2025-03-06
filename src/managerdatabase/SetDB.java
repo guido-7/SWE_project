@@ -91,33 +91,7 @@ public class SetDB {
                 + " FOREIGN KEY (community_id) REFERENCES Community(id)"
                 + ");";
 
-        // case scenario I insert a new rule of priority 8 with 10 at the moment
-        String InsertTrigger = "CREATE TRIGGER IF NOT EXISTS InsertAdjustPriority "
-                + "BEFORE INSERT ON Rules "
-                + "FOR EACH ROW "
-                + "WHEN NEW.priority IS NOT NULL "
-                + "BEGIN "
-                + "UPDATE Rules "
-                + "SET priority = priority + 1 "
-                + "WHERE community_id = NEW.community_id "
-                + "AND priority >= NEW.priority; "
-                + "END;";
-
-        String DeleteTrigger = "CREATE TRIGGER IF NOT EXISTS DeleteAdjustPriority "
-                + "BEFORE DELETE ON Rules "
-                + "FOR EACH ROW "
-                + "WHEN NEW.priority IS NOT NULL "
-                + "BEGIN "
-                + "UPDATE Rules "
-                + "SET priority = priority - 1 "
-                + "WHERE community_id = NEW.community_id "
-                + "AND priority <= NEW.priority; "
-                + "END;";
-
-
         DBConnection.query(sql);
-        DBConnection.query(InsertTrigger);
-        DBConnection.query(DeleteTrigger);
     }
 
     public static void createRulesTable() {
@@ -140,8 +114,38 @@ public class SetDB {
                 + "WHERE rowid = NEW.rowid; "
                 + "END;";
 
+        // case scenario I insert a new rule of priority 8 with 10 at the moment
+        // if I delete rule 2 every rule will be shifted by 1 above (-1)
+        // I have  1 2    3 4 5  and I add 3
+        String InsertTrigger = "CREATE TRIGGER IF NOT EXISTS InsertAdjustPriority "
+                + "BEFORE INSERT ON Rules "
+                + "FOR EACH ROW "
+                + "WHEN NEW.priority IS NOT NULL "
+                + "BEGIN "
+                + "UPDATE Rules "
+                + "SET priority = priority + 1 "
+                + "WHERE community_id = NEW.community_id "
+                + "AND priority >= NEW.priority;"
+                + "END;";
+
+        // if I delete rule 2 every rule will be shifted by 1 above (-1)
+        // I have  1 2 3 4 5  and I delete 3
+        String DeleteTrigger = "CREATE TRIGGER IF NOT EXISTS DeleteAdjustPriority "
+                + "AFTER DELETE ON Rules "
+                + "FOR EACH ROW "
+                + "WHEN OLD.priority IS NOT NULL "
+                + "BEGIN "
+                + "UPDATE Rules "
+                + "SET priority = priority - 1 "
+                + "WHERE community_id = OLD.community_id "
+                + "AND priority >= OLD.priority "
+                + "AND id != OLD.id; "
+                + "END;";
+
         DBConnection.query(sql);
         DBConnection.query(sql2);
+        DBConnection.query(InsertTrigger);
+        DBConnection.query(DeleteTrigger);
     }
 
     public static void createPostTable() {
@@ -192,6 +196,7 @@ public class SetDB {
         DBConnection.query(sql);
         DBConnection.query(sql2);
     }
+
     public static void createUserDescription() {
         String sql = "CREATE TABLE IF NOT EXISTS UserDescription ("
                 + " user_id INTEGER PRIMARY KEY NOT NULL,"
@@ -201,7 +206,6 @@ public class SetDB {
 
         DBConnection.query(sql);
     }
-
 
     public static void createCommentHierarchyTable() {
         String sql = "CREATE TABLE IF NOT EXISTS CommentHierarchy ("
@@ -352,7 +356,6 @@ public class SetDB {
         DBConnection.query(sql3);
     }
 
-
     public static void createPostwarningsTable() {
         String sql = "CREATE TABLE IF NOT EXISTS PostWarnings ("
                 + " sender_id INTEGER NOT NULL,"
@@ -393,6 +396,7 @@ public class SetDB {
 
         DBConnection.query(sql);
     }
+
     public static void createTimeOutTable() {
         String sql = "CREATE TABLE IF NOT EXISTS TimeOut ("
                 + " user_id INTEGER NOT NULL,"
