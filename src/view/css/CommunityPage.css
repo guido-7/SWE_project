@@ -58,3 +58,12 @@ Text {
     -fx-border-color: #7D3F0F;
     -fx-border-width: 0px 0px 2px 0px;
 }
+
+ScrollPane {
+    -fx-background-color: #ffffff;
+    -fx-background: #ffffff;
+    -fx-border-color: #ffffff;
+    -fx-border-width: 0;
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.5, 0, 2);
+}

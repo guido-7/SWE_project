@@ -16,43 +16,43 @@
     <VBox alignment="TOP_CENTER" prefHeight="621.0" prefWidth="874.0" stylesheets="@../css/PostCreationPage.css" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="20.0">
         <HBox prefHeight="100.0" prefWidth="200.0">
             <children>
-                <Pane prefHeight="200.0" prefWidth="150.0" HBox.hgrow="ALWAYS"/>
+                <Pane prefHeight="200.0" prefWidth="150.0" HBox.hgrow="ALWAYS" />
                 <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="Create post">
                     <HBox.margin>
-                        <Insets top="20.0"/>
+                        <Insets top="20.0" />
                     </HBox.margin>
                 </Text>
                 <Pane prefHeight="63.0" prefWidth="109.0" HBox.hgrow="ALWAYS">
                     <HBox.margin>
-                        <Insets/>
+                        <Insets />
                     </HBox.margin>
                 </Pane>
-                <ImageView fx:id="exitButton" fitHeight="40.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@../images/X.jpg"/>
+                <ImageView fx:id="exitButton" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../images/X.png" />
                 </ImageView>
             </children>
         </HBox>
         <TextField fx:id="communitySearchBar" maxHeight="38.0" maxWidth="580.0" minHeight="38.0" minWidth="320.0" prefHeight="38.0" prefWidth="580.0" promptText="Search Community" stylesheets="@../css/SearchField.css">
             <VBox.margin>
-                <Insets bottom="20.0"/>
+                <Insets bottom="20.0" />
             </VBox.margin>
         </TextField>
 
         <!-- Campo per il titolo del post -->
         <TextField fx:id="titleField" maxWidth="580.0" promptText="Titolo del post">
             <VBox.margin>
-                <Insets bottom="20.0"/>
+                <Insets bottom="20.0" />
             </VBox.margin>
         </TextField>
 
         <!-- TextArea per il corpo del post -->
         <TextArea fx:id="contentArea" maxWidth="580" prefRowCount="6" promptText="Scrivi qui il tuo post..." wrapText="true">
             <VBox.margin>
-                <Insets bottom="20.0"/>
+                <Insets bottom="20.0" />
             </VBox.margin>
         </TextArea>
 
         <!-- Bottone per inviare il post -->
-        <Button fx:id="postButton" text="Posta"/>
+        <Button fx:id="postButton" text="Posta" />
     </VBox>
 </AnchorPane>
