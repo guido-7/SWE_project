@@ -110,7 +110,7 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         PreparedStatement stmt = null;
         ResultSet rs = null;
 
-        if ((parentLevel + 1) != comment.getLevel()) {
+        if (parentLevel != null && (parentLevel + 1) != comment.getLevel()) {
             return false;
         }
 
