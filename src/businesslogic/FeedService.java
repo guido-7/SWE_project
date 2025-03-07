@@ -22,32 +22,23 @@ public class FeedService {
     int numberofPosts = 30;
     int numberofCommunities = 10;
 
-
-
     public FeedService(Guest guest){
         this.guest = guest;
     }
 
     public List<Post> getFeed() {
-
         List<Post> posts = new ArrayList<>();
 
         if (guest.getRole() == Role.GUEST){
-
             return GuestFeed();
-
         } else {
-
-            ArrayList<ArrayList<Integer>> community_ids = new ArrayList<>();
             //10: 4 3 2 1
+            ArrayList<ArrayList<Integer>> community_ids = new ArrayList<>();
 
             //join tables and get the community ids
             ArrayList<Integer> subscription_C_ids = subscriptionDao.getCommunityIds(((User)guest).getId(),(int)(numberofCommunities * 0.4));
             community_ids.add(subscription_C_ids);
             System.out.println("Length of sub : " + subscription_C_ids.size());
-
-
-
 
             // uses PostVotes table and use aggregate operator to get the community ids
             ArrayList<Integer> votes_C_ids = userDAO.getCommunityIds(((User)guest).getId(),(int)(numberofCommunities * 0.3));
@@ -63,8 +54,6 @@ public class FeedService {
             ArrayList<Integer> community_C_ids = communityDao.getCommunityIds((int)(numberofCommunities * 0.1 ));
             community_ids.add(community_C_ids);
             System.out.println("Length of community : " + community_C_ids.size());
-
-
 
             //merge
             ArrayList<Integer> mergedList = new ArrayList<>();
@@ -114,8 +103,8 @@ public class FeedService {
             }
             community_partition.put(community_ids.get(i), value);
         }
-
     }
+
     private int findmaxKey(Map<Integer, Double> list) {
         int maxKey = -1;
         double maxValue = Double.NEGATIVE_INFINITY;
@@ -159,7 +148,6 @@ public class FeedService {
             posts.addAll(communityPosts);
         }
         return posts;
-
     }
     // 120 : 23  , 121 : 22 , 122 : 10 , 123 : 23 , 124 : 23
 
@@ -169,13 +157,12 @@ public class FeedService {
 
     private List<Post> GuestFeed(){
         int maxPostRetrieved = 3 ;
-        List<Integer> bestcommunityIds = communityDao.getCommunityIds(numberofCommunities);
-        Collections.shuffle(bestcommunityIds);
+        List<Integer> bestCommunityIds = communityDao.getCommunityIds(numberofCommunities);
+        Collections.shuffle(bestCommunityIds);
 
-        for(Integer id : bestcommunityIds){
+        for(Integer id : bestCommunityIds){
             community_partition.put(id,(int)(Math.random()* maxPostRetrieved)+1 );
         }
         return getPostsFromCommunity();
-
     }
 }
