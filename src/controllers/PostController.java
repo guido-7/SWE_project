@@ -1,6 +1,7 @@
 package src.controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -19,6 +20,7 @@ import src.servicemanager.SceneManager;
 import src.servicemanager.VoteManager;
 import javafx.scene.layout.HBox;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -54,11 +56,16 @@ public class PostController implements Controller, Initializable {
     private HBox HboxContainer;
     @FXML
     private VBox SignalTextContainer;
+    @FXML
+    private VBox repliesContainer;
 
     private final PostService postService;
+    private PostPageController postPageController;
     private final FormattedTime formatter = new FormattedTime();
     private VoteManager voteManager;
     private boolean isSaved = false;
+    private boolean isOpenInPostPage = false;
+    private boolean isReplying = false;
 
     public PostController(PostService postService) {
         this.postService = postService;
@@ -75,7 +82,15 @@ public class PostController implements Controller, Initializable {
             SignalTextContainer.getChildren().add(new Text("Post has been reported"));
         });
 
-        postButton.setOnAction(event -> goToPostPage());
+        postButton.setOnAction(event -> {
+            if (isOpenInPostPage && !isReplying) {
+                loadReplyBox();
+            } else if (isOpenInPostPage && isReplying) {
+                removeReplyField();
+            } else {
+                goToPostPage();
+            }
+        });
 
         deletePostButton.setOnMouseClicked(event -> {
             try {
@@ -167,11 +182,13 @@ public class PostController implements Controller, Initializable {
     public void setData(Post post) throws SQLException {
         myVBox.setMaxHeight(180);
         setDataOnCard(post);
+        isOpenInPostPage = false;
     }
 
     public void setDataPostPage(Post post) throws SQLException {
         myVBox.setMaxHeight(Region.USE_COMPUTED_SIZE);
         setDataOnCard(post);
+        isOpenInPostPage = true;
     }
 
     private void goToPostPage() {
@@ -179,6 +196,28 @@ public class PostController implements Controller, Initializable {
         PostPageController postPageController = new PostPageController(postService);
         SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
         SceneManager.loadScene(fxmlfile, postPageController);
+    }
+
+    private void loadReplyBox() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Reply.fxml"));
+            PostReplyController postReplyController = new PostReplyController(this);
+            fxmlLoader.setController(postReplyController);
+            VBox replyBox = fxmlLoader.load();
+            repliesContainer.getChildren().addFirst(replyBox);
+            isReplying = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeReplyField() {
+        isReplying = false;
+        repliesContainer.getChildren().removeFirst();
+    }
+
+    public PostService getPostService() {
+        return postService;
     }
 
     @Override
