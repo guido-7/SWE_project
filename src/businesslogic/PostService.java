@@ -141,4 +141,14 @@ public class PostService {
         User currentUser = (User) GuestContext.getCurrentGuest();
         return postDAO.isAlreadyReported(currentUser.getId(),post.getId());
     }
+
+    public boolean addReply(String reply) throws SQLException {
+        Guest guest = GuestContext.getCurrentGuest();
+        if (guest.getRole() == Role.GUEST)
+            return false;
+        User user = (User) guest;
+        Comment newComment = new Comment(post.getId(), 0, user.getId(), reply, post.getCommunityId());
+        CommentDAO commentDAO = new CommentDAO();
+        return commentDAO.save(newComment, null, null);
+    }
 }
