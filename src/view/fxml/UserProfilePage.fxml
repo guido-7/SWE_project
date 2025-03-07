@@ -85,9 +85,9 @@
          <Pane prefHeight="124.0" prefWidth="223.0" HBox.hgrow="ALWAYS">
             <children>
       
-                  <ImageView fx:id="exit" fitHeight="35.0" fitWidth="27.0" layoutX="142.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="exit" fitHeight="20.0" fitWidth="20.0" layoutX="142.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true">
                       <image>
-                          <Image url="@../images/X.jpg" />
+                          <Image url="@../images/X.png" />
                       </image>
                   </ImageView>
             </children>

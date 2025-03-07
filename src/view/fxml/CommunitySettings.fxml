@@ -50,12 +50,12 @@
         </VBox>
     </center>
    <top>
-      <ImageView fx:id="exit" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="TOP_RIGHT">
+      <ImageView fx:id="exit" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="TOP_RIGHT">
          <BorderPane.margin>
             <Insets right="20.0" top="20.0" />
          </BorderPane.margin>
          <image>
-            <Image url="@../images/X.jpg" />
+            <Image url="@../images/X.png" />
          </image>
       </ImageView>
    </top>
