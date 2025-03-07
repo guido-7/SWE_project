@@ -129,7 +129,7 @@ public class PostController implements Controller, Initializable {
     private void setDataOnCard(Post post) throws SQLException {
         String communityTitle = postService.getCommunityTitle();
         community.setText("r/" + communityTitle);
-        String nickname = postService.getnickname();
+        String nickname = postService.getNickname();
         username.setText(nickname);
         date.setText(formatter.getFormattedTime(post.getTime()));
         title.setText(post.getTitle());

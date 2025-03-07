@@ -68,7 +68,7 @@ public class PostService {
         return (String) communityDAO.retrieveSingleAttribute("Community","title","id = ?" , post.getCommunityId());
     }
 
-    public String getnickname() throws SQLException {
+    public String getNickname() throws SQLException {
         UserDAO userDAO = new UserDAO();
         return (String) userDAO.retrieveSingleAttribute("User","nickname","id = ?", post.getUserId());
     }
