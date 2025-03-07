@@ -64,4 +64,5 @@
             </HBox.margin>
         </Button>
     </HBox>
+   <VBox fx:id="repliesContainer" />
 </VBox>
