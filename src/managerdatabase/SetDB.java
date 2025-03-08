@@ -494,7 +494,7 @@ public class SetDB {
             params1.put("community_id", p1.getCommunityId());
             userDAO.insertPostVotes(params1);
         }
-        System.out.println("Posts created\n");
+        System.out.println("Posts Votes created\n");
 
         // create fake PinnedPosts
         for (int i = 1; i <= numberofCommunity; i++) {
@@ -507,6 +507,7 @@ public class SetDB {
                 postDAO.insertPinnedPost(params1);
             }
         }
+        System.out.println("Posts Pinned created\n");
 
         // create fake comments
         for (int i = 1; i <= (numberofPosts * 2); i++) {
