@@ -25,9 +25,9 @@
 /* Riduce la dimensione dei bottoni della scrollbar */
 .scroll-bar .increment-button,
 .scroll-bar .decrement-button {
-    -fx-pref-width: 5px;  /* Larghezza ridotta */
-    -fx-pref-height: 5px; /* Altezza ridotta */
-    -fx-background-color: transparent; /* Rende lo sfondo invisibile */
+    -fx-pref-width: 5px;
+    -fx-pref-height: 5px;
+    -fx-background-color: transparent;
 }
 
 /* Quando il mouse passa sopra, i bottoni tornano più grandi */
@@ -38,6 +38,6 @@
 }
 
 .scroll-pane .thumb:pressed{
-    -fx-background-color: #807c7c; /* Grigio chiaro */
-    -fx-background-radius: 5px; /* Bordo arrotondato */
+    -fx-background-color: #807c7c;
+    -fx-background-radius: 5px;
 }
