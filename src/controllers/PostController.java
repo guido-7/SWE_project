@@ -151,9 +151,10 @@ public class PostController implements Controller, Initializable {
         content.setText(post.getContent());
         scoreLabel.setText(post.getLikes() - post.getDislikes() + "");
         checkPostVisibility();
+        setSavePostImage();
     }
 
-    private void checkPostVisibility() {
+    private void checkPostVisibility() throws SQLException {
         Guest guest = GuestContext.getCurrentGuest();
 
         if (guest.getRole() != Role.GUEST) {
@@ -171,6 +172,7 @@ public class PostController implements Controller, Initializable {
             }
             savePostButton.setVisible(true);
             savePostButton.setManaged(true);
+            isSaved = postService.isSaved(user.getId());
         } else {
             deletePostButton.setVisible(false);
             deletePostButton.setManaged(false);
@@ -189,6 +191,18 @@ public class PostController implements Controller, Initializable {
         myVBox.setMaxHeight(Region.USE_COMPUTED_SIZE);
         setDataOnCard(post);
         isOpenInPostPage = true;
+    }
+
+    private void setSavePostImage() {
+        ImageView image;
+        if (isSaved) {
+            image = new ImageView("/src/view/images/SavedClickIcon.png");
+        } else {
+            image = new ImageView("/src/view/images/SavedIcon.png");
+        }
+        image.setFitHeight(20);
+        image.setFitWidth(20);
+        savePostButton.setGraphic(image);
     }
 
     private void goToPostPage() {
