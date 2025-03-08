@@ -23,38 +23,35 @@
     <top>
         <HBox alignment="CENTER_LEFT" prefHeight="65.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
-                <ImageView fx:id="homePageButton" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/Logo.png" />
-                    </image>
+                <ImageView fx:id="homePageButton" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
+                           preserveRatio="true">
+                    <Image url="@../images/Logo.png"/>
                 </ImageView>
-                <Pane prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                <TextField fx:id="searchField" prefHeight="26.0" prefWidth="320.0" promptText="Search Posts " stylesheets="@../css/SearchField.css" />
-                <Pane prefWidth="200.0" HBox.hgrow="ALWAYS" />
-            <MenuButton fx:id="settingsButton" mnemonicParsing="false" stylesheets="@../css/CommunityPage.css">
-              <items>
-                  <MenuItem fx:id="reportPageItem" mnemonicParsing="false" text="Report page" />
-                <MenuItem fx:id="rolePageItem" mnemonicParsing="false" text="Role page" />
-                <MenuItem fx:id="deleteCommunityItem" mnemonicParsing="false" text="Delete Community" />
-              </items>
-               <graphic>
-                  <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/settings.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <HBox.margin>
-                  <Insets right="10.0" />
-               </HBox.margin>
+                <Pane prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="searchField" prefHeight="26.0" prefWidth="320.0" promptText="Search Posts "
+                           stylesheets="@../css/SearchField.css"/>
+                <Pane prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+                <MenuButton fx:id="settingsButton" mnemonicParsing="false" stylesheets="@../css/CommunityPage.css">
+                    <items>
+                        <MenuItem fx:id="reportPageItem" mnemonicParsing="false" text="Report page"/>
+                        <MenuItem fx:id="rolePageItem" mnemonicParsing="false" text="Role page"/>
+                        <MenuItem fx:id="deleteCommunityItem" mnemonicParsing="false" text="Delete Community"/>
+                    </items>
+                    <graphic>
+                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@../images/settings.png"/>
+                    </ImageView>
+                </graphic>
+                <HBox.margin>
+                    <Insets right="10.0"/>
+                </HBox.margin>
             </MenuButton>
-                <ImageView fx:id="userProfileAccess" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="userProfileAccess" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
+                           preserveRatio="true">
                     <HBox.margin>
-                        <Insets right="20.0" />
+                        <Insets right="20.0"/>
                     </HBox.margin>
-                    <image>
-                        <Image url="@../images/userprofile.png" />
-                    </image>
+                    <Image url="@../images/userprofile.png"/>
                 </ImageView>
             </children>
         </HBox>
@@ -62,148 +59,166 @@
     <right>
         <HBox>
             <BorderPane.margin>
-                <Insets />
+                <Insets/>
             </BorderPane.margin>
             <children>
-                <Pane HBox.hgrow="ALWAYS" />
+                <Pane HBox.hgrow="ALWAYS"/>
                 <VBox minWidth="-Infinity" prefWidth="250.0">
                     <opaqueInsets>
-                        <Insets />
+                        <Insets/>
                     </opaqueInsets>
                     <children>
                         <HBox VBox.vgrow="ALWAYS">
                             <VBox.margin>
-                                <Insets left="10.0" right="10.0" />
+                                <Insets left="10.0" right="10.0"/>
                             </VBox.margin>
                             <children>
-                                <Pane prefHeight="255.0" prefWidth="210.0" styleClass="pane-bordered" stylesheets="@../css/CommunityPage.css" HBox.hgrow="ALWAYS">
+                                <Pane prefHeight="255.0" prefWidth="210.0" styleClass="pane-bordered"
+                                      stylesheets="@../css/CommunityPage.css" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <Text fx:id="community_title" layoutX="26.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Community Title">
+                                        <Text fx:id="community_title" layoutX="26.0" layoutY="35.0" strokeType="OUTSIDE"
+                                              strokeWidth="0.0" text="Community Title">
                                             <font>
-                                                <Font name="Arial Black" size="12.0" />
+                                                <Font name="Arial Black" size="12.0"/>
                                             </font>
                                         </Text>
-                                        <Text fx:id="description" layoutX="26.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
+                                        <Text fx:id="description" layoutX="26.0" layoutY="75.0" strokeType="OUTSIDE"
+                                              strokeWidth="0.0" text="Description">
                                             <font>
-                                                <Font name="Arial Black" size="12.0" />
+                                                <Font name="Arial Black" size="12.0"/>
                                             </font>
                                         </Text>
-                                        <Text layoutX="26.0" layoutY="115.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subscribers">
+                                        <Text layoutX="26.0" layoutY="115.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                                              text="Subscribers">
                                             <font>
-                                                <Font name="Arial Black" size="12.0" />
+                                                <Font name="Arial Black" size="12.0"/>
                                             </font>
                                         </Text>
-                                        <Text layoutX="26.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Monthly visits">
+                                        <Text layoutX="26.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                                              text="Monthly visits">
                                             <font>
-                                                <Font name="Arial Black" size="12.0" />
+                                                <Font name="Arial Black" size="12.0"/>
                                             </font>
                                         </Text>
-                                        <Text fx:id="num_subscribes" layoutX="112.0" layoutY="114.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-                                        <Text fx:id="num_monthly_visits" layoutX="122.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                                        <Text fx:id="num_subscribes" layoutX="112.0" layoutY="114.0"
+                                              strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
+                                        <Text fx:id="num_monthly_visits" layoutX="122.0" layoutY="155.0"
+                                              strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
                                         <Label fx:id="rules" layoutX="26.0" layoutY="194.0" text="Rules">
                                             <font>
-                                                <Font name="Arial Black" size="12.0" />
+                                                <Font name="Arial Black" size="12.0"/>
                                             </font>
                                         </Label>
-                              <Button fx:id="AddRuleButton" layoutX="81.0" layoutY="183.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="72.0" text="+ Rule">
-                                 <font>
-                                    <Font name="System Bold" size="12.0" />
-                                 </font>
-                              </Button>
-                              <VBox fx:id="TextNoRules" layoutX="26.0" layoutY="230.0" prefHeight="0.0" prefWidth="100.0" />
-                              <StackPane layoutX="13.0" layoutY="255.0" prefHeight="47.0" prefWidth="103.0">
-                                 <children>
-                                    <Button fx:id="subscribeButton" mnemonicParsing="false" text="Subscribe">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Button>
-                                    <Button fx:id="unsubscribeButton" mnemonicParsing="false" text="Unsubscribe">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Button>
+                                        <Button fx:id="AddRuleButton" layoutX="81.0" layoutY="183.0"
+                                                mnemonicParsing="false" prefHeight="35.0" prefWidth="72.0"
+                                                text="+ Rule">
+                                            <font>
+                                                <Font name="System Bold" size="12.0"/>
+                                            </font>
+                                        </Button>
+                                        <VBox fx:id="TextNoRules" layoutX="26.0" layoutY="230.0" prefHeight="0.0"
+                                              prefWidth="100.0"/>
+                                        <StackPane layoutX="13.0" layoutY="255.0" prefHeight="47.0" prefWidth="103.0">
+                                            <children>
+                                                <Button fx:id="subscribeButton" mnemonicParsing="false"
+                                                        text="Subscribe">
+                                                    <font>
+                                                        <Font name="System Bold" size="12.0"/>
+                                                    </font>
+                                                </Button>
+                                     <Button fx:id="unsubscribeButton" mnemonicParsing="false" text="Unsubscribe">
+                                         <font>
+                                             <Font name="System Bold" size="12.0"/>
+                                         </font>
+                                     </Button>
                                  </children>
                               </StackPane>
                                     </children>
                                     <padding>
-                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                     </padding>
                                     <HBox.margin>
-                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                     </HBox.margin>
                                 </Pane>
                             </children>
                         </HBox>
                         <HBox fx:id="postPinned" prefHeight="180.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                             <VBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                             </VBox.margin>
                             <children>
-                                <Pane prefHeight="180.0" prefWidth="210.0" styleClass="pane-bordered" stylesheets="@../css/CommunityPage.css" HBox.hgrow="ALWAYS">
+                                <Pane prefHeight="180.0" prefWidth="210.0" styleClass="pane-bordered"
+                                      stylesheets="@../css/CommunityPage.css" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <ImageView fitHeight="24.0" fitWidth="28.0" layoutX="23.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fitHeight="24.0" fitWidth="28.0" layoutX="23.0" layoutY="28.0"
+                                                   pickOnBounds="true" preserveRatio="true">
                                             <image>
-                                                <Image url="@../images/PostPin.png" />
+                                            <Image url="@../images/PostPin.png"/>
                                             </image>
                                         </ImageView>
-                                        <Text layoutX="61.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Posts">
+                                        <Text layoutX="61.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                                              text="Posts">
                                             <font>
-                                                <Font name="Arial Black" size="12.0" />
+                                                <Font name="Arial Black" size="12.0"/>
                                             </font>
                                         </Text>
-                              <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="2.0" layoutY="52.0" stylesheets="@../css/ScrollPane.css">
-                                 <content>
-                                    <VBox fx:id="pinnedPostsContainer" />
-                                 </content>
-                              </ScrollPane>
+                                        <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="2.0" layoutY="52.0"
+                                                    stylesheets="@../css/ScrollPane.css">
+                                            <VBox fx:id="pinnedPostsContainer"/>
+                                        </ScrollPane>
                                     </children>
                                     <opaqueInsets>
-                                        <Insets />
+                                        <Insets/>
                                     </opaqueInsets>
                                     <padding>
-                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                     </padding>
                                     <HBox.margin>
-                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                     </HBox.margin>
                                 </Pane>
                             </children>
                         </HBox>
                     </children>
                 </VBox>
-                <Pane HBox.hgrow="ALWAYS" />
+                <Pane HBox.hgrow="ALWAYS"/>
             </children>
         </HBox>
     </right>
     <center>
         <HBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="585.0" prefWidth="660.0">
             <children>
-                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="background" stylesheets="@../css/HomePage.css" HBox.hgrow="ALWAYS" />
-            <StackPane>
-               <children>
-                      <ScrollPane fx:id="scrollPane" prefHeight="585.0" prefWidth="865.0" style="-fx-background-color: transparent;" stylesheets="@../css/ScrollPane.css">
-                          <content>
-                              <VBox fx:id="postsContainer" alignment="CENTER" prefWidth="645.0" spacing="10.0" styleClass="background" stylesheets="@../css/HomePage.css">
-                                  <padding>
-                                      <Insets left="10.0" right="10.0" />
-                                  </padding>
-                              </VBox>
-                          </content>
-                      </ScrollPane>
-                   <AnchorPane fx:id="PopUpDeleteCommunityContainer" maxHeight="150.0" maxWidth="300.0" prefHeight="150.0" prefWidth="289.0">
-                     <StackPane.margin>
-                        <Insets bottom="300.0" left="150.0" />
-                     </StackPane.margin></AnchorPane>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="background" stylesheets="@../css/HomePage.css"
+                      HBox.hgrow="ALWAYS"/>
+                <StackPane>
+                    <children>
+                   <ScrollPane fx:id="scrollPane" prefHeight="585.0" prefWidth="865.0"
+                               style="-fx-background-color: transparent;" stylesheets="@../css/ScrollPane.css">
+                       <content>
+                           <VBox fx:id="postsContainer" alignment="CENTER" prefWidth="645.0" spacing="10.0"
+                                 styleClass="background" stylesheets="@../css/HomePage.css">
+                               <padding>
+                                   <Insets left="10.0" right="10.0"/>
+                               </padding>
+                           </VBox>
+                       </content>
+                   </ScrollPane>
+                   <AnchorPane fx:id="PopUpDeleteCommunityContainer" maxHeight="150.0" maxWidth="300.0"
+                               prefHeight="150.0" prefWidth="289.0">
+                       <StackPane.margin>
+                           <Insets bottom="300.0" left="150.0"/>
+                       </StackPane.margin>
+                   </AnchorPane>
                </children>
             </StackPane>
-
-                      <Pane prefHeight="200.0" prefWidth="200.0" styleClass="background" stylesheets="@../css/HomePage.css" HBox.hgrow="ALWAYS" />
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="background" stylesheets="@../css/HomePage.css"
+                      HBox.hgrow="ALWAYS"/>
             </children>
         </HBox>
     </center>
-   <stylesheets>
-      <URL value="@../css/HomePage.css" />
-      <URL value="@../css/CommunityPage.css" />
-   </stylesheets>
+    <stylesheets>
+        <URL value="@../css/HomePage.css"/>
+        <URL value="@../css/CommunityPage.css"/>
+    </stylesheets>
 </BorderPane>
