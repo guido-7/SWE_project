@@ -455,6 +455,21 @@ public class CommunityController implements Initializable, Controller {
         }
     }
 
+    public void refreshPinnedPosts() {
+        pinnedPostsContainer.getChildren().clear();
+        Map<Integer, String> pinnedPosts = new HashMap<>();
+
+        for (Integer pinnedPostId : communityservice.getPinnedPosts()) {
+            try {
+                pinnedPosts.put(pinnedPostId, communityservice.getPostTitle(pinnedPostId));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        loadPinnedPost(pinnedPosts);
+    }
+
     private Guest retriveRightGuest() throws SQLException {
         return getCurrentGuest(GuestContext.getCurrentGuest());
     }

@@ -305,7 +305,7 @@ public class PostDAO extends BaseDAO<Post, Integer> {
         return postIds;
     }
 
-        public void insertPinnedPost(Map<String, Object> params1) {
+    public void insertPinnedPost(Map<String, Object> params1) {
         String query = "INSERT INTO PinnedPost (post_id, community_id) VALUES ( ?, ?)";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -327,5 +327,22 @@ public class PostDAO extends BaseDAO<Post, Integer> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isPinned(int postId, int communityId) {
+        String query = "SELECT COUNT(*) FROM PinnedPost WHERE post_id = ? AND community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, postId);
+            statement.setInt(2, communityId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next())
+                    return resultSet.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+       }
+        return false;
     }
 }

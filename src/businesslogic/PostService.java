@@ -1,5 +1,6 @@
 package src.businesslogic;
 
+import src.controllers.CommunityController;
 import src.domainmodel.*;
 import src.orm.CommentDAO;
 import src.orm.CommunityDAO;
@@ -150,5 +151,23 @@ public class PostService {
         Comment newComment = new Comment(post.getId(), 0, user.getId(), reply, post.getCommunityId());
         CommentDAO commentDAO = new CommentDAO();
         return commentDAO.save(newComment, null, null);
+    }
+
+    public void addPinPost() {
+        Map<String, Object> postInfo = Map.of("post_id", post.getId(), "community_id", post.getCommunityId());
+        postDAO.insertPinnedPost(postInfo);
+    }
+
+    public void removePinPost(int postId, int communityId) {
+        postDAO.removePinnedPost(postId, communityId);
+    }
+
+    public boolean isUserAdminOfCommunity(int id, int communityId) {
+        CommunityDAO communityDAO = new CommunityDAO();
+        return communityDAO.isUserAdminOfCommunity(id, communityId);
+    }
+
+    public boolean isPinned() {
+        return postDAO.isPinned(post.getId(), post.getCommunityId());
     }
 }

@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import src.businesslogic.CommunityService;
 import src.businesslogic.PostService;
 import src.domainmodel.Guest;
 import src.domainmodel.Post;
@@ -57,6 +58,8 @@ public class PostController implements Controller, Initializable {
     @FXML
     private VBox SignalTextContainer;
     @FXML
+    private Button pinPostButton;
+    @FXML
     private VBox repliesContainer;
 
     private final PostService postService;
@@ -66,6 +69,7 @@ public class PostController implements Controller, Initializable {
     private boolean isSaved = false;
     private boolean isOpenInPostPage = false;
     private boolean isReplying = false;
+    private boolean isPinned = false;
 
     public PostController(PostService postService) {
         this.postService = postService;
@@ -98,6 +102,10 @@ public class PostController implements Controller, Initializable {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        });
+
+        pinPostButton.setOnMouseClicked(event -> {
+            handlePinPost();
         });
 
         savePostButton.setOnMouseClicked(event -> {
@@ -141,6 +149,31 @@ public class PostController implements Controller, Initializable {
         savePostButton.setGraphic(image);
     }
 
+    private void handlePinPost() {
+        ImageView image;
+        if (!isPinned) {
+            postService.addPinPost();
+            image = new ImageView("/src/view/images/PinClickIcon.png");
+            isPinned = true;
+        } else {
+            postService.removePinPost(postService.getPost().getId(), postService.getPost().getCommunityId());
+            image = new ImageView("/src/view/images/PinIcon.png");
+            isPinned = false;
+        }
+        image.setFitHeight(20);
+        image.setFitWidth(20);
+        pinPostButton.setGraphic(image);
+
+        refreshCommunityPage();
+    }
+
+    private void refreshCommunityPage() {
+        Controller currentPageController = GuestContext.getCurrentController();
+        if (currentPageController instanceof CommunityController communityPageController) {
+            communityPageController.refreshPinnedPosts();
+        }
+    }
+
     private void setDataOnCard(Post post) throws SQLException {
         String communityTitle = postService.getCommunityTitle();
         community.setText("r/" + communityTitle);
@@ -152,6 +185,7 @@ public class PostController implements Controller, Initializable {
         scoreLabel.setText(post.getLikes() - post.getDislikes() + "");
         checkPostVisibility();
         setSavePostImage();
+        setPinPostImage();
     }
 
     private void checkPostVisibility() throws SQLException {
@@ -179,6 +213,25 @@ public class PostController implements Controller, Initializable {
             savePostButton.setVisible(false);
             savePostButton.setManaged(false);
         }
+
+        User user = (guest instanceof User) ? (User) guest : null;
+        boolean isAdmin = (user != null && postService.isUserAdminOfCommunity(user.getId(), postService.getPost().getCommunityId()));
+        isPinned = postService.isPinned();
+        if (isAdmin) {
+            pinPostButton.setVisible(true);
+            pinPostButton.setManaged(true);
+            pinPostButton.setDisable(false);
+        } else {
+            if (isPinned) {
+                pinPostButton.setVisible(true);
+                pinPostButton.setManaged(true);
+                pinPostButton.setDisable(true);
+            } else {
+                pinPostButton.setVisible(false);
+                pinPostButton.setManaged(false);
+            }
+        }
+
     }
 
     public void setData(Post post) throws SQLException {
@@ -193,16 +246,20 @@ public class PostController implements Controller, Initializable {
         isOpenInPostPage = true;
     }
 
-    private void setSavePostImage() {
-        ImageView image;
-        if (isSaved) {
-            image = new ImageView("/src/view/images/SavedClickIcon.png");
-        } else {
-            image = new ImageView("/src/view/images/SavedIcon.png");
-        }
+    private void setButtonImage(Button button, boolean condition, String trueImagePath, String falseImagePath) {
+        String imagePath = condition ? trueImagePath : falseImagePath;
+        ImageView image = new ImageView(imagePath);
         image.setFitHeight(20);
         image.setFitWidth(20);
-        savePostButton.setGraphic(image);
+        button.setGraphic(image);
+    }
+
+    private void setSavePostImage() {
+        setButtonImage(savePostButton, isSaved, "/src/view/images/SavedClickIcon.png", "/src/view/images/SavedIcon.png");
+    }
+
+    private void setPinPostImage() {
+        setButtonImage(pinPostButton, isPinned, "/src/view/images/PinClickIcon.png", "/src/view/images/PinIcon.png");
     }
 
     private void goToPostPage() {

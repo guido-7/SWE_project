@@ -35,13 +35,24 @@
                 <Insets left="5.0" />
             </HBox.margin>
         </ImageView>
-        <Button fx:id="savePostButton" mnemonicParsing="false" style="-fx-background-color: transparent;">
-            <graphic>
-                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@../images/SavedIcon.png" />
-                </ImageView>
-            </graphic>
+        <Button fx:id="pinPostButton" mnemonicParsing="false" style="-fx-background-color: transparent;">
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/PinIcon.png" />
+               </image>
+            </ImageView>
+         </graphic>
         </Button>
+      <Button fx:id="savePostButton" mnemonicParsing="false" style="-fx-background-color: transparent;">
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/SavedIcon.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
     </HBox>
     <Label fx:id="title" maxWidth="540.0" styleClass="post-title" text="Post Title" wrapText="true" VBox.vgrow="ALWAYS" />
 
