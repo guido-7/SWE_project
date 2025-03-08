@@ -497,13 +497,16 @@ public class SetDB {
         System.out.println("Posts created\n");
 
         // create fake PinnedPosts
-//        for (int i = 1; i <= (numberofCommunity); i++) {
-//            Post p1 = postDAO.findById((int) ((Math.random() * numberofPosts) + 1)).orElse(null);
-//            Map<String, Object> params1 = new HashMap<>();
-//            params1.put("post_id", p1.getId());
-//            params1.put("community_id", i);
-//            postDAO.insertPinnedPost(params1);
-//        }
+        for (int i = 1; i <= numberofCommunity; i++) {
+            List<Post> postsInCommunity = postDAO.findByCommunityId(i);
+            if (!postsInCommunity.isEmpty()) {
+                Post p1 = postsInCommunity.get((int) (Math.random() * postsInCommunity.size()));
+                Map<String, Object> params1 = new HashMap<>();
+                params1.put("post_id", p1.getId());
+                params1.put("community_id", i);
+                postDAO.insertPinnedPost(params1);
+            }
+        }
 
         // create fake comments
         for (int i = 1; i <= (numberofPosts * 2); i++) {

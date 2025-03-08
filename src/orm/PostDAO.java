@@ -345,4 +345,19 @@ public class PostDAO extends BaseDAO<Post, Integer> {
        }
         return false;
     }
+
+    public List<Post> findByCommunityId(int i) {
+        List<Post> posts = new ArrayList<>();
+        try (Connection connection = DBConnection.open_connection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE community_id = ?");
+            statement.setInt(1, i);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                posts.add(mapResultSetToEntity(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+    }
+        return posts;
+    }
 }
