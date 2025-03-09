@@ -17,29 +17,32 @@
     <VBox alignment="TOP_CENTER" layoutX="20.0" layoutY="14.0" prefHeight="650.0" prefWidth="900.0" spacing="10" stylesheets="@../css/CommunityCreationPage.css" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
         <HBox prefHeight="100.0" prefWidth="200.0">
             <children>
-                <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+                <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
 
                 <Text fx:id="headerTitle" text="Create Community">
                     <HBox.margin>
-                        <Insets left="40.0"/>
+                        <Insets left="40.0" />
                     </HBox.margin>
                 </Text>
-                <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
-                <ImageView fx:id="exitButton" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                <ImageView fx:id="exitButton" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../images/X.jpg"/>
+                        <Image url="@../images/X.png" />
                     </image>
+               <HBox.margin>
+                  <Insets right="8.0" top="5.0" />
+               </HBox.margin>
                 </ImageView>
             </children>
         </HBox>
 
         <!-- Title Input -->
-        <TextField fx:id="titleField" maxWidth="580.0" promptText="Community Title"/>
+        <TextField fx:id="titleField" maxWidth="580.0" promptText="Community Title" />
 
         <!-- Description Input -->
         <TextArea fx:id="descriptionArea" maxWidth="580" prefHeight="132.0" prefRowCount="4" prefWidth="580.0" promptText="Community Description..." wrapText="true">
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </VBox.margin>
         </TextArea>
 
@@ -47,48 +50,48 @@
         <VBox fx:id="rulesContainer" maxWidth="580.0" prefHeight="291.0" prefWidth="580.0">
             <Text id="rulesHeader" text="Community Rules">
                 <VBox.margin>
-                    <Insets left="10.0" top="10.0"/>
+                    <Insets left="10.0" top="10.0" />
                 </VBox.margin>
             </Text>
             <TextField fx:id="RuleTitle1" maxWidth="150.0" promptText="Rule's title 1">
                 <VBox.margin>
-                    <Insets left="10.0" right="10.0" top="20.0"/>
+                    <Insets left="10.0" right="10.0" top="20.0" />
                 </VBox.margin>
             </TextField>
             <TextArea fx:id="rule1" maxWidth="550.0" prefRowCount="2" promptText="Rule 1" wrapText="true">
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0"/>
+                    <Insets bottom="10.0" left="10.0" right="10.0" />
                 </VBox.margin>
             </TextArea>
             <TextField fx:id="RuleTitle2" maxWidth="150.0" promptText="Rule's title 2">
                 <VBox.margin>
-                    <Insets left="10.0" right="10.0" top="10.0"/>
+                    <Insets left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
             </TextField>
             <TextArea fx:id="rule2" maxWidth="550.0" prefRowCount="2" promptText="Rule 2" wrapText="true">
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0"/>
+                    <Insets bottom="10.0" left="10.0" right="10.0" />
                 </VBox.margin>
             </TextArea>
             <TextField fx:id="RuleTitle3" maxWidth="150.0" promptText="Rule's title 3">
                 <VBox.margin>
-                    <Insets left="10.0" right="10.0" top="10.0"/>
+                    <Insets left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
             </TextField>
             <TextArea fx:id="rule3" maxWidth="550.0" prefRowCount="2" promptText="Rule 3" wrapText="true">
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0"/>
+                    <Insets bottom="10.0" left="10.0" right="10.0" />
                 </VBox.margin>
             </TextArea>
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </VBox.margin>
         </VBox>
 
         <!-- Create Button -->
         <Button fx:id="createButton" text="Create Community">
             <VBox.margin>
-                <Insets bottom="10.0"/>
+                <Insets bottom="10.0" />
             </VBox.margin>
         </Button>
     </VBox>

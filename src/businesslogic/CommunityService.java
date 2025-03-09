@@ -68,11 +68,6 @@ public class CommunityService {
         return warnings;
     }
 
-    public boolean isModerator(int moderatorId) {
-        ModeratorDAO moderatorDAO = new ModeratorDAO();
-        return moderatorDAO.isModerator(moderatorId, communityId);
-    }
-
     public int getCommunityId() {
         return communityId;
     }
@@ -83,11 +78,6 @@ public class CommunityService {
 
     public List<Rule> getCommunityRules(int communityId) {
         return communityDAO.getCommunityRules(communityId);
-    }
-
-    public Moderator getModerator(int moderatorId) throws SQLException {
-        ModeratorDAO moderatorDAO = new ModeratorDAO();
-        return moderatorDAO.getCommunityModerator(moderatorId, communityId);
     }
 
     public boolean isSubscribed() {
@@ -120,11 +110,6 @@ public class CommunityService {
         return true;
     }
 
-    public User getUser(int userId) throws SQLException {
-        UserDAO userDAO = new UserDAO();
-        return userDAO.findById(userId).orElse(null);
-    }
-
     public void timeOutUser(int reportedId, LocalDateTime time) {
         communityDAO.timeOutUser(reportedId,communityId ,time);
     }
@@ -150,14 +135,6 @@ public class CommunityService {
         // priority 1 will be changed to 2
         //maybe add a trigger for that in the database
         communityDAO.addRule(communityId, title, content, priority);
-    }
-
-    public Admin isAdmin(int userId) throws SQLException {
-        AdminDAO adminDAO = new AdminDAO();
-        boolean isAdmin = adminDAO.isAdmin(userId,communityId);
-        if (!isAdmin)
-            return null;
-        return adminDAO.findById(userId).orElse(null);
     }
 
     public int getLastPriority() {
@@ -230,4 +207,27 @@ public class CommunityService {
         return subscriptionDAO.getFilteredSubs(communityId, searchTerm, maxnumberOfSubsShown, 0);
 
     }
+    public boolean isModerator(int moderatorId) {
+        ModeratorDAO moderatorDAO = new ModeratorDAO();
+        return moderatorDAO.isModerator(moderatorId, communityId);
+    }
+
+    public User getUser(int userId) throws SQLException {
+        UserDAO userDAO = new UserDAO();
+        return userDAO.findById(userId).orElse(null);
+    }
+
+    public Moderator getModerator(int moderatorId) {
+        ModeratorDAO moderatorDAO = new ModeratorDAO();
+        return moderatorDAO.getCommunityModerator(moderatorId, communityId);
+    }
+
+    public Admin getAdmin(int userId) throws SQLException {
+        AdminDAO adminDAO = new AdminDAO();
+        boolean isAdmin = adminDAO.isAdmin(userId,communityId);
+        if (!isAdmin)
+            return null;
+        return adminDAO.findById(userId).orElse(null);
+    }
+
 }

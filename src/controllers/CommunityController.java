@@ -4,7 +4,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -16,7 +15,6 @@ import javafx.scene.text.Text;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
-import src.businesslogic.PostService;
 import src.businesslogic.SearchService;
 import src.businesslogic.UserProfileService;
 import src.domainmodel.*;
@@ -33,7 +31,6 @@ import java.util.*;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 public class CommunityController implements Initializable, Controller {
-
     @FXML
     private VBox postsContainer;
     @FXML
@@ -53,8 +50,6 @@ public class CommunityController implements Initializable, Controller {
     @FXML
     private Label rules;
     @FXML
-    private ImageView settings;
-    @FXML
     private ImageView userProfileAccess;
     @FXML
     private ImageView homePageButton;
@@ -67,11 +62,18 @@ public class CommunityController implements Initializable, Controller {
     @FXML
     private Button AddRuleButton;
     @FXML
-    private Button deleteCommunityButton;
-    @FXML
     private AnchorPane PopUpDeleteCommunityContainer;
     @FXML
     private VBox pinnedPostsContainer;
+    // Setting items
+    @FXML
+    private MenuButton settingsButton;
+    @FXML
+    private MenuItem reportPageItem;
+    @FXML
+    private MenuItem rolePageItem;
+    @FXML
+    private MenuItem deleteCommunityItem;
 
     private List<Post> posts;
     private final CommunityService communityservice;
@@ -91,11 +93,10 @@ public class CommunityController implements Initializable, Controller {
     public void initialize(URL location, ResourceBundle resources) {
         PopUpDeleteCommunityContainer.setVisible(false);
         PopUpDeleteCommunityContainer.setMouseTransparent(true);
-        deleteCommunityButton.setVisible(false);
         unsubscribeButton.setVisible(false);
         AddRuleButton.setVisible(false);
-        settings.setVisible(false);
         userProfileAccess.setVisible(false);
+        settingsButton.setVisible(false);
         this.currentCommunityId = communityservice.getCommunityId();
 
         try {
@@ -126,10 +127,6 @@ public class CommunityController implements Initializable, Controller {
                         showFilteredPosts(searchTerm);
                     }
                 }
-            });
-
-            settings.setOnMouseClicked(event -> {
-                handleSettingsClick();
             });
 
             searchField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -171,7 +168,41 @@ public class CommunityController implements Initializable, Controller {
             e.printStackTrace();
         }
     }
-    @FXML
+
+    @Override
+    public void init_data() throws SQLException {
+        searchField.clear();
+        Community currentCommunity = communityservice.getCommunity();
+        setData(currentCommunity);
+
+        community_title.setOnMouseClicked(event -> {
+            postsContainer.getChildren().clear();
+            SceneManager.changeScene("community " + currentCommunityId, "/src/view/fxml/CommunityPage.fxml", new CommunityController(communityservice));
+        });
+
+        if (communityservice.isSubscribed()) {
+            subscribeButton.setVisible(false);
+            unsubscribeButton.setVisible(true);
+        } else {
+            subscribeButton.setVisible(true);
+            unsubscribeButton.setVisible(false);
+        }
+
+        // get user role and set UI
+        Guest guest = retriveRightGuest();
+        GuestContext.setCurrentGuest(guest);
+
+        posts = new ArrayList<>(communityservice.getPosts());
+        loadPosts(posts);
+
+        List<Integer> pinnedPosts = communityservice.getPinnedPosts();
+        Map<Integer, String> pinnedPostsTitle = new HashMap<>();
+        for (Integer pinnedPostId : pinnedPosts) {
+            pinnedPostsTitle.put(pinnedPostId, communityservice.getPostTitle(pinnedPostId));
+        }
+        loadPinnedPost(pinnedPostsTitle);
+    }
+
     private void handleSettingsClick() {
         CommunitySettingsController communitySettingsController = new  CommunitySettingsController(communityservice);
         GuestContext.setCurrentController(communitySettingsController);
@@ -317,7 +348,6 @@ public class CommunityController implements Initializable, Controller {
     @FXML
     public void loadRules(int communityId) {
         try {
-
             List<Rule> rules = communityservice.getCommunityRules(communityId);
             if (rules.isEmpty()) {
                 Text text = new Text("No rules for this community");
@@ -343,26 +373,23 @@ public class CommunityController implements Initializable, Controller {
         }
     }
 
+    // Get the right guest for the page
     private Guest getCurrentGuest(Guest guest) throws SQLException {
         Role role = guest.getRole();
         if (Objects.requireNonNull(role) == Role.USER) {
             User user = (User) guest;
             userProfileAccess.setVisible(true);
-            userProfileAccess.setVisible(true);
 
             Moderator communityModerator = communityservice.getModerator(user.getId());
-
             if (communityModerator != null && communityModerator.getRole() == Role.MODERATOR) {
                 updateModeratorUI();
                 return communityModerator;
-            } else {
-                Admin admin = communityservice.isAdmin(user.getId());
-                if (admin != null && admin.getRole() == Role.ADMIN) {
-                    updateAdminUI();
-                    return admin;
-                }
+            }
 
-                return guest;
+            Admin admin = communityservice.getAdmin(user.getId());
+            if (admin != null && admin.getRole() == Role.ADMIN) {
+                updateAdminUI();
+                return admin;
             }
         }
         return guest;
@@ -386,22 +413,6 @@ public class CommunityController implements Initializable, Controller {
             pinnedPostController.setPostId(key);
             pinnedPostsContainer.getChildren().add(pinnedPost);
         }
-    }
-
-    private void updateAdminUI() {
-        updateModeratorUI();
-        AddRuleButton.setVisible(true);
-        AddRuleButton.setOnMouseClicked(event->handleAddRuleClick());
-        deleteCommunityButton.setVisible(true);
-        deleteCommunityButton.setOnMouseClicked(event -> {
-            try {
-                openConfirmationDialog();
-
-            }catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
     }
 
     private void openConfirmationDialog() throws IOException {
@@ -428,7 +439,6 @@ public class CommunityController implements Initializable, Controller {
         PopUpDeleteCommunityContainer.getChildren().clear();
         PopUpDeleteCommunityContainer.setMouseTransparent(true);
         PopUpDeleteCommunityContainer.setVisible(false);
-
     }
 
     private void handleAddRuleClick() {
@@ -445,55 +455,59 @@ public class CommunityController implements Initializable, Controller {
         }
     }
 
+    public void refreshPinnedPosts() {
+        pinnedPostsContainer.getChildren().clear();
+        Map<Integer, String> pinnedPosts = new HashMap<>();
+
+        for (Integer pinnedPostId : communityservice.getPinnedPosts()) {
+            try {
+                pinnedPosts.put(pinnedPostId, communityservice.getPostTitle(pinnedPostId));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        loadPinnedPost(pinnedPosts);
+    }
+
     private Guest retriveRightGuest() throws SQLException {
         return getCurrentGuest(GuestContext.getCurrentGuest());
     }
 
     private void updateModeratorUI(){
-        settings.setVisible(true);
+        settingsButton.setVisible(true);
+        reportPageItem.setVisible(true);
+        rolePageItem.setVisible(false);
+        deleteCommunityItem.setVisible(false);
+
+        reportPageItem.setOnAction(event -> {
+            handleSettingsClick();
+        });
+    }
+
+    private void updateAdminUI() {
+        updateModeratorUI();
+        rolePageItem.setVisible(true);
+        deleteCommunityItem.setVisible(true);
+
+        AddRuleButton.setVisible(true);
+        AddRuleButton.setOnMouseClicked(event->handleAddRuleClick());
+
+        deleteCommunityItem.setOnAction(event -> {
+            try {
+                openConfirmationDialog();
+            }catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        rolePageItem.setOnAction(event -> {
+
+        });
     }
 
     public VBox getPostsContainer() {
         return postsContainer;
     }
 
-    @Override
-    public void init_data() throws SQLException {
-        searchField.clear();
-        Community currentCommunity = communityservice.getCommunity();
-        setData(currentCommunity);
-
-        community_title.setOnMouseClicked(event -> {
-            postsContainer.getChildren().clear();
-            SceneManager.changeScene("community " + currentCommunityId, "/src/view/fxml/CommunityPage.fxml", new CommunityController(communityservice));
-        });
-
-        if (communityservice.isSubscribed()) {
-            subscribeButton.setVisible(false);
-            unsubscribeButton.setVisible(true);
-        } else {
-            subscribeButton.setVisible(true);
-            unsubscribeButton.setVisible(false);
-        }
-
-        // get the guest for the page
-        Guest guest = retriveRightGuest();
-        GuestContext.setCurrentGuest(guest);
-
-        posts = new ArrayList<>(communityservice.getPosts());
-        loadPosts(posts);
-
-        List<Integer> pinnedPosts = communityservice.getPinnedPosts();
-        Map<Integer, String> pinnedPostsTitle = new HashMap<>();
-        for (Integer pinnedPostId : pinnedPosts) {
-            pinnedPostsTitle.put(pinnedPostId, communityservice.getPostTitle(pinnedPostId));
-        }
-        loadPinnedPost(pinnedPostsTitle);
-
-    }
-
 }
-
-
-
-

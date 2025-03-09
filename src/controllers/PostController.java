@@ -1,6 +1,7 @@
 package src.controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -8,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import src.businesslogic.CommunityService;
 import src.businesslogic.PostService;
 import src.domainmodel.Guest;
 import src.domainmodel.Post;
@@ -19,6 +21,7 @@ import src.servicemanager.SceneManager;
 import src.servicemanager.VoteManager;
 import javafx.scene.layout.HBox;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -54,11 +57,19 @@ public class PostController implements Controller, Initializable {
     private HBox HboxContainer;
     @FXML
     private VBox SignalTextContainer;
+    @FXML
+    private Button pinPostButton;
+    @FXML
+    private VBox repliesContainer;
 
     private final PostService postService;
+    private PostPageController postPageController;
     private final FormattedTime formatter = new FormattedTime();
     private VoteManager voteManager;
     private boolean isSaved = false;
+    private boolean isOpenInPostPage = false;
+    private boolean isReplying = false;
+    private boolean isPinned = false;
 
     public PostController(PostService postService) {
         this.postService = postService;
@@ -75,7 +86,15 @@ public class PostController implements Controller, Initializable {
             SignalTextContainer.getChildren().add(new Text("Post has been reported"));
         });
 
-        postButton.setOnAction(event -> goToPostPage());
+        postButton.setOnAction(event -> {
+            if (isOpenInPostPage && !isReplying) {
+                loadReplyBox();
+            } else if (isOpenInPostPage && isReplying) {
+                removeReplyField();
+            } else {
+                goToPostPage();
+            }
+        });
 
         deletePostButton.setOnMouseClicked(event -> {
             try {
@@ -83,6 +102,10 @@ public class PostController implements Controller, Initializable {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        });
+
+        pinPostButton.setOnMouseClicked(event -> {
+            handlePinPost();
         });
 
         savePostButton.setOnMouseClicked(event -> {
@@ -126,19 +149,46 @@ public class PostController implements Controller, Initializable {
         savePostButton.setGraphic(image);
     }
 
+    private void handlePinPost() {
+        ImageView image;
+        if (!isPinned) {
+            postService.addPinPost();
+            image = new ImageView("/src/view/images/PinClickIcon.png");
+            isPinned = true;
+        } else {
+            postService.removePinPost(postService.getPost().getId(), postService.getPost().getCommunityId());
+            image = new ImageView("/src/view/images/PinIcon.png");
+            isPinned = false;
+        }
+        image.setFitHeight(20);
+        image.setFitWidth(20);
+        pinPostButton.setGraphic(image);
+
+        refreshCommunityPage();
+    }
+
+    private void refreshCommunityPage() {
+        Controller currentPageController = GuestContext.getCurrentController();
+        if (currentPageController instanceof CommunityController communityPageController) {
+            communityPageController.refreshPinnedPosts();
+        }
+    }
+
     private void setDataOnCard(Post post) throws SQLException {
         String communityTitle = postService.getCommunityTitle();
         community.setText("r/" + communityTitle);
-        String nickname = postService.getnickname();
+        String nickname = postService.getNickname();
         username.setText(nickname);
         date.setText(formatter.getFormattedTime(post.getTime()));
         title.setText(post.getTitle());
         content.setText(post.getContent());
         scoreLabel.setText(post.getLikes() - post.getDislikes() + "");
         checkPostVisibility();
+        setSavePostImage();
+        setPinPostImage();
     }
 
-    private void checkPostVisibility() {
+    private void checkPostVisibility() throws SQLException {
         Guest guest = GuestContext.getCurrentGuest();
 
         if (guest.getRole() != Role.GUEST) {
@@ -156,22 +206,60 @@ public class PostController implements Controller, Initializable {
             }
             savePostButton.setVisible(true);
             savePostButton.setManaged(true);
+            isSaved = postService.isSaved(user.getId());
         } else {
             deletePostButton.setVisible(false);
             deletePostButton.setManaged(false);
             savePostButton.setVisible(false);
             savePostButton.setManaged(false);
         }
+
+        User user = (guest instanceof User) ? (User) guest : null;
+        boolean isAdmin = (user != null && postService.isUserAdminOfCommunity(user.getId(), postService.getPost().getCommunityId()));
+        isPinned = postService.isPinned();
+        if (isAdmin) {
+            pinPostButton.setVisible(true);
+            pinPostButton.setManaged(true);
+            pinPostButton.setDisable(false);
+        } else {
+            if (isPinned) {
+                pinPostButton.setVisible(true);
+                pinPostButton.setManaged(true);
+                pinPostButton.setDisable(true);
+            } else {
+                pinPostButton.setVisible(false);
+                pinPostButton.setManaged(false);
+            }
+        }
+
     }
 
     public void setData(Post post) throws SQLException {
         myVBox.setMaxHeight(180);
         setDataOnCard(post);
+        isOpenInPostPage = false;
     }
 
     public void setDataPostPage(Post post) throws SQLException {
         myVBox.setMaxHeight(Region.USE_COMPUTED_SIZE);
         setDataOnCard(post);
+        isOpenInPostPage = true;
+    }
+
+    private void setButtonImage(Button button, boolean condition, String trueImagePath, String falseImagePath) {
+        String imagePath = condition ? trueImagePath : falseImagePath;
+        ImageView image = new ImageView(imagePath);
+        image.setFitHeight(20);
+        image.setFitWidth(20);
+        button.setGraphic(image);
+    }
+
+    private void setSavePostImage() {
+        setButtonImage(savePostButton, isSaved, "/src/view/images/SavedClickIcon.png", "/src/view/images/SavedIcon.png");
+    }
+
+    private void setPinPostImage() {
+        setButtonImage(pinPostButton, isPinned, "/src/view/images/PinClickIcon.png", "/src/view/images/PinIcon.png");
     }
 
     private void goToPostPage() {
@@ -179,6 +267,28 @@ public class PostController implements Controller, Initializable {
         PostPageController postPageController = new PostPageController(postService);
         SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
         SceneManager.loadScene(fxmlfile, postPageController);
+    }
+
+    private void loadReplyBox() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Reply.fxml"));
+            PostReplyController postReplyController = new PostReplyController(this);
+            fxmlLoader.setController(postReplyController);
+            VBox replyBox = fxmlLoader.load();
+            repliesContainer.getChildren().addFirst(replyBox);
+            isReplying = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeReplyField() {
+        isReplying = false;
+        repliesContainer.getChildren().removeFirst();
+    }
+
+    public PostService getPostService() {
+        return postService;
     }
 
     @Override

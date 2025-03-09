@@ -11,12 +11,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane prefHeight="700.0" prefWidth="600.0" stylesheets="@../css/SignUp.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" >
+<StackPane prefHeight="700.0" prefWidth="600.0" stylesheets="@../css/SignUp.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox alignment="CENTER" spacing="32.0">
-         <ImageView fx:id="backButton" fitHeight="33.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+         <ImageView fx:id="backButton" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
             <image>
-               <Image url="@../images/X.jpg" />
+               <Image url="@../images/X.png" />
             </image>
             <VBox.margin>
                <Insets left="350.0" />

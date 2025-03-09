@@ -3,24 +3,23 @@
     -fx-background-radius: 20;
     -fx-border-radius: 20;
     -fx-padding: 8px 15px;
-    -fx-border-color: #C27933;
+    -fx-border-color: #E0E0E0;
     -fx-border-width: 1px;
-    -fx-prompt-text-fill: #C27933;
+    -fx-prompt-text-fill: #757575;
     -fx-text-fill: #333333;
     -fx-pref-width: 320;
 }
 
 .text-field:hover {
     -fx-background-color: #F0F0F0;
-    -fx-border-color: #7D3F0F;
+    -fx-border-color: #D0D0D0;
 }
 
 .text-field:focused {
     -fx-background-color: white;
-    -fx-border-color: #C27933;
+    -fx-border-color: #999999;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
-    -fx-text-fill: #C27933;
 }
 
 .context-menu {
@@ -29,7 +28,7 @@
     -fx-background-radius: 0 0 20px 20px;
     -fx-background-color: #FAFAFA;
     -fx-border-radius: 0 0 20px 20px;
-    -fx-border-color: #C27933;
+    -fx-border-color: #E0E0E0;
     -fx-border-width: 0 1px 1px 1px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 2);
 }

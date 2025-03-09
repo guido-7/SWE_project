@@ -119,7 +119,7 @@ public class CommentController implements Controller, Initializable {
 
     private void loadReplyBox() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/CommentReply.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Reply.fxml"));
             CommentReplyController commentReplyController = new CommentReplyController(this);
             fxmlLoader.setController(commentReplyController);
             VBox replyBox = fxmlLoader.load();

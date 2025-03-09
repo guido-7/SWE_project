@@ -127,9 +127,11 @@ public class PostPageController implements Controller, Initializable {
 
     @Override
     public void init_data() throws SQLException {
+        postsContainer.getChildren().clear();
         Post currentPost = postService.getPost();
         loadPost(currentPost);
 
+        allPostsLoaded = false;
         List<Comment> rootComments = postService.getRootComments();
         loadRootComments(rootComments);
     }

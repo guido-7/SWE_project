@@ -1,0 +1,13 @@
+HBox{
+    -fx-background-color: #ffffff;
+    -fx-padding: 10;
+    -fx-border-radius: 5;
+    -fx-padding: 10;
+    -fx-border-color: #ccc;
+}
+
+Label{
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}

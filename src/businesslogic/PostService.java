@@ -1,5 +1,6 @@
 package src.businesslogic;
 
+import src.controllers.CommunityController;
 import src.domainmodel.*;
 import src.orm.CommentDAO;
 import src.orm.CommunityDAO;
@@ -68,7 +69,7 @@ public class PostService {
         return (String) communityDAO.retrieveSingleAttribute("Community","title","id = ?" , post.getCommunityId());
     }
 
-    public String getnickname() throws SQLException {
+    public String getNickname() throws SQLException {
         UserDAO userDAO = new UserDAO();
         return (String) userDAO.retrieveSingleAttribute("User","nickname","id = ?", post.getUserId());
     }
@@ -140,5 +141,33 @@ public class PostService {
     public boolean isAlreadyReported() {
         User currentUser = (User) GuestContext.getCurrentGuest();
         return postDAO.isAlreadyReported(currentUser.getId(),post.getId());
+    }
+
+    public boolean addReply(String reply) throws SQLException {
+        Guest guest = GuestContext.getCurrentGuest();
+        if (guest.getRole() == Role.GUEST)
+            return false;
+        User user = (User) guest;
+        Comment newComment = new Comment(post.getId(), 0, user.getId(), reply, post.getCommunityId());
+        CommentDAO commentDAO = new CommentDAO();
+        return commentDAO.save(newComment, null, null);
+    }
+
+    public void addPinPost() {
+        Map<String, Object> postInfo = Map.of("post_id", post.getId(), "community_id", post.getCommunityId());
+        postDAO.insertPinnedPost(postInfo);
+    }
+
+    public void removePinPost(int postId, int communityId) {
+        postDAO.removePinnedPost(postId, communityId);
+    }
+
+    public boolean isUserAdminOfCommunity(int id, int communityId) {
+        CommunityDAO communityDAO = new CommunityDAO();
+        return communityDAO.isUserAdminOfCommunity(id, communityId);
+    }
+
+    public boolean isPinned() {
+        return postDAO.isPinned(post.getId(), post.getCommunityId());
     }
 }
