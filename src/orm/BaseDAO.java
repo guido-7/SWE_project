@@ -97,10 +97,9 @@ public abstract class BaseDAO<T, ID> {
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getObject(1);
-                }
+           ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getObject(1);
             }
         }
         // if nothing is found

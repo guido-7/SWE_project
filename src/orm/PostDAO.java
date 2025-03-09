@@ -328,4 +328,5 @@ public class PostDAO extends BaseDAO<Post, Integer> {
             e.printStackTrace();
         }
     }
+
 }

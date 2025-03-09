@@ -1,5 +1,6 @@
 package src.businesslogic;
 
+import javafx.util.Pair;
 import src.domainmodel.*;
 import src.orm.*;
 import src.servicemanager.GuestContext;
@@ -8,6 +9,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CommunityService {
     int communityId;
@@ -15,6 +17,7 @@ public class CommunityService {
     int numberOfPosts = 30;
     PostDAO postDao = new PostDAO();
     CommunityDAO communityDAO = new CommunityDAO();
+    int offset = 0;
 
     public CommunityService(int communityId) {
         this.communityId = communityId;
@@ -183,4 +186,48 @@ public class CommunityService {
         return postDao.findById(postId).orElse(null);
     }
 
+    public Object[][] getSubscribedData(ArrayList<Integer> subIds) throws SQLException {
+        UserDAO userDAO = new UserDAO();
+        Object[][] subsInfos = new Object[subIds.size()][2];
+        int i = 0 ;
+        for( Integer subId : subIds){
+            Object[] subInfo = new Object[2];
+            subInfo[0] = userDAO.retrieveSingleAttribute("User","nickname"," id = ? ",subId);
+            subInfo[1] = userDAO.retrieveSingleAttribute("Subscription","subscription_date","user_id = ?",subId);
+            subsInfos[i++] = subInfo;
+        }
+        return subsInfos;
+    }
+
+    public ArrayList<Integer> getSubs(int maxSubscribedNo) {
+        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
+        ArrayList<Integer> subsIds = subscriptionDAO.getSubs(maxSubscribedNo, communityId,offset);
+        offset += subsIds.size();
+        return subsIds;
+    }
+
+//    public Pair<Integer, Object[]> getMoreSubs() {
+//        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
+//
+//        return subscriptionDAO.getSubs(, communityId);
+//    }
+
+    public void promote(int subscriberId) throws SQLException {
+        ModeratorDAO moderatorDAO = new ModeratorDAO();
+        moderatorDAO.save(Map.of("user_id",subscriberId,"community_id",communityId));
+    }
+
+    public void dismiss(int subscriberId) {
+        //ModeratorDAO moderatorDAO = new ModeratorDAO();
+        //moderatorDAO.de
+
+    }
+
+    public Map<Integer,String> getFilteredSubs(String searchTerm) {
+        noOfPostsTaken = 0;
+        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
+        int maxnumberOfSubsShown = 10;
+        return subscriptionDAO.getFilteredSubs(communityId, searchTerm, maxnumberOfSubsShown, 0);
+
+    }
 }

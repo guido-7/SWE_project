@@ -1,12 +1,14 @@
 package src.orm;
 
 import src.domainmodel.Community;
+import src.domainmodel.Post;
 import src.domainmodel.Subscription;
 import src.managerdatabase.DBConnection;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -127,4 +129,43 @@ public class SubscriptionDAO extends BaseDAO<Subscription, List<Integer>> {
         return communities;
     }
 
+    public ArrayList<Integer> getSubs(int maxSubscribedNo, int communityId,int offset) {
+        String sql = "SELECT user_id FROM Subscription WHERE community_id = ? ORDER BY subscription_date DESC LIMIT ? OFFSET ?";
+        ArrayList<Integer> communityIds = new ArrayList<>();
+        try (Connection connection = DBConnection.open_connection() ;
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, communityId);
+            statement.setInt(2, maxSubscribedNo);
+            statement.setInt(3, offset);
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                communityIds.add(resultSet.getInt("user_id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return communityIds;
+
+    }
+
+    public Map<Integer, String> getFilteredSubs(int communityId, String searchTerm, int maxnumberOfSubsShown, int offset) {
+        Map<Integer, String> filteredSubs = new HashMap<>();
+        String sql = "SELECT User.id, User.nickname FROM Subscription JOIN User ON Subscription.user_id = User.id WHERE community_id = ? AND User.nickname LIKE ? LIMIT ? OFFSET ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, communityId);
+            statement.setString(2, "%" + searchTerm + "%");
+            statement.setInt(3, maxnumberOfSubsShown);
+            statement.setInt(4, offset);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    filteredSubs.put(resultSet.getInt("id"), resultSet.getString("nickname"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return filteredSubs;
+    }
 }

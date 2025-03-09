@@ -97,4 +97,5 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
     }
         return null;
     }
+
 }
