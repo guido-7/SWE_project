@@ -61,6 +61,7 @@ public abstract class BaseDAO<T, ID> {
             statement.executeUpdate();
         }
     }
+
     public void deleteById(ID id) throws SQLException {
         String query = getDeleteQuery();
         try (Connection connection = DBConnection.open_connection();
@@ -91,8 +92,8 @@ public abstract class BaseDAO<T, ID> {
     public Object retrieveSingleAttribute(String tableName, String columnName, String whereClause, Object... params) throws SQLException {
         String query = "SELECT " + columnName + " FROM " + tableName + " WHERE " + whereClause;
 
-        try (Connection connection = DBConnection.open_connection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+       try (Connection connection = DBConnection.open_connection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
@@ -102,7 +103,8 @@ public abstract class BaseDAO<T, ID> {
                 }
             }
         }
-        return null; // Se non trova nulla
+        // if nothing is found
+        return null;
     }
 
     public void insertSingleAttribute(String tableName, String columnName, Object value) throws SQLException {
@@ -128,7 +130,6 @@ public abstract class BaseDAO<T, ID> {
             statement.executeUpdate();
         }
     }
-
 
     public void updatesingleAttribute(String tableName, String columnName, Object value, String whereClause, Object... params) throws SQLException {
         String query = "UPDATE " + tableName + " SET " + columnName + " = ? WHERE " + whereClause;

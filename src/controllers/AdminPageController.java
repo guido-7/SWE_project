@@ -64,6 +64,7 @@ public class AdminPageController implements Initializable, Controller {
         PromoteButton.setOnMouseClicked(event->{
             //communityService.promote(subscriberId);
         });
+
         DismissButton.setOnMouseClicked(event->{
             //communityService.dismiss(subscriberId);
         });
