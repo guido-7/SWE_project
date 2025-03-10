@@ -8,7 +8,9 @@ import src.controllers.Controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SceneManager {
@@ -19,7 +21,7 @@ public class SceneManager {
     private static Stage primaryStage;
     private static Stage secondaryStage;
 
-    private static Scene previousScene;
+    private static final List<Scene> previousScene = new ArrayList<>();
 
     public static void setPrimaryStage(Stage stage) {
             primaryStage = stage;
@@ -32,7 +34,6 @@ public class SceneManager {
     public static void loadPrimaryScene(String name, String fileFxml, Controller controller) {
         try {
             System.out.println("Loading scene: " + name);
-
             GuestContext.setCurrentController(controller);
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fileFxml));
             loader.setController(controller);
@@ -42,7 +43,6 @@ public class SceneManager {
             // load data into caches
             primarySceneCache.put(name, scene);
             primaryControllers.put(scene, controller);
-
             primaryStage.setScene(scene);
             primaryStage.show();
 
@@ -100,12 +100,11 @@ public class SceneManager {
         return null;
     }
 
-    private static void showFirstStage(){
+    private static void showFirstStage() {
         primaryStage.show();
     }
 
     // Apri una finestra modale (come il login)
-
     public static void openModal(String name, String fileFxml, Controller controller, Stage owner) {
         try {
             GuestContext.setCurrentController(controller);
@@ -127,6 +126,7 @@ public class SceneManager {
             e.printStackTrace();
         }
     }
+
     private static void closeStage(Stage stage){
         stage.close();
     }
@@ -165,16 +165,18 @@ public class SceneManager {
 
     public static void loadPreviousScene(){
         GuestContext.setCurrentController(GuestContext.getPreviousContextController());
-        primaryStage.setScene(previousScene);
+        primaryStage.setScene(getPreviousScene());
         primaryStage.show();
     }
 
     public static Scene getPreviousScene() {
-        return previousScene;
+        Scene scene = previousScene.getLast();
+        previousScene.removeLast();
+        return scene;
     }
 
     public static void setPreviousScene(Scene currentScene) {
-        SceneManager.previousScene = currentScene;
+        previousScene.addLast(currentScene);
     }
-}
 
+}
