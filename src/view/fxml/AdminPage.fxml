@@ -3,12 +3,13 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="910.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="910.0" styleClass="background" stylesheets="@../css/HomePage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TextField fx:id="SearchSubsBar" layoutX="380.0" layoutY="77.0" />
+      <TextField fx:id="SearchSubsBar" layoutX="295.0" layoutY="78.0" prefHeight="35.0" prefWidth="260.0" promptText="Search subscriber" stylesheets="@../css/SearchField.css" />
       <Text layoutX="380.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Search among subscribers" wrappingWidth="149.60000000000002" />
       <AnchorPane fx:id="SubInfoContainer" layoutX="69.0" layoutY="195.0" prefHeight="300.0" prefWidth="780.0">
          <children>
@@ -23,7 +24,13 @@
             <Pane fx:id="BLPane" layoutY="200.0" prefHeight="100.0" prefWidth="260.0" />
          </children>
       </AnchorPane>
-      <Button fx:id="PromoteButton" layoutX="282.0" layoutY="561.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="Promote" />
-      <Button fx:id="DismissButton" layoutX="510.0" layoutY="561.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="Dismiss" />
+      <HBox layoutX="61.0" layoutY="539.0" prefHeight="78.0" prefWidth="795.0">
+         <children>
+            <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <Button fx:id="PromoteButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" stylesheets="@../css/Button.css" text="Promote" />
+            <Button fx:id="DismissButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" stylesheets="@../css/Button.css" text="Dismiss" />
+            <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
    </children>
 </AnchorPane>
