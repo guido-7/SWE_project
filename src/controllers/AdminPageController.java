@@ -62,8 +62,9 @@ public class AdminPageController implements Initializable, Controller {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         PromoteButton.setVisible(false);
+        PromoteButton.setManaged(false);
         DismissButton.setVisible(false);
-
+        DismissButton.setManaged(false);
         ArrayList<Pane> paneGrid = new ArrayList<>(List.of(TLPane, TCPane, TRPane, CLPane, CCPane, CRPane, BLPane, BCPane, BRPane));
 
         //from 0 to 8
@@ -72,6 +73,15 @@ public class AdminPageController implements Initializable, Controller {
             allpane.put(i,paneGrid.get(i));
         }
 
+        try {
+            init_data();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void init_data() throws SQLException {
         int maxSubscribedNo = 9;
         Object[][] subscribedInfos;
         try {
@@ -80,7 +90,7 @@ public class AdminPageController implements Initializable, Controller {
                 // [[nickname,data],[nickname2,data2]]
                 subscribedInfos = communityService.getSubscribedData(subIds);
 
-                for (int i = 0 ; i < subInfoVector.size() && i < allpane.size(); i++) {
+                for (int i = 0 ; i < subIds.size() && i < allpane.size(); i++) {
                     int subId = subIds.get(i);
                     subInfoVector.add(loadUserInfoComponent(subscribedInfos[i], subId));
                 }
@@ -96,6 +106,7 @@ public class AdminPageController implements Initializable, Controller {
                 communityService.promote(subscriberId);
                 removeFromGrid();
                 PromoteButton.setVisible(false);
+                PromoteButton.setManaged(false);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -105,6 +116,7 @@ public class AdminPageController implements Initializable, Controller {
             communityService.dismiss(subscriberId);
             removeFromGrid();
             DismissButton.setVisible(false);
+            DismissButton.setManaged(false);
         });
 
         SearchSubsBar.setOnKeyReleased(event -> {
@@ -126,11 +138,6 @@ public class AdminPageController implements Initializable, Controller {
                 updateSuggestions(newValue);
             }
         });
-    }
-
-    @Override
-    public void init_data() throws SQLException {
-
     }
 
     private void updateSuggestions(String newValue) {
@@ -231,6 +238,10 @@ public class AdminPageController implements Initializable, Controller {
         deletingPair = null;
         try {
             ArrayList<Integer> wrapSubId = communityService.getSubs(1);
+            if(wrapSubId.isEmpty()) {
+                buildGrid();
+                return;
+            }
             Object[][] wrapSubInfo = communityService.getSubscribedData(wrapSubId);
             int subId = wrapSubId.getFirst();
             Object[] subInfo = wrapSubInfo[0];
@@ -241,6 +252,7 @@ public class AdminPageController implements Initializable, Controller {
         }
         buildGrid();
     }
+
     private void buildGrid() {
         clearGrid();
         for (int i = 0; i < subInfoVector.size() && i < allpane.size(); i++) {
@@ -271,12 +283,16 @@ public class AdminPageController implements Initializable, Controller {
 
     public void showDismissButton() {
         PromoteButton.setVisible(false);
+        PromoteButton.setManaged(false);
         DismissButton.setVisible(true);
+        DismissButton.setManaged(true);
     }
 
     public void showPromoteButton() {
         DismissButton.setVisible(false);
+        DismissButton.setManaged(false);
         PromoteButton.setVisible(true);
+        PromoteButton.setManaged(true);
     }
 
     public void setSubscribedId(int subscriberId){
@@ -296,4 +312,3 @@ public class AdminPageController implements Initializable, Controller {
     }
 
 }
-
