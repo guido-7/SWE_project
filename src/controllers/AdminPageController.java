@@ -76,15 +76,17 @@ public class AdminPageController implements Initializable, Controller {
         Object[][] subscribedInfos;
         try {
             ArrayList<Integer> subIds = communityService.getSubs(maxSubscribedNo);
+            if(!subIds.isEmpty()) {
+                // [[nickname,data],[nickname2,data2]]
+                subscribedInfos = communityService.getSubscribedData(subIds);
 
-            // [[nickname,data],[nickname2,data2]]
-            subscribedInfos = communityService.getSubscribedData(subIds);
-
-            for (int i = 0 ; i < allpane.size(); i++) {
-                int subId = subIds.get(i);
-                subInfoVector.add(loadUserInfoComponent(subscribedInfos[i], subId));
+                for (int i = 0 ; i < subInfoVector.size() && i < allpane.size(); i++) {
+                    int subId = subIds.get(i);
+                    subInfoVector.add(loadUserInfoComponent(subscribedInfos[i], subId));
+                }
+                buildGrid();
             }
-            buildGrid();
+
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -104,6 +106,7 @@ public class AdminPageController implements Initializable, Controller {
             removeFromGrid();
             DismissButton.setVisible(false);
         });
+
         SearchSubsBar.setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 event.consume();
@@ -240,7 +243,7 @@ public class AdminPageController implements Initializable, Controller {
     }
     private void buildGrid() {
         clearGrid();
-        for (int i = 0; i < subInfoVector.size(); i++) {
+        for (int i = 0; i < subInfoVector.size() && i < allpane.size(); i++) {
             AnchorPane pane = subInfoVector.get(i).getKey();
             allpane.get(i).getChildren().add(pane);
         }
