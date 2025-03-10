@@ -15,20 +15,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
-import src.businesslogic.PostService;
 import src.businesslogic.UserProfileService;
 import src.domainmodel.PostWarnings;
 import javafx.scene.text.Text;
 import src.domainmodel.User;
-import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
 import src.utils.LoadingPost;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 
-public class CommunitySettingsController implements Controller {
+public class CommunitySettingsController implements Initializable, Controller {
     @FXML
     private VBox ModeratorChoiceContainer;
     @FXML
@@ -55,10 +54,15 @@ public class CommunitySettingsController implements Controller {
         this.communityService = communityService;
     }
 
-    @FXML
-    public void initialize() {
-
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        init_data();
         exit.setOnMouseClicked(event-> backToCommunity());
+    }
+
+    @Override
+    public void init_data() {
+        ModeratorChoiceContainer.getChildren().clear();
 
         reportsTable.setSelectionModel(null);
 
@@ -216,21 +220,21 @@ public class CommunitySettingsController implements Controller {
         }
 
         Set<Integer> reportedIds = reportedUserCount.keySet();
-        for (Integer reportedId : reportedIds){
-                try {
-                    ArrayList<PostWarnings> reportedReports = reportedUserCount.get(reportedId);
-                    ModeratorDecisionController moderatorDecisionController = new ModeratorDecisionController(reportedReports, communityService);
-                    FXMLLoader fxmlLoader = new FXMLLoader(LoadingPost.class.getResource("/src/view/fxml/ModeratorDecisionSnapShot.fxml"));
-                    fxmlLoader.setController(moderatorDecisionController);
-                    Pane pane = fxmlLoader.load();
-                    moderatorDecisionController.setNumber(reportedReports.size());
-                    ModeratorChoiceContainer.getChildren().add(pane);
+        for (Integer reportedId : reportedIds) {
+            try {
+                ArrayList<PostWarnings> reportedReports = reportedUserCount.get(reportedId);
+                ModeratorDecisionController moderatorDecisionController = new ModeratorDecisionController(reportedReports, communityService);
+                FXMLLoader fxmlLoader = new FXMLLoader(LoadingPost.class.getResource("/src/view/fxml/ModeratorDecisionSnapShot.fxml"));
+                fxmlLoader.setController(moderatorDecisionController);
+                Pane pane = fxmlLoader.load();
+                moderatorDecisionController.setNumber(reportedReports.size());
+                ModeratorChoiceContainer.getChildren().add(pane);
 
-                } catch (IOException e) {
+            } catch (IOException e) {
 
-                    e.printStackTrace();
-                }
+                e.printStackTrace();
             }
+        }
     }
 
     private  void manageLookUpUser(UserProfilePageController userProfilePageController) {
@@ -261,10 +265,4 @@ public class CommunitySettingsController implements Controller {
         reportsTable.setItems(observableReports);
     }
 
-    @Override
-    public void init_data() {
-
-    }
-
 }
-
