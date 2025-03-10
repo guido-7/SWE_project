@@ -83,10 +83,11 @@ public class CommunityController implements Initializable, Controller {
     private final SearchService searchService = new SearchService();
     private final ContextMenu suggestionsPopup = new ContextMenu();
     private String currentSearchTerm = "";
-    private int currentCommunityId;
+    private final int currentCommunityId;
 
     public CommunityController(CommunityService communityService) {
         this.communityservice = communityService;
+        this.currentCommunityId = communityservice.getCommunityId();
     }
 
     @Override
@@ -97,7 +98,6 @@ public class CommunityController implements Initializable, Controller {
         AddRuleButton.setVisible(false);
         userProfileAccess.setVisible(false);
         settingsButton.setVisible(false);
-        this.currentCommunityId = communityservice.getCommunityId();
 
         try {
             init_data();
@@ -206,7 +206,13 @@ public class CommunityController implements Initializable, Controller {
     private void handleSettingsClick() {
         CommunitySettingsController communitySettingsController = new  CommunitySettingsController(communityservice);
         GuestContext.setCurrentController(communitySettingsController);
-        SceneManager.changeScene("community settings " + communityservice.getCommunityId(), "/src/view/fxml/CommunitySettings.fxml", communitySettingsController);
+        SceneManager.changeScene("community settings " + currentCommunityId, "/src/view/fxml/CommunitySettings.fxml", communitySettingsController);
+    }
+
+    private void handleRolePageClick() {
+        AdminPageController adminPageController = new AdminPageController(communityservice);
+        GuestContext.setCurrentController(adminPageController);
+        SceneManager.changeScene("Admin Page " + currentCommunityId, "/src/view/fxml/AdminPage.fxml", adminPageController);
     }
 
     private void updateSuggestions(String searchTerm) {
@@ -432,7 +438,6 @@ public class CommunityController implements Initializable, Controller {
         PopUpDeleteCommunityContainer.getChildren().add(popUp);
         PopUpDeleteCommunityContainer.setMouseTransparent(false);
         PopUpDeleteCommunityContainer.setVisible(true);
-
     }
 
     private void closePopup() {
@@ -502,7 +507,7 @@ public class CommunityController implements Initializable, Controller {
         });
 
         rolePageItem.setOnAction(event -> {
-
+            handleRolePageClick();
         });
     }
 
