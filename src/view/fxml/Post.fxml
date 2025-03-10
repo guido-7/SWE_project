@@ -35,7 +35,7 @@
                 <Insets left="5.0" />
             </HBox.margin>
         </ImageView>
-        <Button fx:id="pinPostButton" mnemonicParsing="false" style="-fx-background-color: transparent;">
+        <Button fx:id="pinPostButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;">
          <graphic>
             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -44,7 +44,7 @@
             </ImageView>
          </graphic>
         </Button>
-      <Button fx:id="savePostButton" mnemonicParsing="false" style="-fx-background-color: transparent;">
+      <Button fx:id="savePostButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;">
          <graphic>
             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                <image>
