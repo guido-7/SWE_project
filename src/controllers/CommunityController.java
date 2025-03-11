@@ -172,6 +172,8 @@ public class CommunityController implements Initializable, Controller {
     @Override
     public void init_data() throws SQLException {
         searchField.clear();
+        postsContainer.getChildren().clear();
+        pinnedPostsContainer.getChildren().clear();
         Community currentCommunity = communityservice.getCommunity();
         setData(currentCommunity);
 
@@ -471,7 +473,6 @@ public class CommunityController implements Initializable, Controller {
                 throw new RuntimeException(e);
             }
         }
-
         loadPinnedPost(pinnedPosts);
     }
 
