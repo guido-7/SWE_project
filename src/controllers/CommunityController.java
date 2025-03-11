@@ -103,7 +103,8 @@ public class CommunityController implements Initializable, Controller {
             init_data();
 
             homePageButton.onMouseClickedProperty().set(event -> {
-                SceneManager.changeScene("home", "/src/view/fxml/HomePage.fxml",null);
+                GuestContext.backToPreviousContext();
+                SceneManager.changeScene("home", "/src/view/fxml/HomePage.fxml", null);
             });
 
             userProfileAccess.onMouseClickedProperty().set(event -> {
@@ -191,6 +192,7 @@ public class CommunityController implements Initializable, Controller {
         }
 
         // get user role and set UI
+        GuestContext.setPreviousContextGuest(GuestContext.getCurrentGuest());
         Guest guest = retriveRightGuest();
         GuestContext.setCurrentGuest(guest);
 
