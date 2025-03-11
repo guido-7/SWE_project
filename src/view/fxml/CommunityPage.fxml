@@ -27,7 +27,8 @@
                 </ImageView>
                 <Pane prefWidth="200.0" HBox.hgrow="ALWAYS" />
                 <TextField fx:id="searchField" prefHeight="26.0" prefWidth="320.0" promptText="Search Posts " stylesheets="@../css/SearchField.css" />
-                <Pane prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                <Pane prefWidth="50.0" HBox.hgrow="ALWAYS" />
+            <Button fx:id="createPostButton" maxHeight="35.0" mnemonicParsing="false" styleClass="orange-button" stylesheets="@../css/Button.css" text="Create Post" />
                 <MenuButton fx:id="settingsButton" mnemonicParsing="false" stylesheets="@../css/CommunityPage.css">
                     <items>
                         <MenuItem fx:id="reportPageItem" mnemonicParsing="false" text="Report page" />
@@ -43,7 +44,7 @@
                     <Insets right="10.0" />
                 </HBox.margin>
             </MenuButton>
-                <ImageView fx:id="userProfileAccess" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="userProfileAccess" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                     <HBox.margin>
                         <Insets right="20.0" />
                     </HBox.margin>

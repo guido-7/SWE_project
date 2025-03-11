@@ -15,12 +15,14 @@ import javafx.scene.text.Text;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
+import src.businesslogic.PostCreationService;
 import src.businesslogic.SearchService;
 import src.businesslogic.UserProfileService;
 import src.domainmodel.*;
 
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
+import src.controllers.PostCreationPageController;
 import src.utils.LoadingPost;
 
 import java.io.IOException;
@@ -30,13 +32,32 @@ import java.util.*;
 
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
+
 public class CommunityController implements Initializable, Controller {
+    //nav bar
+    @FXML
+    private ImageView homePageButton;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private Button createPostButton;
+    @FXML
+    private ImageView userProfileAccess;
+
+    // Setting items
+    @FXML
+    private MenuButton settingsButton;
+    @FXML
+    private MenuItem reportPageItem;
+    @FXML
+    private MenuItem rolePageItem;
+    @FXML
+    private MenuItem deleteCommunityItem;
+
     @FXML
     private VBox postsContainer;
     @FXML
     private ScrollPane scrollPane;
-    @FXML
-    private TextField searchField;
     @FXML
     private Text community_title;
     @FXML
@@ -50,10 +71,6 @@ public class CommunityController implements Initializable, Controller {
     @FXML
     private Label rules;
     @FXML
-    private ImageView userProfileAccess;
-    @FXML
-    private ImageView homePageButton;
-    @FXML
     private Button subscribeButton;
     @FXML
     private Button unsubscribeButton;
@@ -65,15 +82,6 @@ public class CommunityController implements Initializable, Controller {
     private AnchorPane PopUpDeleteCommunityContainer;
     @FXML
     private VBox pinnedPostsContainer;
-    // Setting items
-    @FXML
-    private MenuButton settingsButton;
-    @FXML
-    private MenuItem reportPageItem;
-    @FXML
-    private MenuItem rolePageItem;
-    @FXML
-    private MenuItem deleteCommunityItem;
 
     private List<Post> posts;
     private final CommunityService communityservice;
@@ -97,6 +105,7 @@ public class CommunityController implements Initializable, Controller {
         unsubscribeButton.setVisible(false);
         AddRuleButton.setVisible(false);
         userProfileAccess.setVisible(false);
+        createPostButton.setVisible(false);
         settingsButton.setVisible(false);
 
         try {
@@ -105,6 +114,10 @@ public class CommunityController implements Initializable, Controller {
             homePageButton.onMouseClickedProperty().set(event -> {
                 GuestContext.backToPreviousContext();
                 SceneManager.changeScene("home", "/src/view/fxml/HomePage.fxml", null);
+            });
+
+            createPostButton.onMouseClickedProperty().set(event -> {
+                openPostCreationPage();
             });
 
             userProfileAccess.onMouseClickedProperty().set(event -> {
@@ -211,6 +224,12 @@ public class CommunityController implements Initializable, Controller {
         CommunitySettingsController communitySettingsController = new  CommunitySettingsController(communityservice);
         GuestContext.setCurrentController(communitySettingsController);
         SceneManager.changeScene("community settings " + currentCommunityId, "/src/view/fxml/CommunitySettings.fxml", communitySettingsController);
+    }
+
+    private void openPostCreationPage() {
+        PostCreationPageController postCreationController = new PostCreationPageController(new PostCreationService());
+        GuestContext.setCurrentController(postCreationController);
+        SceneManager.changeScene("post creation " + currentCommunityId, "/src/view/fxml/PostCreationPage.fxml", postCreationController);
     }
 
     private void handleRolePageClick() {
@@ -389,6 +408,7 @@ public class CommunityController implements Initializable, Controller {
         if (Objects.requireNonNull(role) == Role.USER) {
             User user = (User) guest;
             userProfileAccess.setVisible(true);
+            createPostButton.setVisible(true);
 
             Moderator communityModerator = communityservice.getModerator(user.getId());
             if (communityModerator != null && communityModerator.getRole() == Role.MODERATOR) {
