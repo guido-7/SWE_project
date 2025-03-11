@@ -339,6 +339,18 @@ class SetDBTest {
         assertEquals(1, rs.getInt("post_id"), "The post_id inserted does not match.");
         assertEquals(1, rs.getInt("parent_id"), "The parent_id inserted does not match.");
         assertEquals(2, rs.getInt("child_id"), "The child_id inserted does not match.");
+
+        commentDAO.save(Map.of("post_id", 1, "level", 2, "user_id", 1, "content", "Comment contenut 3", "community_id", 1));
+        conn = DBConnection.open_connection(url);
+        commentDAO.saveCommentRelation(Map.of("post_id", 1, "parent_id", 2, "child_id", 3));
+
+        conn = DBConnection.open_connection(url);
+        stmt = conn.createStatement();
+        rs = stmt.executeQuery("SELECT * FROM CommentHierarchy WHERE post_id = 1 AND parent_id = 2;");
+        assertTrue(rs.next(), "Hierarchy for post_id = 1 not found.");
+        assertEquals(1, rs.getInt("post_id"), "The post_id inserted does not match.");
+        assertEquals(2, rs.getInt("parent_id"), "The parent_id inserted does not match.");
+        assertEquals(3, rs.getInt("child_id"), "The child_id inserted does not match.");
     }
 
     @Test
@@ -516,7 +528,6 @@ class SetDBTest {
         conn = DBConnection.open_connection(url);
         Statement stmt = conn.createStatement();
         stmt.executeUpdate("INSERT INTO PostWarnings (sender_id, post_id, community_id) VALUES (1, 1, 1);");
-
 
         ResultSet rs = stmt.executeQuery("SELECT * FROM PostWarnings WHERE sender_id = 1 AND post_id = 1;");
         assertTrue(rs.next(), "Warning for sender_id = 1 and post_id = 1 not found.");
