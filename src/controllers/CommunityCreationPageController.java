@@ -16,37 +16,26 @@ import java.util.*;
 public class CommunityCreationPageController implements Controller, Initializable {
     @FXML
     private Button createButton;
-
     @FXML
     private TextArea descriptionArea;
-
     @FXML
     private Text headerTitle;
-
     @FXML
     private TextArea rule1;
-
     @FXML
     private TextArea rule2;
-
     @FXML
     private TextArea rule3;
-
     @FXML
     private VBox rulesContainer;
-
     @FXML
     private TextField titleField;
-
     @FXML
     private TextField RuleTitle1;
-
     @FXML
     private TextField RuleTitle2;
-
     @FXML
     private TextField RuleTitle3;
-
     @FXML
     private ImageView exitButton;
 
@@ -58,6 +47,8 @@ public class CommunityCreationPageController implements Controller, Initializabl
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        init_data();
+
         createButton.setOnMouseClicked(e -> {
             String title = titleField.getText();
             String description = descriptionArea.getText();
@@ -90,8 +81,19 @@ public class CommunityCreationPageController implements Controller, Initializabl
     }
 
     @Override
-    public void init_data() throws SQLException {
+    public void init_data() {
+        clearAllFields();
+    }
 
+    private void clearAllFields() {
+        descriptionArea.clear();
+        rule1.clear();
+        rule2.clear();
+        rule3.clear();
+        titleField.clear();
+        RuleTitle1.clear();
+        RuleTitle2.clear();
+        RuleTitle3.clear();
     }
 
 }
