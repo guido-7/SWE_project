@@ -9,24 +9,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.5, 0, 2);
 }
 
-.button {
-    -fx-background-color: #F8F8F8;
-    -fx-background-radius: 20;
-    -fx-border-radius: 20;
-    -fx-border-color: #E0E0E0;
-    -fx-padding: 8px 15px;
-    -fx-border-width: 1px;
-    -fx-text-fill: black;
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-}
-
-.button:hover {
-    -fx-background-color: #F0F0F0;
-    -fx-border-color: #D0D0D0;
-    -fx-text-fill: black;
-}
-
 Text {
     -fx-fill: #C27933;
 }
@@ -41,21 +23,6 @@ Text {
 
 #community_title:hover{
     -fx-fill: #7D3F0F;
-}
-
-#unsubscribeButton, #subscribeButton{
-    -fx-background-color: #C27933;
-    -fx-text-fill: white;
-    -fx-border-color: #C27933;
-    -fx-border-width: 0px 0px 2px 0px;
-    -fx-alignment: center;
-}
-
-#unsubscribeButton:hover, #subscribeButton:hover{
-    -fx-background-color: #7D3F0F;
-    -fx-text-fill: white;
-    -fx-border-color: #7D3F0F;
-    -fx-border-width: 0px 0px 2px 0px;
 }
 
 .menu-button {
