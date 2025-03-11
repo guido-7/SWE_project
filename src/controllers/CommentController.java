@@ -9,7 +9,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import src.businesslogic.CommentService;
 import src.domainmodel.Comment;
+import src.domainmodel.Role;
 import src.servicemanager.FormattedTime;
+import src.servicemanager.GuestContext;
 import src.servicemanager.VoteManager;
 
 import java.io.IOException;
@@ -38,6 +40,8 @@ public class CommentController implements Controller, Initializable {
     private ImageView replyToCommButton;
     @FXML
     private VBox repliesContainer;
+    @FXML
+    private Button reportButton;
 
     private final CommentService commentService;
     private final FormattedTime formatter = new FormattedTime();
@@ -53,6 +57,7 @@ public class CommentController implements Controller, Initializable {
         moreComments.setVisible(false);
         minusComments.setVisible(false);
         voteManager = new VoteManager(scoreLabel, likeButton, dislikeButton, commentService);
+
         init_data();
 
         moreComments.setOnMouseClicked(event -> {
@@ -81,6 +86,21 @@ public class CommentController implements Controller, Initializable {
                 loadReplyBox();
             }
         });
+
+        reportButton.setOnMouseClicked(event -> {
+            handleReport();
+            reportButton.setVisible(false);
+        });
+    }
+
+    @Override
+    public void init_data() {
+        if(commentService.hasSubComments()) {
+            moreComments.setVisible(true);
+        }
+        commentService.refreshComment();
+        setData(commentService.getComment());
+        voteManager.checkUserVote();
     }
 
     public void setData(Comment comment) {
@@ -90,6 +110,7 @@ public class CommentController implements Controller, Initializable {
         content.setText(commentService.getCommentText());
         date.setText(formatter.getFormattedTime(comment.getTime()));
         scoreLabel.setText(comment.getLikes() - comment.getDislikes() + "");
+        reportButton.setVisible(GuestContext.getCurrentGuest().getRole() != Role.GUEST && !commentService.isReported());
     }
 
     public void loadSubComments() {
@@ -134,17 +155,11 @@ public class CommentController implements Controller, Initializable {
         repliesContainer.getChildren().removeFirst();
     }
 
-    public CommentService getCommentService() {
-        return commentService;
+    private void handleReport() {
+        commentService.reportComment();
     }
 
-    @Override
-    public void init_data() {
-        if(commentService.hasSubComments()) {
-            moreComments.setVisible(true);
-        }
-        commentService.refreshComment();
-        setData(commentService.getComment());
-        voteManager.checkUserVote();
+    public CommentService getCommentService() {
+        return commentService;
     }
 }
