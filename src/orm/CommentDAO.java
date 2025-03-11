@@ -245,7 +245,6 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         return comments;
     }
 
-
     public List<Comment> getCommentsByLevel(Comment comment) {
         List<Integer> commentsIds = getCommentsIdsByLevel(comment);
         List<Comment> comments = new ArrayList<>();
@@ -307,4 +306,35 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         }
         return false;
     }
+
+    public boolean isReported(int senderId, int commentId, int postId, int communityId) {
+        String sql = "SELECT * FROM CommentWarnings WHERE sender_id = ? AND comment_id = ? AND post_id = ? AND community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, senderId);
+            statement.setInt(2, commentId);
+            statement.setInt(3, postId);
+            statement.setInt(4, communityId);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void reportComment(int senderId, int CommentId, int postId, int communityId) {
+        String sql = "INSERT INTO CommentWarnings (sender_id, comment_id, post_id, community_id) VALUES (?, ?, ?, ?)";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, senderId);
+            statement.setInt(2, CommentId);
+            statement.setInt(3, postId);
+            statement.setInt(4, communityId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
