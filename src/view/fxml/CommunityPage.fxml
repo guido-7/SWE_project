@@ -99,7 +99,7 @@
                                                 <Font name="Arial Black" size="12.0" />
                                             </font>
                                         </Label>
-                                        <Button fx:id="AddRuleButton" layoutX="81.0" layoutY="183.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="72.0" text="+ Rule">
+                                        <Button fx:id="AddRuleButton" layoutX="81.0" layoutY="183.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="72.0" styleClass="gray-button" stylesheets="@../css/Button.css" text="+ Rule">
                                             <font>
                                                 <Font name="System Bold" size="12.0" />
                                             </font>
@@ -107,12 +107,12 @@
                                         <VBox fx:id="TextNoRules" layoutX="26.0" layoutY="230.0" prefHeight="0.0" prefWidth="100.0" />
                                         <StackPane layoutX="13.0" layoutY="255.0" prefHeight="47.0" prefWidth="103.0">
                                             <children>
-                                                <Button fx:id="subscribeButton" mnemonicParsing="false" text="Subscribe">
+                                                <Button fx:id="subscribeButton" mnemonicParsing="false" styleClass="orange-button" stylesheets="@../css/Button.css" text="Subscribe">
                                                     <font>
                                                         <Font name="System Bold" size="12.0" />
                                                     </font>
                                                 </Button>
-                                     <Button fx:id="unsubscribeButton" mnemonicParsing="false" text="Unsubscribe">
+                                     <Button fx:id="unsubscribeButton" mnemonicParsing="false" styleClass="gray-button" stylesheets="@../css/Button.css" text="Unsubscribe">
                                          <font>
                                              <Font name="System Bold" size="12.0" />
                                          </font>
