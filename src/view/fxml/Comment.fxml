@@ -16,6 +16,15 @@
         <Label fx:id="username" styleClass="post-author" text="Author" />
         <Label text="·" />
         <Label fx:id="date" styleClass="post-time" text="12:34" />
+      <Pane prefHeight="11.0" prefWidth="118.0" HBox.hgrow="ALWAYS" />
+      <Button fx:id="reportButton" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" style="-fx-background-color: transparent;">
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/WarningPostIcon.png" />
+               </image></ImageView>
+         </graphic>
+      </Button>
     </HBox>
 
     <!-- Contenuto del post -->
