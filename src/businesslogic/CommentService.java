@@ -118,4 +118,16 @@ public class CommentService {
         boolean isOk = commentDAO.save(newComment, comment.getId(), comment.getLevel());
         return isOk;
     }
+
+    public void reportComment() {
+        Guest guest = GuestContext.getCurrentGuest();
+        User user = (User) guest;
+        commentDAO.reportComment(user.getId(), comment.getId(), comment.getPost_id(), comment.getCommunity_id());
+    }
+
+    public boolean isReported() {
+        Guest guest = GuestContext.getCurrentGuest();
+        User user = (User) guest;
+        return commentDAO.isReported(user.getId(), comment.getId(), comment.getPost_id(), comment.getCommunity_id());
+    }
 }
