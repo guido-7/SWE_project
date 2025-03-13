@@ -33,7 +33,7 @@ public class CommunityService {
     public List<Post> getNextPosts() {
         List<Post> communityPosts = postDao.getPosts(communityId, numberOfPosts, noOfPostsTaken);
         System.out.println("Community ID: " + communityId + ", Number of Posts: " + communityPosts.size());
-        noOfPostsTaken = communityPosts.size();
+        noOfPostsTaken += communityPosts.size();
         return communityPosts;
     }
 
@@ -76,7 +76,7 @@ public class CommunityService {
         return communityDAO.findById(communityId).orElse(null);
     }
 
-    public List<Rule> getCommunityRules(int communityId) {
+    public List<Rule> getCommunityRules() {
         return communityDAO.getCommunityRules(communityId);
     }
 
