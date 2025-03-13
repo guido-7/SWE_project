@@ -5,6 +5,8 @@ import src.orm.UserDAO;
 import src.servicemanager.SceneManager;
 import src.controllers.LoginController;
 
+import java.util.Map;
+
 public class SignUpService {
 
     private final UserDAO userDAO = new UserDAO();
@@ -26,7 +28,7 @@ public class SignUpService {
                 return;
             }
 
-            userDAO.registerUser(nickname, name, surname);
+            userDAO.save(Map.of("nickname", nickname, "name", name, "surname", surname));
             int id = userDAO.getUserId(nickname);
             userDAO.registerUserAccess(id, nickname, password);
 

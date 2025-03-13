@@ -149,20 +149,6 @@ public class UserDAO extends BaseDAO<User,Integer> {
         return false; // user not registered
     }
 
-    // nickname name surname
-    public void registerUser(String nickname, String name, String surname) {
-        String query = "INSERT INTO User (nickname, name, surname) VALUES (?, ?, ?)";
-        try (Connection connection = DBConnection.open_connection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, nickname);
-            statement.setString(2, name);
-            statement.setString(3, surname);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     // id nickname password
     public void registerUserAccess(int id, String nickname, String password) {
         String query = "INSERT INTO UserAccess (email, user_id, password) VALUES (?, ?, ?)";
