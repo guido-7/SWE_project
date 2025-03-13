@@ -63,7 +63,6 @@ public class CommentController implements Controller, Initializable {
         moreComments.setOnMouseClicked(event -> {
             moreComments.setVisible(false);
             minusComments.setVisible(true);
-            List<Comment> subComment = commentService.getCommentsByLevel();
             loadSubComments();
         } );
 
