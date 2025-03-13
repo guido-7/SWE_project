@@ -249,8 +249,9 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         List<Integer> commentsIds = getCommentsIdsByLevel(comment);
         List<Comment> comments = new ArrayList<>();
         try (Connection connection = DBConnection.open_connection()) {
-            String query = "SELECT * FROM Comment WHERE id IN (" + commentsIds.stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+            String query = "SELECT * FROM Comment WHERE post_id = ? AND id IN (" + commentsIds.stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
             PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, comment.getPost_id());
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 comments.add(mapResultSetToEntity(resultSet));
