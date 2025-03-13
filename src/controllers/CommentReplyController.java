@@ -30,11 +30,10 @@ public class CommentReplyController implements Controller, Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         sendButton.setOnAction(event -> {
             reply = replyField.getText();
-            if (reply.isEmpty()) {
-                return;
-            } else {
+            if (!reply.isEmpty()) {
                 try {
-                    if(addReply()) {
+                    if(commentService.addReply(reply)) {
+                        commentController.removeReplyField();
                         commentController.loadSubComments();
                     }
                 } catch (SQLException e) {
@@ -42,15 +41,6 @@ public class CommentReplyController implements Controller, Initializable {
                 }
             }
         });
-    }
-
-    public boolean addReply() throws SQLException {
-        if(commentService.addReply(reply)) {
-            commentController.removeReplyField();
-            commentController.loadSubComments();
-            return true;
-        }
-        return false;
     }
 
     @Override

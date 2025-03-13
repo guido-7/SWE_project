@@ -5,35 +5,29 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import src.businesslogic.LoginService;
-import src.servicemanager.SceneManager;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class LoginController implements Controller, Initializable {
-
     @FXML
-    private TextField user_id;
-
+    private TextField usernameField;
     @FXML
-    private PasswordField password_id;
-
+    private PasswordField passwordField;
+    @FXML
+    private Button loginButton;
+    @FXML
+    private Hyperlink signUp;
     @FXML
     private Label errorLabel;
-
-    @FXML
-    private Button login_button;
-
-    @FXML
-    private Hyperlink sign_up;
 
     private HomePageController homePageController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        login_button.setOnAction(e -> handleLoginButtonAction());
-        sign_up.setOnAction(e -> {
+        loginButton.setOnAction(e -> handleLoginButtonAction());
+        signUp.setOnAction(e -> {
             try {
                 handleSignUpButtonAction();
             } catch (IOException ex) {
@@ -44,15 +38,15 @@ public class LoginController implements Controller, Initializable {
 
     private void handleLoginButtonAction() {
         System.out.println("Login button clicked!");
-        String username = user_id.getText();
-        String password = password_id.getText();
+        String username = usernameField.getText();
+        String password = passwordField.getText();
         System.out.println("Username: " + username + ", Password: " + password);
         LoginService loginService = new LoginService();
         loginService.manageLogin(username, password, errorLabel, homePageController);
     }
 
     private void handleSignUpButtonAction() throws IOException {
-        Stage stage = (Stage) user_id.getScene().getWindow();
+        Stage stage = (Stage) usernameField.getScene().getWindow();
         SignUpController.openSignUpPage(stage);
     }
 
@@ -62,7 +56,6 @@ public class LoginController implements Controller, Initializable {
 
     @Override
     public void init_data() {
-
     }
 
 }
