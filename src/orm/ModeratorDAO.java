@@ -68,12 +68,12 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
         return new Moderator(id, nickname, name, surname,permits, community_id, assigned_date);
     }
 
-    public boolean isModerator(int moderator_id, int community_id){
+    public boolean isModerator(int moderatorId, int communityId){
         String query = "SELECT * FROM Moderator WHERE user_id = ? AND community_id = ?";
         try( Connection connection = DBConnection.open_connection();
                 PreparedStatement statement = connection.prepareStatement(query)){
-            statement.setInt(1, moderator_id);
-            statement.setInt(2, community_id);
+            statement.setInt(1, moderatorId);
+            statement.setInt(2, communityId);
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next();
         } catch (SQLException e) {

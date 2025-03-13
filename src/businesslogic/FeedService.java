@@ -41,7 +41,7 @@ public class FeedService {
             System.out.println("Length of sub : " + subscription_C_ids.size());
 
             // uses PostVotes table and use aggregate operator to get the community ids
-            ArrayList<Integer> votes_C_ids = userDAO.getCommunityIds(((User)guest).getId(),(int)(numberofCommunities * 0.3));
+            ArrayList<Integer> votes_C_ids = userDAO.getMostLikedCommunityIds(((User)guest).getId(),(int)(numberofCommunities * 0.3));
             community_ids.add(votes_C_ids);
             System.out.println("Length of votes: " + votes_C_ids.size());
 

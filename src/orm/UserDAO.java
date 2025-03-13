@@ -64,7 +64,8 @@ public class UserDAO extends BaseDAO<User,Integer> {
         return new User(id, nickname, name, surname, permits, Role.USER);
     }
 
-    public ArrayList<Integer> getCommunityIds(int userId, int numberofCommunities){
+
+    public ArrayList<Integer> getMostLikedCommunityIds(int userId, int numberofCommunities){
         String sql = "SELECT community_id, SUM(vote_type) AS total_votes FROM PostVotes WHERE user_id = ? GROUP BY community_id ORDER BY total_votes DESC LIMIT ?";
         ArrayList<Integer> communityIds = new ArrayList<>();
 
@@ -150,7 +151,7 @@ public class UserDAO extends BaseDAO<User,Integer> {
     }
 
     // id nickname password
-    public void registerUserAccess(int id, String nickname, String password) {
+    public void registerUserAccessInfo(int id, String nickname, String password) {
         String query = "INSERT INTO UserAccess (email, user_id, password) VALUES (?, ?, ?)";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -163,11 +164,11 @@ public class UserDAO extends BaseDAO<User,Integer> {
         }
     }
 
-    public int getUserId(String userId) {
+    public int getUserId(String nickname) {
         String query = "SELECT id FROM User WHERE nickname = ?";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, userId);
+            statement.setString(1, nickname);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getInt(1);
@@ -179,11 +180,11 @@ public class UserDAO extends BaseDAO<User,Integer> {
         return -1;
     }
 
-    public String getNicknameById(int user_id){
+    public String getNicknameById(int userId){
         String query = "SELECT nickname FROM User WHERE id = ?";
         Connection connection = DBConnection.open_connection();
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, user_id);
+            statement.setInt(1, userId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getString(1);

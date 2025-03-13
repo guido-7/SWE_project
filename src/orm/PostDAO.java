@@ -72,13 +72,13 @@ public class PostDAO extends BaseDAO<Post, Integer> {
         statement.setInt(1, id);
     }
 
-    public ArrayList<Post> getPosts(int CommunityId, int PostCount, int Offset) {
+    public ArrayList<Post> getPosts(int communityId, int PostCount, int offset) {
         ArrayList<Post> posts = new ArrayList<>();
         try (Connection connection = DBConnection.open_connection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE community_id = ? ORDER BY (time * 0.6 + likes * 0.4)    DESC LIMIT ? OFFSET ?");
-            statement.setInt(1, CommunityId);
+            statement.setInt(1, communityId);
             statement.setInt(2, PostCount);
-            statement.setInt(3, Offset);
+            statement.setInt(3, offset);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 posts.add(mapResultSetToEntity(resultSet));
@@ -272,7 +272,7 @@ public class PostDAO extends BaseDAO<Post, Integer> {
         }
     }
 
-    public boolean isAlreadyReported(int senderId, int postId) {
+    public boolean isReported(int senderId, int postId) {
         String query = "SELECT COUNT(*) FROM PostWarnings WHERE sender_id = ? AND post_id = ?";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -305,12 +305,12 @@ public class PostDAO extends BaseDAO<Post, Integer> {
         return postIds;
     }
 
-    public void insertPinnedPost(Map<String, Object> params1) {
+    public void insertPinnedPost(Map<String, Object> parameters) {
         String query = "INSERT INTO PinnedPost (post_id, community_id) VALUES ( ?, ?)";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, (Integer) params1.get("post_id"));
-            statement.setInt(2, (Integer) params1.get("community_id"));
+            statement.setInt(1, (Integer) parameters.get("post_id"));
+            statement.setInt(2, (Integer) parameters.get("community_id"));
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -346,11 +346,11 @@ public class PostDAO extends BaseDAO<Post, Integer> {
         return false;
     }
 
-    public List<Post> findByCommunityId(int i) {
+    public List<Post> findByCommunityId(int communityId) {
         List<Post> posts = new ArrayList<>();
         try (Connection connection = DBConnection.open_connection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM Post WHERE community_id = ?");
-            statement.setInt(1, i);
+            statement.setInt(1, communityId);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 posts.add(mapResultSetToEntity(resultSet));

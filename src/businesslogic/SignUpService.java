@@ -30,7 +30,7 @@ public class SignUpService {
 
             userDAO.save(Map.of("nickname", nickname, "name", name, "surname", surname));
             int id = userDAO.getUserId(nickname);
-            userDAO.registerUserAccess(id, nickname, password);
+            userDAO.registerUserAccessInfo(id, nickname, password);
 
             System.out.println("User registered successfully!");
             SceneManager.changeSecondaryScene("login", "/src/view/fxml/Login.fxml", new LoginController());

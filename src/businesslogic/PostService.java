@@ -137,9 +137,9 @@ public class PostService {
         postDAO.signalPost(currentUser.getId(),post.getId(),post.getCommunityId());
     }
 
-    public boolean isAlreadyReported() {
+    public boolean isReported() {
         User currentUser = (User) GuestContext.getCurrentGuest();
-        return postDAO.isAlreadyReported(currentUser.getId(),post.getId());
+        return postDAO.isReported(currentUser.getId(),post.getId());
     }
 
     public boolean addReply(String reply) throws SQLException {

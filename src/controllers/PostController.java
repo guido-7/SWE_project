@@ -193,8 +193,8 @@ public class PostController implements Controller, Initializable {
 
         if (guest.getRole() != Role.GUEST) {
             User user = (User) guest;
-            reportPostButton.setVisible(!postService.isAlreadyReported());
-            reportPostButton.setManaged(!postService.isAlreadyReported());
+            reportPostButton.setVisible(!postService.isReported());
+            reportPostButton.setManaged(!postService.isReported());
             if (postService.isPostOwner(user.getId())) {
                 reportPostButton.setVisible(false);
                 reportPostButton.setManaged(false);
