@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 public class CommentService {
-    Comment comment;
-    UserDAO userDAO = new UserDAO();
-    PostDAO postDAO = new PostDAO();
-    CommentDAO commentDAO = new CommentDAO();
+    private Comment comment;
+    private final  UserDAO userDAO = new UserDAO();
+    private final  PostDAO postDAO = new PostDAO();
+    private final  CommentDAO commentDAO = new CommentDAO();
 
     int noOfCommentsTaken = 0;
     int numberOfComments = 10;

@@ -152,7 +152,7 @@ public class CommunityController implements Initializable, Controller {
                 }
             });
 
-            rules.setOnMouseClicked(event -> loadRules(currentCommunityId));
+            rules.setOnMouseClicked(event -> loadRules());
 
             subscribeButton.setOnMouseClicked(event -> {
                 try {
@@ -375,9 +375,9 @@ public class CommunityController implements Initializable, Controller {
     }
 
     @FXML
-    public void loadRules(int communityId) {
+    public void loadRules() {
         try {
-            List<Rule> rules = communityservice.getCommunityRules(communityId);
+            List<Rule> rules = communityservice.getCommunityRules();
             if (rules.isEmpty()) {
                 Text text = new Text("No rules for this community");
                 text.setStyle("-fx-fill: red; -fx-font-weight: bold;");

@@ -16,7 +16,7 @@ public class SignUpService {
 
         StringBuilder validationMessage = validateInput(nickname, name, surname, password);
 
-        if (validationMessage.length() > 0) {
+        if (!validationMessage.isEmpty()) {
             showError(nickname, name, surname, password, notUsername, notName, notSurname, notPassword);
             return;
         }

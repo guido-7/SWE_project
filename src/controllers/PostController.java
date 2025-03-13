@@ -136,11 +136,11 @@ public class PostController implements Controller, Initializable {
         User user = (User) GuestContext.getCurrentGuest();
         ImageView image;
         if (!isSaved) {
-            postService.addSavePost(user.getId(), postService.getPost().getId());
+            postService.addSavedPost(user.getId());
             image = new ImageView("/src/view/images/SavedClickIcon.png");
             isSaved = true;
         } else {
-            postService.removeSavePost(user.getId(), postService.getPost().getId());
+            postService.removeSavedPost(user.getId());
             image = new ImageView("/src/view/images/SavedIcon.png");
             isSaved = false;
         }
@@ -156,7 +156,7 @@ public class PostController implements Controller, Initializable {
             image = new ImageView("/src/view/images/PinClickIcon.png");
             isPinned = true;
         } else {
-            postService.removePinPost(postService.getPost().getId(), postService.getPost().getCommunityId());
+            postService.removePinPost();
             image = new ImageView("/src/view/images/PinIcon.png");
             isPinned = false;
         }

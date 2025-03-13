@@ -215,18 +215,6 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
             String title = titleAndContent.getFirst();
             String content = titleAndContent.getLast();
             addRule(CommunityId,title,content,key+1);
-//            String sql = "INSERT INTO Rules (community_id,title, content, priority) VALUES ( ?, ?, ? , ? )";
-//            try (Connection connection = DBConnection.open_connection();
-//                 PreparedStatement statement = connection.prepareStatement(sql)) {
-//                    statement.setInt(1, CommunityId);
-//                    statement.setString(2,title);
-//                    statement.setString(3,content);
-//                    statement.setInt(4, key);
-//                    statement.execute();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//
-//            }
         }
     }
 
@@ -287,11 +275,11 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
         }
     }
 
-    public boolean isBanned(int id, int communityId) {
+    public boolean isBanned(int userId, int communityId) {
         String sql = "SELECT * FROM BannedUsers WHERE user_id = ? AND community_id = ?";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
+            statement.setInt(1, userId);
             statement.setInt(2, communityId);
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next();

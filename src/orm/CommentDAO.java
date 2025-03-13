@@ -95,11 +95,11 @@ public class CommentDAO extends BaseDAO<Comment, List<Integer>> {
         }
     }
 
-    public String getInsertQueryCommentRelation() {
+    private String getInsertQueryCommentRelation() {
         return "INSERT INTO CommentHierarchy (post_id, parent_id, child_id) VALUES (?, ?, ?)";
     }
 
-    protected void setInsertParamsCommentRelation(PreparedStatement statement, Map<String, Object> parameters) throws SQLException {
+    private void setInsertParamsCommentRelation(PreparedStatement statement, Map<String, Object> parameters) throws SQLException {
         statement.setInt(1, (int) parameters.get("post_id"));
         statement.setInt(2, (int) parameters.get("parent_id"));
         statement.setInt(3, (int) parameters.get("child_id"));

@@ -115,17 +115,16 @@ public class PostService {
             e.printStackTrace();
         }
     }
-
-    public void addSavePost(int userId, int postId) throws SQLException {
+    public void addSavedPost(int userId) throws SQLException {
         UserDAO userDAO = new UserDAO();
-        userDAO.addSavedPost(userId, postId);
-        System.out.println("Post saved, user: " + userId + " post: " + postId);
+        userDAO.addSavedPost(userId,post.getId());
+        System.out.println("Post saved, user: " + userId + " post: " + post.getId());
     }
 
-    public void removeSavePost(int userId, int postId) {
+    public void removeSavedPost(int userId) {
         UserDAO userDAO = new UserDAO();
-        userDAO.removeSavedPost(userId, postId);
-        System.out.println("Post removed, user: " + userId + " post: " + postId);
+        userDAO.removeSavedPost(userId, post.getId());
+        System.out.println("Post removed, user: " + userId + " post: " + post.getId());
     }
 
     public boolean isSaved(int userId) throws SQLException {
@@ -158,8 +157,8 @@ public class PostService {
         postDAO.insertPinnedPost(postInfo);
     }
 
-    public void removePinPost(int postId, int communityId) {
-        postDAO.removePinnedPost(postId, communityId);
+    public void removePinPost() {
+        postDAO.removePinnedPost(post.getId(), post.getCommunityId());
     }
 
     public boolean isUserAdminOfCommunity(int id, int communityId) {

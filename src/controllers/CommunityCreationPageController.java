@@ -66,8 +66,6 @@ public class CommunityCreationPageController implements Controller, Initializabl
                     ruleMapping.put(i,mergedContent);
                 }
                 communityCreationService.saveRules(communityId,ruleMapping);
-                communityCreationService.SubscribeToCommunity(communityId);
-                communityCreationService.AddAdmin(communityId);
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
