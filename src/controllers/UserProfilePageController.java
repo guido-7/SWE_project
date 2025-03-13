@@ -70,37 +70,13 @@ public class UserProfilePageController implements Initializable, Controller {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         savewarning.setVisible(false);
         popupContainer.setMouseTransparent(true);
-        try {
-            Map<String, String> userInfo = userProfileService.getUserInfo();
-            nicknameLabel.setText(userInfo.get("nickname"));
-            nameLabel.setText(userInfo.get("name"));
-            surnameLabel.setText(userInfo.get("surname"));
-            description = userProfileService.getDescription();
-            profileDescription.setText(description);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        tempDescription = profileDescription.getText();
-
+        setUserInfo();
         try {
             init_data();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        exit.setOnMouseClicked(event-> backToHomePage());
-
-        profileDescription.setOnKeyPressed(event -> {
-            if (event.isControlDown() && event.getCode() == KeyCode.S) {
-                event.consume(); // Evita il ritorno a capo nell'area di testo
-                showConfirmationPopup();
-            }
-        });
-
-        profileDescription.textProperty().addListener((observable, oldValue, newValue) -> {
-            savewarning.setVisible(!Objects.equals(newValue, oldValue));
-        });
+        setOnEvent();
     }
 
     @FXML
@@ -193,6 +169,37 @@ public class UserProfilePageController implements Initializable, Controller {
         clearPosts();
         LoadingPost.LoadPosts(userProfileService.getUserPosts(), UserPostsContainer);
         LoadingPost.LoadPosts(userProfileService.getSavedPosts(), SavedPostsContainer);
+    }
+
+    public void setOnEvent(){
+        exit.setOnMouseClicked(event-> backToHomePage());
+
+        profileDescription.setOnKeyPressed(event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.S) {
+                event.consume(); // Evita il ritorno a capo nell'area di testo
+                showConfirmationPopup();
+            }
+        });
+
+        profileDescription.textProperty().addListener((observable, oldValue, newValue) -> {
+            savewarning.setVisible(!Objects.equals(newValue, oldValue));
+        });
+
+    }
+
+    private void setUserInfo(){
+        try {
+            Map<String, String> userInfo = userProfileService.getUserInfo();
+            nicknameLabel.setText(userInfo.get("nickname"));
+            nameLabel.setText(userInfo.get("name"));
+            surnameLabel.setText(userInfo.get("surname"));
+            description = userProfileService.getDescription();
+            profileDescription.setText(description);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        tempDescription = profileDescription.getText();
     }
 
 }
