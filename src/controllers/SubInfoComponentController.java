@@ -12,7 +12,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-public class UserInfoComponentController implements Controller, Initializable {
+public class SubInfoComponentController implements Controller, Initializable {
     @FXML
     private Text SpentTime;
     @FXML
@@ -25,7 +25,7 @@ public class UserInfoComponentController implements Controller, Initializable {
     private int subId;
     private CommunityService communityService;
 
-    public UserInfoComponentController() {
+    public SubInfoComponentController() {
     }
 
     @Override
@@ -73,7 +73,7 @@ public class UserInfoComponentController implements Controller, Initializable {
         this.communityService = communityService;
     }
 
-    public Pair<AnchorPane,UserInfoComponentController> getAnchorSubInfoCtrlPair(){
+    public Pair<AnchorPane,SubInfoComponentController> getAnchorSubInfoCtrlPair(){
         return new Pair<>(UserInfoContainer,this);
     }
 

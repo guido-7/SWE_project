@@ -49,8 +49,8 @@ public class AdminPageController implements Initializable, Controller {
     private final ContextMenu suggestionsPopup = new ContextMenu();
     private String currentSearchTerm = "";
 
-    List<Pair<AnchorPane,UserInfoComponentController>> subInfoVector = new ArrayList<>();
-    Pair<AnchorPane,UserInfoComponentController> deletingPair;
+    List<Pair<AnchorPane,SubInfoComponentController>> subInfoVector = new ArrayList<>();
+    Pair<AnchorPane,SubInfoComponentController> deletingPair;
     final Map<Integer,Pane> allpane = new HashMap<>();
     private int  subscriberId;
     private final CommunityService communityService;
@@ -252,9 +252,9 @@ public class AdminPageController implements Initializable, Controller {
         }
     }
 
-    private Pair<AnchorPane, UserInfoComponentController> loadUserInfoComponent(Object[] subInfo,int subId) throws IOException {
+    private Pair<AnchorPane, SubInfoComponentController> loadUserInfoComponent(Object[] subInfo,int subId) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/UserInfoComponent.fxml"));
-        UserInfoComponentController userInfoController = new UserInfoComponentController();
+        SubInfoComponentController userInfoController = new SubInfoComponentController();
         loader.setController(userInfoController);
         AnchorPane pane = loader.load();
         String subNickname = (String)subInfo[0];
@@ -310,7 +310,7 @@ public class AdminPageController implements Initializable, Controller {
     public void setDismissText(String text){
          DismissButton.setText("Dismiss "+ text);
     }
-    public void setDeletingPair(Pair<AnchorPane, UserInfoComponentController> deletingPair) {
+    public void setDeletingPair(Pair<AnchorPane, SubInfoComponentController> deletingPair) {
         this.deletingPair = deletingPair;
     }
 

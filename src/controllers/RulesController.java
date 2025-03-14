@@ -29,24 +29,12 @@ public class RulesController implements Controller {
         this.ruleId = ruleId;
     }
 
-    public void setRuleData(String communityID, String ruleTitle, String ruleContent) {
+    public void setRuleData(String ruleTitle, String ruleContent) {
         rule_title.setText(ruleTitle);
         content.setText(ruleContent);
-        if (GuestContext.getCurrentGuest().getRole() == Role.ADMIN) {
-            ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/src/view/images/delete.png")));
-            deleteIcon.setFitWidth(25);
-            deleteIcon.setFitHeight(25);
-            deleteIcon.setOnMouseClicked(e -> {
-                try {
-                    handleDeleteRule();
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-            });
-            deleteRuleIconContainer.getChildren().add(deleteIcon);
-        }
+        if (GuestContext.getCurrentGuest().getRole() == Role.ADMIN)
+            handleAdminIsWatching();
     }
-
     private void handleDeleteRule() throws SQLException {
         CommunityController communityController = (CommunityController) GuestContext.getCurrentController();
         communityController.getPostsContainer().getChildren().remove(RuleContainer);
@@ -57,4 +45,19 @@ public class RulesController implements Controller {
     public void init_data() {
     }
 
+    private void handleAdminIsWatching(){
+        ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/src/view/images/delete.png")));
+        deleteIcon.setFitWidth(25);
+        deleteIcon.setFitHeight(25);
+        deleteIcon.setOnMouseClicked(e -> {
+            try {
+                handleDeleteRule();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        deleteRuleIconContainer.getChildren().add(deleteIcon);
+    }
+
 }
+

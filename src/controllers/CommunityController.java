@@ -394,7 +394,7 @@ public class CommunityController implements Initializable, Controller {
                     RulesController rulesController = new RulesController(communityservice,rule.getId());
                     fxmlLoader.setController(rulesController);
                     VBox vBox = fxmlLoader.load();
-                    rulesController.setRuleData(community_title.getText(), rule.getTitle(), rule.getContent());
+                    rulesController.setRuleData(rule.getTitle(), rule.getContent());
                     postsContainer.getChildren().add(vBox);
             }
         } catch (Exception e) {
