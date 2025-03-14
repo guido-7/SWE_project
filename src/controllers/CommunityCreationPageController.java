@@ -49,28 +49,7 @@ public class CommunityCreationPageController implements Controller, Initializabl
     public void initialize(URL url, ResourceBundle resourceBundle) {
         init_data();
 
-        createButton.setOnMouseClicked(e -> {
-            String title = titleField.getText();
-            String description = descriptionArea.getText();
-            try {
-                int communityId = communityCreationService.createCommunity(title, description);
-                ArrayList<TextArea> rules = new ArrayList<>(List.of(rule1, rule2, rule3));
-                ArrayList<TextField> rulesTitle = new ArrayList<>(List.of(RuleTitle1, RuleTitle2, RuleTitle3));
-                Map<Integer,ArrayList<String>> ruleMapping = new HashMap<>();
-                for (int i = 0 ; i < rulesTitle.size();i++) {
-                    ArrayList<String> mergedContent = new ArrayList<String>();
-                    String titleOfRule = rulesTitle.get(i).getText();
-                    String contentOfRule = rules.get(i).getText();
-                    mergedContent.add(titleOfRule);
-                    mergedContent.add(contentOfRule);
-                    ruleMapping.put(i,mergedContent);
-                }
-                communityCreationService.saveRules(communityId,ruleMapping);
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-            SceneManager.changeScene("home", "/src/view/fxml/HomePage.fxml",null);
-        });
+        createButton.setOnMouseClicked(e -> createCommunity());
 
         exitButton.setOnMouseClicked(e -> {
             SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
@@ -93,5 +72,30 @@ public class CommunityCreationPageController implements Controller, Initializabl
         RuleTitle2.clear();
         RuleTitle3.clear();
     }
+    private void createCommunity(){
+        String title = titleField.getText();
+        String description = descriptionArea.getText();
+        try {
+            int communityId = communityCreationService.createCommunity(title, description);
+            ArrayList<TextArea> rules = new ArrayList<>(List.of(rule1, rule2, rule3));
+            ArrayList<TextField> rulesTitle = new ArrayList<>(List.of(RuleTitle1, RuleTitle2, RuleTitle3));
+            Map<Integer,ArrayList<String>> ruleMapping = new HashMap<>();
+            for (int i = 0 ; i < rulesTitle.size();i++) {
+                ArrayList<String> mergedContent = new ArrayList<String>();
+                String titleOfRule = rulesTitle.get(i).getText();
+                String contentOfRule = rules.get(i).getText();
+                mergedContent.add(titleOfRule);
+                mergedContent.add(contentOfRule);
+                ruleMapping.put(i,mergedContent);
+            }
+            communityCreationService.saveRules(communityId,ruleMapping);
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+        SceneManager.changeScene("home", "/src/view/fxml/HomePage.fxml",null);
+
+
+    }
+
 
 }
