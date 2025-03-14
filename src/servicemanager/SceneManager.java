@@ -1,4 +1,5 @@
 package src.servicemanager;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
@@ -44,6 +45,7 @@ public class SceneManager {
             primarySceneCache.put(name, scene);
             primaryControllers.put(scene, controller);
             primaryStage.setScene(scene);
+            primaryStage.setTitle(name);
             primaryStage.show();
 
         } catch (IOException e) {
@@ -88,6 +90,7 @@ public class SceneManager {
                 primarySceneCache.put(name, scene);
                 Controllers.put(scene, controller);
                 stage.setScene(scene);
+                stage.setTitle(name);
             }
             stage.show();
             return controller;
@@ -177,6 +180,25 @@ public class SceneManager {
 
     public static void setPreviousScene(Scene currentScene) {
         previousScene.addLast(currentScene);
+    }
+
+    // For test
+    public static Scene getCurrentScene() {
+        if (primaryStage != null && primaryStage.isShowing()) {
+            return primaryStage.getScene();
+        } else if (secondaryStage != null && secondaryStage.isShowing()) {
+            return secondaryStage.getScene();
+        }
+        return null;
+    }
+
+    public static String getCurrentStageName() {
+        if (secondaryStage != null && secondaryStage.isShowing()) {
+            return secondaryStage.getTitle();
+        } else if (primaryStage != null && primaryStage.isShowing()) {
+            return primaryStage.getTitle();
+        }
+        return null;
     }
 
 }
