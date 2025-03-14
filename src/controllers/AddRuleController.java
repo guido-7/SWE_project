@@ -24,7 +24,7 @@ public class AddRuleController implements Initializable,Controller {
     @FXML
     private TextField TitleRule;
 
-    private CommunityService communityService;
+    private final CommunityService communityService;
 
     AddRuleController(CommunityService communityService) {
         this.communityService = communityService;
@@ -32,6 +32,16 @@ public class AddRuleController implements Initializable,Controller {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            init_data();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        SaveRuleButton.setOnAction(event ->handleSaveRuleButtonClick());
+    }
+
+    @Override
+    public void init_data() throws SQLException {
         PriorityMenu.getItems().clear();
         int lastPriority = communityService.getLastPriority();
         PriorityMenu.getItems().addAll(
@@ -45,17 +55,12 @@ public class AddRuleController implements Initializable,Controller {
                         })
                         .toList()
         );
-        SaveRuleButton.setOnAction(event -> {
-            String title = TitleRule.getText();
-            String content = TextAreaNewRule.getText();
-            int priority = Integer.parseInt(PriorityMenu.getText());
-            communityService.addRule(title, content, priority);
-            ((Stage) SaveRuleButton.getScene().getWindow()).close();
-        });
     }
-
-    @Override
-    public void init_data() throws SQLException {
-
+    public void handleSaveRuleButtonClick(){
+        String title = TitleRule.getText();
+        String content = TextAreaNewRule.getText();
+        int priority = Integer.parseInt(PriorityMenu.getText());
+        communityService.addRule(title, content, priority);
+        ((Stage) SaveRuleButton.getScene().getWindow()).close();
     }
 }
