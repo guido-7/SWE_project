@@ -260,7 +260,7 @@ public class AdminPageController implements Initializable, Controller {
         String subNickname = (String)subInfo[0];
         FormattedTime formattedTime = new FormattedTime();
         String spentTime = formattedTime.getFormattedTime (LocalDateTime.parse((String)subInfo[1]));
-        userInfoController.setData(subNickname,spentTime);
+        userInfoController.setSubInfoData(subNickname,spentTime);
         userInfoController.setSubId(subId);
         userInfoController.setCommunityService(communityService);
         return new Pair<>(pane, userInfoController);

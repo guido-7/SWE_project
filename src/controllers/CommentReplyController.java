@@ -19,7 +19,6 @@ public class CommentReplyController implements Controller, Initializable {
 
     private final CommentController commentController;
     private final CommentService commentService;
-    private String reply;
 
     public CommentReplyController(CommentController commentController) {
         this.commentController = commentController;
@@ -28,23 +27,26 @@ public class CommentReplyController implements Controller, Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        sendButton.setOnAction(event -> {
-            reply = replyField.getText();
-            if (!reply.isEmpty()) {
-                try {
-                    if(commentService.addReply(reply)) {
-                        commentController.removeReplyField();
-                        commentController.loadSubComments();
-                    }
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+        sendButton.setOnAction(event ->handleSendReplayButtonClick());
     }
 
     @Override
     public void init_data() {
+
+    }
+
+    private void handleSendReplayButtonClick(){
+        String reply = replyField.getText();
+        if (!reply.isEmpty()) {
+            try {
+                if(commentService.addReply(reply)) {
+                    commentController.removeReplyField();
+                    commentController.loadSubComments();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
     }
 }

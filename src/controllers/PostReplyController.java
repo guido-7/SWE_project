@@ -31,23 +31,11 @@ public class PostReplyController implements Controller, Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        sendButton.setOnAction(event -> {
-            reply = replyField.getText();
-            if (reply.isEmpty()) {
-                return;
-            } else {
-                try {
-                    if(addReply()) {
-                        postController.init_data();
-                    }
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+        sendButton.setOnAction( event ->handleSendReplyButtonClick());
+
     }
 
-    public boolean addReply() throws SQLException {
+    private boolean addReply() throws SQLException {
         if(postService.addReply(reply)) {
             postController.removeReplyField();
             postPageController.init_data();
@@ -58,6 +46,22 @@ public class PostReplyController implements Controller, Initializable {
 
     @Override
     public void init_data() {
+
+    }
+
+    private void handleSendReplyButtonClick(){
+        reply = replyField.getText();
+        if (reply.isEmpty()) {
+            return;
+        } else {
+            try {
+                if(addReply()) {
+                    postController.init_data();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
     }
 }

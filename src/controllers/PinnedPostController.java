@@ -29,10 +29,10 @@ public class PinnedPostController implements Controller, Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        openPostButton.setOnMouseClicked(e -> {openPost();});
+        openPostButton.setOnMouseClicked(e -> openPostPage());
     }
 
-    private void openPost() {
+    private void openPostPage() {
         try {
             Post post = communityService.getPost(postId);
             String fxmlfile = "/src/view/fxml/PostPage.fxml";
