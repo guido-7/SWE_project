@@ -42,7 +42,7 @@ public class SubInfoComponentController implements Controller, Initializable {
 
     }
 
-    public void setData(String nickname, String spentTime) {
+    public void setSubInfoData(String nickname, String spentTime) {
         UserNickname.setText(nickname);
         SpentTime.setText(spentTime);
         setUI();
