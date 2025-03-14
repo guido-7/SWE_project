@@ -49,8 +49,6 @@ public class HomePageController implements Initializable,Controller  {
 
     private final SearchService searchService = new SearchService();
 
-    public HomePageController() {}
-
     public HomePageController(FeedService feedService) {
         this.feedService = feedService;
     }

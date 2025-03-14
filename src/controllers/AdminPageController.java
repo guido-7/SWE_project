@@ -101,23 +101,9 @@ public class AdminPageController implements Initializable, Controller {
             throw new RuntimeException(e);
         }
 
-        PromoteButton.setOnMouseClicked(event->{
-            try {
-                communityService.promote(subscriberId);
-                removeFromGrid();
-                PromoteButton.setVisible(false);
-                PromoteButton.setManaged(false);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        PromoteButton.setOnMouseClicked(event->handlePromoteButtonClick());
 
-        DismissButton.setOnMouseClicked(event->{
-            communityService.dismiss(subscriberId);
-            removeFromGrid();
-            DismissButton.setVisible(false);
-            DismissButton.setManaged(false);
-        });
+        DismissButton.setOnMouseClicked(event->handleDismissButtonClick());
 
         SearchSubsBar.setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -206,7 +192,6 @@ public class AdminPageController implements Initializable, Controller {
 
     private void showFilteredSubs(String searchTerm) {
         currentSearchTerm = searchTerm;
-        //postsContainer.getChildren().clear();
         allPostsLoaded = false;
 
         Task<Map<Integer,String>> task = new Task<>() {
@@ -281,6 +266,25 @@ public class AdminPageController implements Initializable, Controller {
         return new Pair<>(pane, userInfoController);
     }
 
+    private void handleDismissButtonClick(){
+        communityService.dismiss(subscriberId);
+        removeFromGrid();
+        DismissButton.setVisible(false);
+        DismissButton.setManaged(false);
+
+    }
+
+    private void handlePromoteButtonClick(){
+        try {
+            communityService.promote(subscriberId);
+            removeFromGrid();
+            PromoteButton.setVisible(false);
+            PromoteButton.setManaged(false);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void showDismissButton() {
         PromoteButton.setVisible(false);
         PromoteButton.setManaged(false);
@@ -306,9 +310,9 @@ public class AdminPageController implements Initializable, Controller {
     public void setDismissText(String text){
          DismissButton.setText("Dismiss "+ text);
     }
-
     public void setDeletingPair(Pair<AnchorPane, UserInfoComponentController> deletingPair) {
         this.deletingPair = deletingPair;
     }
+
 
 }
