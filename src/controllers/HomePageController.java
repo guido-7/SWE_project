@@ -205,4 +205,10 @@ public class HomePageController implements Initializable,Controller  {
     public VBox getPostsContainer(){
         return postsContainer;
     }
+
+    // For test
+    public CommunitySearchHelper getCommunitySearchHelper(){
+        return communitySearchHelper;
+    }
+
 }
