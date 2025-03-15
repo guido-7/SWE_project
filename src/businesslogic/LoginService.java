@@ -6,7 +6,6 @@ import src.domainmodel.User;
 import src.orm.UserDAO;
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
-import src.servicemanager.GuestContext;
 
 import java.sql.SQLException;
 

@@ -8,7 +8,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import src.businesslogic.FeedService;
 import javafx.scene.control.Label;
 
 import java.io.IOException;
@@ -46,6 +45,7 @@ public class HomePageController implements Initializable,Controller  {
     private Boolean isLoading = false;
     private Boolean allPostsLoaded = false;
     private ProgressIndicator progressIndicator = new ProgressIndicator();
+    private CommunitySearchHelper communitySearchHelper;
 
     private final SearchService searchService = new SearchService();
 
@@ -88,7 +88,7 @@ public class HomePageController implements Initializable,Controller  {
                 }
             });
 
-            CommunitySearchHelper communitySearchHelper = new CommunitySearchHelper(searchField, searchService::searchCommunities, this::loadCommunityPage);
+            communitySearchHelper = new CommunitySearchHelper(searchField, searchService::searchCommunities, this::loadCommunityPage);
             communitySearchHelper.setupSearchListener();
         } catch (Exception e) {
             e.printStackTrace();

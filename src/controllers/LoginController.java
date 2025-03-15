@@ -27,6 +27,7 @@ public class LoginController implements Controller, Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loginButton.setOnAction(e -> handleLoginButtonAction());
+
         signUp.setOnAction(e -> {
             try {
                 handleSignUpButtonAction();

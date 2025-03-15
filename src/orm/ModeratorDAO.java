@@ -94,7 +94,7 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-    }
+        }
         return null;
     }
 

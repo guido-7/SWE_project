@@ -58,7 +58,7 @@ public class UserProfilePageController implements Initializable, Controller {
 
     private UserProfileService userProfileService ; //new UserProfileService(new User(1, "nickname", "name", "surname", PermitsManager.createUserPermits()));
 
-    public void  setService(UserProfileService userProfileService) {
+    public void setService(UserProfileService userProfileService) {
         this.userProfileService = userProfileService;
     }
 
@@ -136,7 +136,6 @@ public class UserProfilePageController implements Initializable, Controller {
 
     public void setText(String text) {
         PostLabel.setText(text);
-
     }
 
     public void deleteSavedPostPane() {
@@ -160,7 +159,7 @@ public class UserProfilePageController implements Initializable, Controller {
         return UserPostsContainer;
     }
 
-    public  ImageView getExitButton() {
+    public ImageView getExitButton() {
         return exit;
     }
 
@@ -184,7 +183,6 @@ public class UserProfilePageController implements Initializable, Controller {
         profileDescription.textProperty().addListener((observable, oldValue, newValue) -> {
             savewarning.setVisible(!Objects.equals(newValue, oldValue));
         });
-
     }
 
     private void setUserInfo(){
