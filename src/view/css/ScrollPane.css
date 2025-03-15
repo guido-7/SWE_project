@@ -1,0 +1,43 @@
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport{
+    -fx-background-color: transparent;
+}
+
+.scroll-bar {
+    -fx-pref-width: 8px;
+}
+
+.scroll-bar:hover {
+    -fx-pref-width: 12px;
+}
+
+.scroll-bar:pressed  {
+    -fx-pref-width: 12px;
+}
+
+.scroll-bar:horizontal {
+    -fx-pref-height: 0px;
+}
+
+/* Riduce la dimensione dei bottoni della scrollbar */
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-pref-width: 5px;
+    -fx-pref-height: 5px;
+    -fx-background-color: transparent;
+}
+
+/* Quando il mouse passa sopra, i bottoni tornano più grandi */
+.scroll-bar:hover .increment-button,
+.scroll-bar:hover .decrement-button {
+    -fx-pref-width: 12px;
+    -fx-pref-height: 12px;
+}
+
+.scroll-pane .thumb:pressed{
+    -fx-background-color: #807c7c;
+    -fx-background-radius: 5px;
+}

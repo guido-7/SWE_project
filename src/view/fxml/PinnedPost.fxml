@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+
+<HBox prefHeight="50.0" prefWidth="200.0" stylesheets="@../css/PinnedPost.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Label fx:id="postTitle" text="Post Title" />
+        <Pane HBox.hgrow="ALWAYS" />
+      <ImageView fx:id="openPostButton" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Open_post.png" />
+         </image>
+      </ImageView>
+    </children>
+</HBox>

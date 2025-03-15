@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Text fx:id="Title" layoutX="9.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" wrappingWidth="147.73670196533203" />
+      <Text fx:id="Content" layoutX="9.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Content" wrappingWidth="282.13672637939453" />
+   </children>
+</Pane>

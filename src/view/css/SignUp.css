@@ -1,0 +1,51 @@
+TextField{
+    -fx-background-color: transparent;
+    -fx-border-color: #C27933;
+    -fx-border-width: 0px 0px 2px 0px;
+    -fx-max-width: 200px;
+}
+
+PasswordField{
+    -fx-background-color: transparent;
+    -fx-border-color: #C27933;
+    -fx-border-width: 0px 0px 2px 0px;
+    -fx-max-width: 200px;
+}
+
+#title{
+    -fx-font-size: 30px;
+    -fx-text-fill: #C27933;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial", sans-serif;
+    -fx-alignment: center;
+}
+
+Button {
+    -fx-font-size: 15;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 50px;
+    -fx-background-color: #C27933;
+    -fx-text-fill: white;
+    -fx-border-color: #C27933;
+    -fx-alignment: center;
+    -fx-border-radius: 3px;
+}
+
+
+Button:hover{
+    -fx-background-color: #7D3F0F;
+    -fx-text-fill: white;
+    -fx-border-color: #7D3F0F;
+    -fx-border-width: 0px 0px 2px 0px;
+}
+
+#not_name, #not_username, #not_surname, #not_password{
+    -fx-opacity: 0;
+    -fx-font-size: 12px;
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial", sans-serif;
+}
+
+
+

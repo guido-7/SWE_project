@@ -1,0 +1,43 @@
+VBox {
+    -fx-background-color: #ffffff;
+    -fx-spacing: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+}
+
+TextField, TextArea {
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #000000;
+}
+
+Button {
+    -fx-background-color: #0079D3;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+Button:hover {
+    -fx-background-color: #005fa3;
+}
+
+Text {
+    -fx-font-size: 14px;
+}
+
+#headerTitle {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+#rulesHeader {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}

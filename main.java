@@ -1,52 +1,24 @@
-import src.managerdatabase.DBConnection;
-import src.managerdatabase.SetDB;
-import src.orm.CommunityDAO;
-import src.orm.ModeratorDAO;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Map;
-
-
-public class main {
-    public static void main(String[] args) throws SQLException {
-
-//        DBConnection.connect();
-//        SetDB.createDB();
-//        DBConnection.disconnect();
-//
-        ModeratorDAO moderatorDAO = new ModeratorDAO();
-        moderatorDAO.giveWarning(1,1);
-        moderatorDAO.giveWarning(1,1);
-        moderatorDAO.giveWarning(1,1);
-        moderatorDAO.giveWarning(1,1);
-
-
-
-
-
-    }
-}
-
- /*
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import src.businesslogic.FeedService;
+import src.controllers.HomePageController;
+import src.domainmodel.Guest;
+import src.domainmodel.PermitsManager;
+import src.domainmodel.Role;
+import src.servicemanager.GuestContext;
+import src.servicemanager.SceneManager;
 
 public class main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/login.fxml"));
-        primaryStage.setTitle("Login Page");
-        primaryStage.setScene(new Scene(root, 300, 250));
-        primaryStage.show();
-    }
+        Guest guest = new Guest(PermitsManager.createGuestPermits(), Role.GUEST);
+        GuestContext.setCurrentGuest(guest);
+        SceneManager.setPrimaryStage(primaryStage);
+        SceneManager.loadPrimaryScene("home", "/src/view/fxml/HomePage.fxml", new HomePageController(new FeedService(guest)));
+       }
 
     public static void main(String[] args) {
         launch(args);
     }
 }
-*/

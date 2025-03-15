@@ -9,7 +9,7 @@ public class Moderator extends User{
     private final LocalDateTime assignedDate;
 
     public Moderator(User user, int community_id, LocalDateTime assignedDate) {
-        super(user.getId(), user.getNickname(), user.getName(), user.getSurname(), user.getPermits());
+        super(user.getId(), user.getNickname(), user.getName(), user.getSurname(), user.getPermits(),Role.MODERATOR);
         this.community_id = community_id;
         this.assignedDate = assignedDate;
 
@@ -17,7 +17,7 @@ public class Moderator extends User{
 
     public Moderator(int id, String nickname, String name, String surname, Set<Permits> permits,
                      int community_id, LocalDateTime assignedDate) {
-        super(id, nickname, name, surname, permits);
+        super(id, nickname, name, surname, permits,Role.MODERATOR);
         this.community_id = community_id;
         this.assignedDate = assignedDate;
     }

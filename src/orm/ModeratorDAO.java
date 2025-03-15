@@ -17,7 +17,7 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
 
     @Override
     protected String getFindByIdQuery() {
-        return "SELECT * FROM Moderator JOIN User ON Moderator.id = User.id WHERE Moderator.id = ?";
+        return "SELECT * FROM Moderator JOIN User ON Moderator.user_id = User.id  WHERE Moderator.user_id = ?";
     }
 
     @Override
@@ -27,13 +27,14 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO Moderator (name, email) VALUES (?, ?)";
+        return "INSERT INTO Moderator (user_id, community_id, assigned_date) VALUES (?, ?, ?)";
     }
 
     @Override
     protected void setInsertParams(PreparedStatement statement, Map<String, Object> parameters) throws SQLException {
-        statement.setString(1, (String) parameters.get("name"));
-        statement.setString(2, (String) parameters.get("email"));
+        statement.setInt(1, (Integer) parameters.get("user_id"));
+        statement.setInt(2, (Integer) parameters.get("community_id"));
+        statement.setString(3, LocalDateTime.now().toString());
     }
 
     @Override
@@ -47,7 +48,7 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
 
     @Override
     protected String getDeleteQuery() {
-        return "DELETE FROM Moderator WHERE id = ?";
+        return "DELETE FROM Moderator WHERE user_id = ?";
     }
 
     @Override
@@ -57,7 +58,7 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
 
     @Override
     protected Moderator mapResultSetToEntity(ResultSet resultSet) throws SQLException {
-        int id = resultSet.getInt("id");
+        int id = resultSet.getInt("user_id");
         LocalDateTime assigned_date = LocalDateTime.parse(resultSet.getString("assigned_date"));
         String nickname = resultSet.getString("nickname");
         String name =resultSet.getString("name");
@@ -66,49 +67,35 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
         Set<Permits> permits =PermitsManager.createModeratorPermits();
         return new Moderator(id, nickname, name, surname,permits, community_id, assigned_date);
     }
-    public void giveWarning(int user_id, int community_id) throws SQLException {
-        String selectQuery = "SELECT no_warnings FROM UserWarnings WHERE user_id = ? AND community_id = ?";
-        String insertOrUpdateQuery = "INSERT INTO UserWarnings (user_id, community_id, no_warnings) VALUES (?, ?, ?) " +
-                "ON CONFLICT(user_id, community_id) DO UPDATE SET no_warnings = no_warnings + 1";
-        String deleteQuery = "DELETE FROM UserWarnings WHERE user_id = ? AND community_id = ?";
-        String insertBannedQuery = "INSERT INTO BannedUsers (user_id, community_id, ban_date, reason) VALUES (?, ?, ?, ?)";
-        String checkBannedQuery = "SELECT 1 FROM BannedUsers WHERE user_id = ? AND community_id = ?";
 
-        try (Connection connection = DBConnection.open_connection();
-             PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
-             PreparedStatement insertOrUpdateStmt = connection.prepareStatement(insertOrUpdateQuery);
-             PreparedStatement deleteStmt = connection.prepareStatement(deleteQuery);
-             PreparedStatement insertBannedStmt = connection.prepareStatement(insertBannedQuery);
-             PreparedStatement checkBannedStmt = connection.prepareStatement(checkBannedQuery)) {
-
-            checkBannedStmt.setInt(1, user_id);
-            checkBannedStmt.setInt(2, community_id);
-            ResultSet bannedRs = checkBannedStmt.executeQuery();
-
-            if (bannedRs.next()) {
-                System.out.println("User is already banned");
-                return;
-            }
-
-            selectStmt.setInt(1, user_id);
-            selectStmt.setInt(2, community_id);
-            ResultSet rs = selectStmt.executeQuery();
-
-            if (rs.next() && rs.getInt("no_warnings") == 2) {
-                deleteStmt.setInt(1, user_id);
-                deleteStmt.setInt(2, community_id);
-                deleteStmt.executeUpdate();
-
-                insertBannedStmt.setInt(1, user_id);
-                insertBannedStmt.setInt(2, community_id);
-                insertBannedStmt.setString(3, LocalDateTime.now().toString());
-                insertBannedStmt.setString(4, "warnings threshold reached");
-                insertBannedStmt.executeUpdate();
-            } else {
-                insertOrUpdateStmt.setInt(1, user_id);
-                insertOrUpdateStmt.setInt(2, community_id);
-                insertOrUpdateStmt.executeUpdate();
-            }
-        }
+    public boolean isModerator(int moderatorId, int communityId){
+        String query = "SELECT * FROM Moderator WHERE user_id = ? AND community_id = ?";
+        try( Connection connection = DBConnection.open_connection();
+                PreparedStatement statement = connection.prepareStatement(query)){
+            statement.setInt(1, moderatorId);
+            statement.setInt(2, communityId);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
     }
+        return false;
+    }
+
+    public Moderator getCommunityModerator(int moderatorId, int communityId) {
+        String query = "SELECT * FROM Moderator JOIN User ON Moderator.user_id = User.id WHERE Moderator.user_id = ? AND Moderator.community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, moderatorId);
+            statement.setInt(2, communityId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return mapResultSetToEntity(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

@@ -1,0 +1,59 @@
+TextField{
+    -fx-background-color: transparent;
+    -fx-border-color: #C27933;
+    -fx-border-width: 0px 0px 2px 0px;
+}
+
+PasswordField{
+    -fx-background-color: transparent;
+    -fx-border-color: #C27933;
+    -fx-border-width: 0px 0px 2px 0px;
+}
+
+Button{
+    sizing: 10px;
+    -fx-background-color: #C27933;
+    -fx-text-fill: white;
+    -fx-border-color: #C27933;
+    -fx-border-width: 0px 0px 2px 0px;
+    -fx-alignment: center;
+
+}
+
+Button:hover{
+    -fx-background-color: #7D3F0F;
+    -fx-text-fill: white;
+    -fx-border-color: #7D3F0F;
+    -fx-border-width: 0px 0px 2px 0px;
+}
+
+Hyperlink{
+    -fx-text-fill: #C27933;
+    -fx-alignment: center;
+
+}
+
+#title{
+    -fx-font-size: 26px;
+    -fx-text-fill: #C27933;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial", sans-serif;
+    -fx-alignment: center;
+}
+
+#errorLabel{
+    -fx-font-size: 16px;
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial", sans-serif;
+    -fx-alignment: center;
+    -fx-opacity: 0;
+}
+
+stackPane{
+    -fx-alignment: center;
+}
+
+pane{
+    inhertit: always;
+}

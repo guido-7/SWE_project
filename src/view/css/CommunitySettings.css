@@ -1,0 +1,43 @@
+/* Stondare tutta la tabella */
+.table-view {
+    -fx-background-color: white;  /* Sfondo bianco */
+    -fx-border-color: #ddd;  /* Bordo sottile */
+    -fx-border-radius: 15px;  /* Bordi stondati */
+    -fx-background-radius: 15px;
+    -fx-padding: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 4); /* Ombra leggera */
+}
+
+/* Stondare l'intestazione della tabella */
+.column-header-background {
+    -fx-background-color: #4CAF50;
+    -fx-border-radius: 15px 15px 0px 0px; /* Arrotonda solo sopra */
+    -fx-background-radius: 15px 15px 0px 0px;
+}
+
+/* Stondare le celle della tabella */
+.table-row-cell {
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+}
+
+/* Rimuovere i bordi tra le celle */
+.table-cell {
+    -fx-border-color: transparent;
+}
+
+/* Effetto hover sulle righe */
+.table-row-cell:hover {
+    -fx-background-color: #ddd;
+}
+
+/* Nascondere le scrollbar */
+.table-view .scroll-bar:vertical,
+.table-view .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-padding: 0;
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+}
+
+

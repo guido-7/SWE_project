@@ -3,9 +3,9 @@ package src.orm;
 import src.domainmodel.Admin;
 import src.domainmodel.Permits;
 import src.domainmodel.PermitsManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import src.managerdatabase.DBConnection;
+
+import java.sql.*;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,12 +24,13 @@ public class AdminDAO extends BaseDAO<Admin,Integer>{
 
     @Override
     protected String getInsertQuery() {
-        return userDAO.getInsertQuery();
+        return "INSERT INTO Admin (user_id, community_id) VALUES (?, ?)";
     }
 
     @Override
     protected void setInsertParams(PreparedStatement statement, Map<String, Object> parameters) throws SQLException {
-        userDAO.setInsertParams(statement, parameters);
+        statement.setInt(1, (int) parameters.get("user_id"));
+        statement.setInt(2, (int) parameters.get("community_id"));
     }
 
     @Override
@@ -62,5 +63,19 @@ public class AdminDAO extends BaseDAO<Admin,Integer>{
         String surname = resultSet.getString("surname");
         Set<Permits> permits = PermitsManager.createAdminPermits();  // Assuming permits need to be fetched from another table
         return new Admin(id, nickname, name, surname, permits);
+    }
+
+    public boolean isAdmin(int userId, int communityId) {
+        String query = "SELECT * FROM Admin WHERE user_id = ? AND community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, communityId);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

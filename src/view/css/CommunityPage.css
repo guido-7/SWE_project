@@ -1,0 +1,64 @@
+.pane-bordered {
+    -fx-padding: 15;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 1;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    /* Per dare un effetto card, puoi aggiungere anche un'ombra */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.5, 0, 2);
+}
+
+Text {
+    -fx-fill: #C27933;
+}
+
+#rules{
+    -fx-text-fill: #C27933;
+}
+
+#rules:hover{
+    -fx-text-fill: #7D3F0F;
+}
+
+#community_title:hover{
+    -fx-fill: #7D3F0F;
+}
+
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 5px;
+}
+
+.menu-button:hover {
+    -fx-opacity: 0.8;
+}
+
+.context-menu {
+    -fx-padding: 0;
+    -fx-background-color: #FAFAFA;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+.menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-padding: 5 10;
+    -fx-font-size: 12;
+}
+
+.menu-item:hover,
+.menu-item:focused {
+    -fx-background-color: #F0F0F0;
+    -fx-text-fill: black;
+}
+
+.menu-item:hover .label,
+.menu-item:focused .label {
+    -fx-text-fill: black;
+}
