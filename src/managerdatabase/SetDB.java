@@ -440,6 +440,11 @@ public class SetDB {
         }
         System.out.println("Users created");
 
+        userDAO.save(Map.of("nickname", "admin", "name", "admin", "surname", "admin"));
+        int id = userDAO.getUserId("admin");
+        userDAO.registerUserAccessInfo(id, "admin", "12345678");
+        System.out.println("admin created");
+
         // create fake communities
         for (int i = 1; i <= numberofCommunity; i++) {
             Map<String, Object> params = new HashMap<>();
@@ -448,6 +453,9 @@ public class SetDB {
             communityDAO.save(params);
         }
         System.out.println("Communities created");
+
+        communityDAO.save(Map.of("title", "news", "description", "community for news"));
+        System.out.println("News Community created");
 
         // create fake rules
         for (int communityId = 1; communityId <= numberofCommunity; communityId++) {
@@ -526,7 +534,7 @@ public class SetDB {
         // create 25 comment under in the same post
         Post p = postDAO.findById(1).orElse(null);
         for (int i = 1; i <= 25; i++) {
-            Comment c = new Comment(p.getId(), 0, 1, "Ciao", p.getCommunityId());
+            Comment c = new Comment(p.getId(), 0, 1, "Ciao " + i, p.getCommunityId());
             commentDAO.save(c, null, null);
         }
         System.out.println("Comments under the same post created\n");
