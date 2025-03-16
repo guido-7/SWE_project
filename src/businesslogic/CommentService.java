@@ -12,9 +12,9 @@ import java.util.Map;
 
 public class CommentService {
     private Comment comment;
-    private final  UserDAO userDAO = new UserDAO();
-    private final  PostDAO postDAO = new PostDAO();
-    private final  CommentDAO commentDAO = new CommentDAO();
+    private final UserDAO userDAO = new UserDAO();
+    private final PostDAO postDAO = new PostDAO();
+    private final CommentDAO commentDAO = new CommentDAO();
 
     int noOfCommentsTaken = 0;
     int numberOfComments = 10;
