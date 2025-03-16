@@ -23,7 +23,7 @@ public class AddRuleController implements Initializable,Controller {
 
     private final CommunityService communityService;
 
-    AddRuleController(CommunityService communityService) {
+    public AddRuleController(CommunityService communityService) {
         this.communityService = communityService;
     }
 
