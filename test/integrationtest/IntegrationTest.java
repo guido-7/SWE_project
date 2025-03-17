@@ -1,7 +1,5 @@
 package test.integrationtest;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import src.businesslogic.CommentService;
 import src.businesslogic.PostService;
 import src.domainmodel.Comment;
-import src.domainmodel.Guest;
-import src.domainmodel.Post;
 import src.domainmodel.User;
 import src.managerdatabase.DBConnection;
 import src.managerdatabase.SetDB;
@@ -18,7 +14,6 @@ import src.orm.CommentDAO;
 import src.orm.CommunityDAO;
 import src.orm.PostDAO;
 import src.orm.UserDAO;
-import src.servicemanager.VoteManager;
 
 import java.io.File;
 import java.sql.Connection;
@@ -30,7 +25,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IntegrationText {
+public class IntegrationTest {
     // Connessione
     private static Connection conn;
     static String url = "database/bigDBTest.db";
