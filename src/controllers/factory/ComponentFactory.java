@@ -32,8 +32,9 @@ public class  ComponentFactory {
         return new SubInfoComponentController(communityService);
     }
 
-    public static PostReplyController createPostReplyController(Post post) throws SQLException {
-        return new PostReplyController(new PostController(new PostService(post)));
+    // TODO: review this method with attention
+    public static PostReplyController createPostReplyController(Post post) {
+        return new PostReplyController(createPostController(post));
     }
 
     public static RulesController createRulesController(int communityId, int rulesId) {
