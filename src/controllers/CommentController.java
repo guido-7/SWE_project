@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import src.businesslogic.CommentService;
+import src.controllers.factory.ComponentFactory;
 import src.domainmodel.Comment;
 import src.domainmodel.Role;
 import src.servicemanager.FormattedTime;
@@ -126,7 +127,7 @@ public class CommentController implements Controller, Initializable {
         for (Comment comment : subComments) {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Comment.fxml"));
-                CommentController commentController = new CommentController(new CommentService(comment));
+                CommentController commentController = ComponentFactory.createCommentController(comment);
                 fxmlLoader.setController(commentController);
                 VBox commentBox = fxmlLoader.load();
                 commentController.setData(comment);
