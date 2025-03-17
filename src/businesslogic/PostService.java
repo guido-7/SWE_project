@@ -19,7 +19,7 @@ public class PostService {
 
     private int offset = 0;
 
-    public PostService(Post post) throws SQLException {
+    public PostService(Post post) {
         this.post = post;
     }
 
