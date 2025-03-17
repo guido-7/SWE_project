@@ -33,8 +33,8 @@ public class  ComponentFactory {
     }
 
     // TODO: review this method with attention
-    public static PostReplyController createPostReplyController(Post post) {
-        return new PostReplyController(createPostController(post));
+    public static PostReplyController createPostReplyController(PostController postController) {
+        return new PostReplyController(postController);
     }
 
     public static RulesController createRulesController(int communityId, int rulesId) {
