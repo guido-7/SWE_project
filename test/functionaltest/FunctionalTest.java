@@ -184,7 +184,7 @@ class FunctionalTest extends ApplicationTest {
     }
 
     @Test
-    void testLikeByGuest() throws Exception {
+    void testLikeByGuest() {
         openPost();
 
         VBox postsContainer = lookup("#postsContainer").query();
@@ -204,6 +204,33 @@ class FunctionalTest extends ApplicationTest {
         // remove like
         Platform.runLater(likeButton::fire);
         WaitForAsyncUtils.waitForFxEvents();
+    }
+
+    @Test
+    void testComment() throws Exception {
+        login();
+        openPost();
+
+        // open reply field
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty());
+        VBox post = (VBox) postsContainer.getChildren().getFirst();
+        Button openReplyButton = from(post).lookup("#postButton").query();
+        Platform.runLater(openReplyButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        TextArea replyText = from(post).lookup("#replyField").query();
+        Button replyButton = from(post).lookup("#sendButton").query();
+        Platform.runLater(() -> {
+            replyText.setText("Test comment");
+            replyButton.fire();
+        });
+        WaitForAsyncUtils.waitForFxEvents();
+        sleep(5000);
+
+        VBox reply = (VBox) postsContainer.getChildren().getLast();
+        Label replyTextElement = from(reply).lookup("#content").query();
+        assertEquals("Test comment", replyTextElement.getText());
     }
 
     private void initializeApplication(Stage stage) throws IOException {
