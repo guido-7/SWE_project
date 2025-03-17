@@ -67,9 +67,7 @@ public class PostPageController implements Controller, Initializable {
     private void loadPost(Post post) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Post.fxml"));
-            // TODO: review
             PostController postController = ComponentFactory.createPostController(post);
-            //PostController postController = new PostController(new PostService(post));
             fxmlLoader.setController(postController);
             VBox vBox = fxmlLoader.load();
             postController.setDataPostPage(post);
@@ -84,9 +82,7 @@ public class PostPageController implements Controller, Initializable {
             try {
                 comment.setPost(postService.getPost());
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Comment.fxml"));
-                // TODO: review
                 CommentController commentController = ComponentFactory.createCommentController(comment);
-                //CommentController commentController = new CommentController(new CommentService(comment));
                 fxmlLoader.setController(commentController);
                 VBox vBox = fxmlLoader.load();
                 commentController.setData(comment);

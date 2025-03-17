@@ -122,9 +122,6 @@ public class CommunityPageController implements Initializable, Controller {
             });
 
             userProfileAccess.onMouseClickedProperty().set(event -> {
-                UserProfileService userProfileService = new UserProfileService((User) GuestContext.getCurrentGuest());
-                // TODO: review
-                //UserProfilePageController userProfilePageController = new UserProfilePageController(userProfileService);
                 UserProfilePageController userProfilePageController = PageControllerFactory.createUserProfilePageController((User) GuestContext.getCurrentGuest());
                 SceneManager.changeScene("UserProfilePage", "/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
             });
@@ -195,9 +192,7 @@ public class CommunityPageController implements Initializable, Controller {
         setData(currentCommunity);
 
         community_title.setOnMouseClicked(event -> {
-            // TODO: spiegare perchè serve
             postsContainer.getChildren().clear();
-            // TODO: review
             CommunityPageController communityPageController = PageControllerFactory.createCommunityPageController(communityId);
             SceneManager.changeScene("community " + communityId, "/src/view/fxml/CommunityPage.fxml", communityPageController);
         });

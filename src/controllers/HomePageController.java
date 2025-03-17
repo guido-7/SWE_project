@@ -177,8 +177,6 @@ public class HomePageController implements Initializable,Controller  {
     }
 
     public void openProfilePage() throws IOException {
-        //UserProfileService userProfileService = new UserProfileService((User) feedService.getGuest());
-        // TODO: review
         User user = (User) feedService.getGuest();
         UserProfilePageController userProfilePageController = PageControllerFactory.createUserProfilePageController(user);
         SceneManager.changeScene("profile", "/src/view/fxml/UserProfilePage.fxml", userProfilePageController);

@@ -268,7 +268,7 @@ public class PostController implements Controller, Initializable {
     private void goToPostPage() {
         String fxmlfile = "/src/view/fxml/PostPage.fxml";
         // TODO: cosa fare in questo caso?
-        //PostPageController postPageController = PageControllerFactory.createPostPageController(post);
+        //PostPageController postPageController = PageControllerFactory.createPostPageController(postService.getPost());
         PostPageController postPageController = new PostPageController(postService);
         SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
         SceneManager.loadScene(fxmlfile, postPageController);
@@ -277,8 +277,6 @@ public class PostController implements Controller, Initializable {
     private void loadReplyBox() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Reply.fxml"));
-            //PostReplyController postReplyController = new PostReplyController(this);
-            // TODO: review this
             PostReplyController postReplyController = ComponentFactory.createPostReplyController(post);
             fxmlLoader.setController(postReplyController);
             VBox replyBox = fxmlLoader.load();

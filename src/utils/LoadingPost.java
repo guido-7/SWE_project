@@ -19,9 +19,7 @@ public class LoadingPost {
         for (Post post : newPosts) {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(LoadingPost.class.getResource("/src/view/fxml/Post.fxml"));
-                // TODO: review
                 PostController postController = ComponentFactory.createPostController(post);
-                //PostController postController = new PostController(new PostService(post));
                 fxmlLoader.setController(postController);
                 VBox vBox = fxmlLoader.load();
                 postController.setData(post);
