@@ -29,7 +29,7 @@ public class LoadingPost {
             }
         }
     }
-
+    // TODO: review this method with attention
     public static void loadMorePosts(final Boolean isLoading,final Boolean allPostsLoaded, VBox postsContainer, Label progressIndicator, List<Post> newPost) {
         final boolean[] isLoadingWrapper = {isLoading};
         final boolean[] allPostsLoadedWrapper = {allPostsLoaded};

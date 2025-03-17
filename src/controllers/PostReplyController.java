@@ -32,7 +32,6 @@ public class PostReplyController implements Controller, Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         sendButton.setOnAction( event ->handleSendReplyButtonClick());
-
     }
 
     private boolean addReply() throws SQLException {

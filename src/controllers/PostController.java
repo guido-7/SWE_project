@@ -277,7 +277,8 @@ public class PostController implements Controller, Initializable {
     private void loadReplyBox() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Reply.fxml"));
-            PostReplyController postReplyController = ComponentFactory.createPostReplyController(post);
+            // TODO: review this method with attention
+            PostReplyController postReplyController = ComponentFactory.createPostReplyController(this);
             fxmlLoader.setController(postReplyController);
             VBox replyBox = fxmlLoader.load();
             repliesContainer.getChildren().addFirst(replyBox);
