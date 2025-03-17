@@ -8,7 +8,6 @@ import src.domainmodel.Comment;
 import src.domainmodel.Post;
 import src.domainmodel.PostWarnings;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class  ComponentFactory {
@@ -21,7 +20,7 @@ public class  ComponentFactory {
         return new ModeratorDecisionController(postWarnings, new CommunityService(communityId));
     }
 
-    public static PostController createPostController(Post post) throws SQLException {
+    public static PostController createPostController(Post post) {
         return new PostController(new PostService(post));
     }
 

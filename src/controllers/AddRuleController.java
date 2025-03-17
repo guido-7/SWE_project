@@ -53,6 +53,7 @@ public class AddRuleController implements Initializable,Controller {
                         .toList()
         );
     }
+
     public void handleSaveRuleButtonClick(){
         String title = TitleRule.getText();
         String content = TextAreaNewRule.getText();

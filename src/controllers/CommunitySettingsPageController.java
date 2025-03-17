@@ -27,7 +27,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 
-public class CommunitySettingsController implements Initializable, Controller {
+public class CommunitySettingsPageController implements Initializable, Controller {
     @FXML
     private VBox ModeratorChoiceContainer;
     @FXML
@@ -50,7 +50,7 @@ public class CommunitySettingsController implements Initializable, Controller {
     private final CommunityService communityService;
     ArrayList<PostWarnings> reports;
 
-    public CommunitySettingsController(CommunityService communityService) {
+    public CommunitySettingsPageController(CommunityService communityService) {
         this.communityService = communityService;
     }
 

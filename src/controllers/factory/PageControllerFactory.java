@@ -4,8 +4,6 @@ import src.businesslogic.*;
 import src.controllers.*;
 import src.domainmodel.*;
 
-import java.sql.SQLException;
-
 public class PageControllerFactory {
 
     public static HomePageController createHomePageController(Guest guest) {
@@ -16,7 +14,7 @@ public class PageControllerFactory {
         return new PostCreationPageController(new PostCreationService());
     }
 
-    public static PostPageController createPostPageController(Post post) throws SQLException {
+    public static PostPageController createPostPageController(Post post) {
         return new PostPageController(new PostService(post));
     }
 

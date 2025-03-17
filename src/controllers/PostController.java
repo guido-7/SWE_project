@@ -70,9 +70,11 @@ public class PostController implements Controller, Initializable {
     private boolean isOpenInPostPage = false;
     private boolean isReplying = false;
     private boolean isPinned = false;
+    private Post post;
 
     public PostController(PostService postService) {
         this.postService = postService;
+        this.post = postService.getPost();
     }
 
     @Override

@@ -1,4 +1,5 @@
 package src.controllers;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
@@ -9,7 +10,6 @@ import src.businesslogic.CommunityService;
 import src.servicemanager.GuestContext;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class SubInfoComponentController implements Controller, Initializable {
@@ -25,20 +25,17 @@ public class SubInfoComponentController implements Controller, Initializable {
     private int subId;
     private CommunityService communityService;
 
-    public SubInfoComponentController() {
+    public SubInfoComponentController(CommunityService communityService) {
+        this.communityService = communityService;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        try {
-            init_data();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        init_data();
     }
 
     @Override
-    public void init_data() throws SQLException {
+    public void init_data() {
 
     }
 
@@ -69,7 +66,7 @@ public class SubInfoComponentController implements Controller, Initializable {
         this.subId = subId;
     }
 
-    public void  setCommunityService(CommunityService communityService){
+    public void setCommunityService(CommunityService communityService){
         this.communityService = communityService;
     }
 

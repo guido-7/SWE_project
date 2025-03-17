@@ -1,6 +1,5 @@
 package src.businesslogic;
 
-import javafx.util.Pair;
 import src.domainmodel.*;
 import src.orm.*;
 import src.servicemanager.GuestContext;
@@ -15,8 +14,13 @@ public class CommunityService {
     int communityId;
     int noOfPostsTaken;
     int numberOfPosts = 30;
-    PostDAO postDao = new PostDAO();
-    CommunityDAO communityDAO = new CommunityDAO();
+    private final PostDAO postDao = new PostDAO();
+    private final RulesDAO rulesDAO = new RulesDAO();
+    private final CommunityDAO communityDAO = new CommunityDAO();
+    private final SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
+    private final UserDAO userDAO = new UserDAO();
+    private final AdminDAO adminDAO = new AdminDAO();
+    private final ModeratorDAO moderatorDAO = new ModeratorDAO();
     int offset = 0;
 
     public CommunityService(int communityId) {
@@ -50,12 +54,10 @@ public class CommunityService {
     }
 
     public ArrayList<PostWarnings> getPostWarnings() {
-        CommunityDAO communityDAO = new CommunityDAO();
         return communityDAO.getPostWarnings(communityId);
     }
 
     public ArrayList<CommentWarnings> getCommentWarnings() {
-        CommunityDAO communityDAO = new CommunityDAO();
         return communityDAO.getCommentWarnings(communityId);
     }
 
@@ -86,7 +88,6 @@ public class CommunityService {
             return false;
         }
         User user = (User) guest;
-        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
         return subscriptionDAO.isSubscribed(user.getId(),communityId);
     }
 
@@ -95,7 +96,6 @@ public class CommunityService {
         if(guest.getRole() == Role.GUEST)
             return false;
         User user = (User) guest;
-        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
         subscriptionDAO.subscribe(user.getId(), communityId);
         return true;
     }
@@ -105,7 +105,6 @@ public class CommunityService {
         if(guest.getRole() == Role.GUEST)
             return false;
         User user = (User) guest;
-        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
         subscriptionDAO.unsubscribe(user.getId(), communityId);
         return true;
     }
@@ -142,7 +141,6 @@ public class CommunityService {
     }
 
     public void deleteRule(int ruleId) throws SQLException {
-        RulesDAO rulesDAO = new RulesDAO();
         ArrayList<Integer> primaryKeysIds = new ArrayList<>(List.of(ruleId,communityId));
         rulesDAO.deleteById(primaryKeysIds);
     }
@@ -164,7 +162,6 @@ public class CommunityService {
     }
 
     public Object[][] getSubscribedData(ArrayList<Integer> subIds) throws SQLException {
-        UserDAO userDAO = new UserDAO();
         Object[][] subsInfos = new Object[subIds.size()][2];
         int i = 0 ;
         for( Integer subId : subIds){
@@ -177,7 +174,6 @@ public class CommunityService {
     }
 
     public ArrayList<Integer> getSubs(int maxSubscribedNo) {
-        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
         ArrayList<Integer> subsIds = subscriptionDAO.getSubs(maxSubscribedNo, communityId,offset);
         offset += subsIds.size();
         return subsIds;
@@ -190,7 +186,6 @@ public class CommunityService {
 //    }
 
     public void promote(int subscriberId) throws SQLException {
-        ModeratorDAO moderatorDAO = new ModeratorDAO();
         moderatorDAO.save(Map.of("user_id",subscriberId,"community_id",communityId));
     }
 
@@ -202,28 +197,23 @@ public class CommunityService {
 
     public Map<Integer,String> getFilteredSubs(String searchTerm) {
         noOfPostsTaken = 0;
-        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
         int maxnumberOfSubsShown = 10;
         return subscriptionDAO.getFilteredSubs(communityId, searchTerm, maxnumberOfSubsShown, 0);
 
     }
     public boolean isModerator(int moderatorId) {
-        ModeratorDAO moderatorDAO = new ModeratorDAO();
         return moderatorDAO.isModerator(moderatorId, communityId);
     }
 
     public User getUser(int userId) throws SQLException {
-        UserDAO userDAO = new UserDAO();
         return userDAO.findById(userId).orElse(null);
     }
 
     public Moderator getModerator(int moderatorId) {
-        ModeratorDAO moderatorDAO = new ModeratorDAO();
         return moderatorDAO.getCommunityModerator(moderatorId, communityId);
     }
 
     public Admin getAdmin(int userId) throws SQLException {
-        AdminDAO adminDAO = new AdminDAO();
         boolean isAdmin = adminDAO.isAdmin(userId,communityId);
         if (!isAdmin)
             return null;

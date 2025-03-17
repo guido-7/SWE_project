@@ -28,31 +28,22 @@ public class ModeratorDecisionController implements Controller, Initializable {
     private Pane pane;
     @FXML
     private TextField dayfield;
-
     @FXML
     private TextField hourfield;
-
     @FXML
     private TextField monthfield;
-
     @FXML
     private Button BanButton;
-
     @FXML
     private Button IgnoreButton;
-
     @FXML
     private SplitMenuButton TimeMenuButton;
-
     @FXML
     private Button TimeOutButton;
-
     @FXML
     private Text UserText;
-
     @FXML
     private Text warningsText;
-
     @FXML
     private Text ReportNoText;
 
@@ -61,7 +52,7 @@ public class ModeratorDecisionController implements Controller, Initializable {
     private final int reportedId;
     private final String reportedNickname;
 
-    ModeratorDecisionController (ArrayList<PostWarnings> postWarnings, CommunityService communityService) {
+    public ModeratorDecisionController (ArrayList<PostWarnings> postWarnings, CommunityService communityService) {
         this.warning = postWarnings;
         this.communityService = communityService;
         reportedId = warning.getFirst().getReportedId();
@@ -131,7 +122,7 @@ public class ModeratorDecisionController implements Controller, Initializable {
         }
     }
     public void removeDecidedReport() {
-        CommunitySettingsController ctrl = (CommunitySettingsController)GuestContext.getCurrentController();
+        CommunitySettingsPageController ctrl = (CommunitySettingsPageController)GuestContext.getCurrentController();
         ctrl.removeReport(pane);
         ctrl.removeReportsFromTable(warning);
     }

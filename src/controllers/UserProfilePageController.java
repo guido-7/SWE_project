@@ -79,6 +79,13 @@ public class UserProfilePageController implements Initializable, Controller {
         setOnEvent();
     }
 
+    @Override
+    public void init_data() throws SQLException {
+        clearPosts();
+        LoadingPost.LoadPosts(userProfileService.getUserPosts(), UserPostsContainer);
+        LoadingPost.LoadPosts(userProfileService.getSavedPosts(), SavedPostsContainer);
+    }
+
     @FXML
     private void showConfirmationPopup() {
         try {
@@ -129,11 +136,6 @@ public class UserProfilePageController implements Initializable, Controller {
         SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
     }
 
-    private void clearPosts() {
-        UserPostsContainer.getChildren().clear();
-        SavedPostsContainer.getChildren().clear();
-    }
-
     public void setText(String text) {
         PostLabel.setText(text);
     }
@@ -161,13 +163,6 @@ public class UserProfilePageController implements Initializable, Controller {
 
     public ImageView getExitButton() {
         return exit;
-    }
-
-    @Override
-    public void init_data() throws SQLException {
-        clearPosts();
-        LoadingPost.LoadPosts(userProfileService.getUserPosts(), UserPostsContainer);
-        LoadingPost.LoadPosts(userProfileService.getSavedPosts(), SavedPostsContainer);
     }
 
     public void setOnEvent(){
@@ -198,6 +193,11 @@ public class UserProfilePageController implements Initializable, Controller {
         }
 
         tempDescription = profileDescription.getText();
+    }
+
+    private void clearPosts() {
+        UserPostsContainer.getChildren().clear();
+        SavedPostsContainer.getChildren().clear();
     }
 
 }

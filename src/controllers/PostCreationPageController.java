@@ -34,7 +34,7 @@ public class PostCreationPageController implements Controller, Initializable {
     int selectedCommunityId;
     private final PostCreationService postCreationService;
 
-    PostCreationPageController(PostCreationService postCreationService) {
+    public PostCreationPageController(PostCreationService postCreationService) {
         this.postCreationService = postCreationService;
     }
 

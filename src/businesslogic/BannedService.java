@@ -12,13 +12,13 @@ import java.util.HashMap;
 
 public class BannedService {
     private final int communityId;
+    private final UserDAO userDAO = new UserDAO();
 
     public BannedService(int communityId) {
         this.communityId = communityId;
     }
 
     public void setLabels(Label banDurationLabel, Label banReasonLabel) {
-        UserDAO userDAO = new UserDAO();
         User user = (User) GuestContext.getCurrentGuest();
 
         HashMap<String, String> bannedInfo = userDAO.getBannedInfo(user.getId(), communityId);

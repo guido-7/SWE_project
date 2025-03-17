@@ -13,34 +13,24 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SignUpController implements Controller, Initializable {
-
     @FXML
     private TextField name;
-
     @FXML
     private TextField surname;
-
     @FXML
     private TextField nickname;
-
     @FXML
     private PasswordField password_id;
-
     @FXML
     private Label not_name;
-
     @FXML
     private Label not_surname;
-
     @FXML
     private Label not_username;
-
     @FXML
     private Label not_password;
-
     @FXML
     private Button SignUpButton;
-
     @FXML
     private ImageView backButton;
 

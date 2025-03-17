@@ -8,7 +8,6 @@ import src.controllers.LoginController;
 import java.util.Map;
 
 public class SignUpService {
-
     private final UserDAO userDAO = new UserDAO();
 
     public void registerUser(String nickname, String name, String surname, String password,
