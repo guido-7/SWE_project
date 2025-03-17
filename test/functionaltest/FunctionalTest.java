@@ -15,14 +15,19 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 import src.businesslogic.FeedService;
 import src.controllers.*;
+import src.controllers.factory.PageControllerFactory;
 import src.domainmodel.Guest;
 import src.domainmodel.PermitsManager;
 import src.domainmodel.Role;
+import src.managerdatabase.DBConnection;
+import src.managerdatabase.SetDB;
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.sql.Connection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,7 +59,17 @@ class FunctionalTest extends ApplicationTest {
 
     @Override
     public void start(Stage stage) throws IOException {
-        //initializeApplication(stage);
+//        String url = "database/bigDBTest.db";
+//        DBConnection.changeDBPath(url);
+//        File dbFile = new File(url);
+//        if (dbFile.exists()) {
+//            dbFile.delete();
+//            System.out.println("Database successfully deleted.");
+//        } else {
+//            System.out.println("The database does not exist.");
+//        }
+//        Connection conn = DBConnection.open_connection(url);
+//        SetDB.createDB();
     }
 
     @BeforeEach
@@ -120,11 +135,82 @@ class FunctionalTest extends ApplicationTest {
         assertInstanceOf(PostPageController.class, GuestContext.getCurrentController());
     }
 
+    @Test
+    void testLikePost() throws Exception {
+        login();
+        openPost();
+
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty());
+        VBox post = (VBox) postsContainer.getChildren().getFirst();
+        Button likeButton = from(post).lookup("#likeButton").query();
+        Label likeCount = from(post).lookup("#scoreLabel").query();
+        int initialLikes = Integer.parseInt(likeCount.getText());
+
+        // add like
+        Platform.runLater(likeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        int finalLikes = Integer.parseInt(likeCount.getText());
+        assertEquals(initialLikes + 1, finalLikes);
+
+        // remove like
+        Platform.runLater(likeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+
+    @Test
+    void testDislikePost() throws Exception {
+        login();
+        openPost();
+
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty());
+        VBox post = (VBox) postsContainer.getChildren().getFirst();
+        Button dislikeButton = from(post).lookup("#dislikeButton").query();
+        Label dislikeCount = from(post).lookup("#scoreLabel").query();
+        int initialDislikes = Integer.parseInt(dislikeCount.getText());
+
+        // add dislike
+        Platform.runLater(dislikeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        int finalDislikes = Integer.parseInt(dislikeCount.getText());
+        assertEquals(initialDislikes - 1, finalDislikes);
+
+        // remove dislike
+        Platform.runLater(dislikeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+
+    @Test
+    void testLikeByGuest() throws Exception {
+        openPost();
+
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty());
+        VBox post = (VBox) postsContainer.getChildren().getFirst();
+        Button likeButton = from(post).lookup("#likeButton").query();
+        Label likeCount = from(post).lookup("#scoreLabel").query();
+        int initialLikes = Integer.parseInt(likeCount.getText());
+
+        // add like
+        Platform.runLater(likeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        int finalLikes = Integer.parseInt(likeCount.getText());
+        assertEquals(initialLikes, finalLikes);
+
+        // remove like
+        Platform.runLater(likeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+
     private void initializeApplication(Stage stage) throws IOException {
         Guest guest = new Guest(PermitsManager.createGuestPermits(), Role.GUEST);
         GuestContext.setCurrentGuest(guest);
         SceneManager.setPrimaryStage(stage);
-        this.homePageController = new HomePageController(new FeedService(guest));
+        this.homePageController = PageControllerFactory.createHomePageController(guest);
         SceneManager.loadPrimaryScene("home", "/src/view/fxml/HomePage.fxml", homePageController);
     }
 

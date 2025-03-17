@@ -35,6 +35,7 @@ public class CommentService {
         return userDAO.getNicknameById(comment.getUser_id());
     }
 
+    //TODO: review
     public List<Comment> getRootComments(Post post) {
         List<Comment> rootComments = commentDAO.getRootComments(post, numberOfComments, 0);
         System.out.println("Post ID: " + post.getId());

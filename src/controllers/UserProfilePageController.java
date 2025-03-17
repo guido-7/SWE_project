@@ -56,11 +56,7 @@ public class UserProfilePageController implements Initializable, Controller {
     private String description;
     private String tempDescription;
 
-    private UserProfileService userProfileService ; //new UserProfileService(new User(1, "nickname", "name", "surname", PermitsManager.createUserPermits()));
-
-    public void setService(UserProfileService userProfileService) {
-        this.userProfileService = userProfileService;
-    }
+    private final UserProfileService userProfileService ; //new UserProfileService(new User(1, "nickname", "name", "surname", PermitsManager.createUserPermits()));
 
     public UserProfilePageController(UserProfileService userProfileService) {
         this.userProfileService = userProfileService;

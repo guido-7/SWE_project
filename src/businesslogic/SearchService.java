@@ -14,11 +14,7 @@ public class SearchService {
     private final CommunityDAO communityDAO = new CommunityDAO();;
     private final PostDAO postDAO = new PostDAO();
 
-    public SearchService() {
-        this.communityDAO = new CommunityDAO();
-        this.postDAO = new PostDAO();
-        this.subscriptionDAO = new SubscriptionDAO();
-    }
+    public SearchService() {}
 
     public List<Community> searchCommunities(String query) {
         return communityDAO.searchByTitle(query);
@@ -31,6 +27,6 @@ public class SearchService {
     public List<Community> searchSubscribedCommunities(String query) {
         User user = (User) GuestContext.getCurrentGuest();
         return SubscriptionDAO.getSubscribedCommunities(query,user.getId());
-
     }
+    // TODO: review
 }

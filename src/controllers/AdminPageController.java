@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Pair;
 import src.businesslogic.CommunityService;
+import src.controllers.factory.ComponentFactory;
 import src.servicemanager.FormattedTime;
 import java.io.IOException;
 import java.net.URL;
@@ -254,7 +255,9 @@ public class AdminPageController implements Initializable, Controller {
 
     private Pair<AnchorPane, SubInfoComponentController> loadUserInfoComponent(Object[] subInfo,int subId) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/UserInfoComponent.fxml"));
-        SubInfoComponentController userInfoController = new SubInfoComponentController();
+        // TODO: review!!!
+        //SubInfoComponentController userInfoController = new SubInfoComponentController();
+        SubInfoComponentController userInfoController = ComponentFactory.createSubInfoComponentController(communityService);
         loader.setController(userInfoController);
         AnchorPane pane = loader.load();
         String subNickname = (String)subInfo[0];

@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 
 import java.io.IOException;
 
+import src.controllers.factory.PageControllerFactory;
 import src.controllers.helpers.CommunitySearchHelper;
 import src.domainmodel.*;
 import src.businesslogic.*;
@@ -139,8 +140,11 @@ public class HomePageController implements Initializable,Controller  {
 
     private void loadCommunityPage(Community community){
         CommunityService communityService = new CommunityService(community.getId());
+        // TODO: review
         if(!communityService.checkBannedUser()) {
-            SceneManager.changeScene("community " + community.getId(), "/src/view/fxml/CommunityPage.fxml", new CommunityController(communityService));
+            CommunityPageController communityPageController = PageControllerFactory.createCommunityPageController(community.getId());
+            SceneManager.changeScene("community " + community.getId(), "/src/view/fxml/CommunityPage.fxml", communityPageController);
+            //SceneManager.changeScene("community " + community.getId(), "/src/view/fxml/CommunityPage.fxml", new CommunityPageController(communityService));
         } else {
             Stage stage = (Stage) searchField.getScene().getWindow();
             BannedService bannedService = new BannedService(community.getId());
@@ -149,14 +153,14 @@ public class HomePageController implements Initializable,Controller  {
     }
 
     private void openCommunityCreationPage() {
-        CommunityCreationService communityCreationService = new CommunityCreationService();
-        CommunityCreationPageController communityCreationPageController = new CommunityCreationPageController(communityCreationService);
+//        CommunityCreationService communityCreationService = new CommunityCreationService();
+//        CommunityCreationPageController communityCreationPageController = new CommunityCreationPageController(communityCreationService);
+        CommunityCreationPageController communityCreationPageController = PageControllerFactory.createCommunityCreationPageController();
         SceneManager.changeScene("Community creation", "/src/view/fxml/CommunityCreationPage.fxml", communityCreationPageController);
     }
 
     private void openPostCreationPage() {
-        PostCreationPageController postCreationPageController = new PostCreationPageController(new PostCreationService());
-        SceneManager.changeScene("postCreation", "/src/view/fxml/PostCreationPage.fxml", postCreationPageController);
+        SceneManager.changeScene("postCreation", "/src/view/fxml/PostCreationPage.fxml", PageControllerFactory.createPostCreationPageController());
     }
 
     public void handleLoginButton() {
@@ -173,8 +177,11 @@ public class HomePageController implements Initializable,Controller  {
     }
 
     public void openProfilePage() throws IOException {
-        UserProfileService userProfileService = new UserProfileService((User) feedService.getGuest());
-        SceneManager.changeScene("profile", "/src/view/fxml/UserProfilePage.fxml", new UserProfilePageController(userProfileService));
+        //UserProfileService userProfileService = new UserProfileService((User) feedService.getGuest());
+        // TODO: review
+        User user = (User) feedService.getGuest();
+        UserProfilePageController userProfilePageController = PageControllerFactory.createUserProfilePageController(user);
+        SceneManager.changeScene("profile", "/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
     }
 
     public void setUserProfileAccessVisibility(boolean visibility){

@@ -16,14 +16,14 @@ import javafx.scene.text.Text;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
-import src.businesslogic.PostCreationService;
 import src.businesslogic.SearchService;
 import src.businesslogic.UserProfileService;
+import src.controllers.factory.ComponentFactory;
+import src.controllers.factory.PageControllerFactory;
 import src.domainmodel.*;
 
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
-import src.controllers.PostCreationPageController;
 import src.utils.LoadingPost;
 
 import java.io.IOException;
@@ -123,7 +123,9 @@ public class CommunityPageController implements Initializable, Controller {
 
             userProfileAccess.onMouseClickedProperty().set(event -> {
                 UserProfileService userProfileService = new UserProfileService((User) GuestContext.getCurrentGuest());
-                UserProfilePageController userProfilePageController = new UserProfilePageController(userProfileService);
+                // TODO: review
+                //UserProfilePageController userProfilePageController = new UserProfilePageController(userProfileService);
+                UserProfilePageController userProfilePageController = PageControllerFactory.createUserProfilePageController((User) GuestContext.getCurrentGuest());
                 SceneManager.changeScene("UserProfilePage", "/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
             });
 
@@ -193,8 +195,11 @@ public class CommunityPageController implements Initializable, Controller {
         setData(currentCommunity);
 
         community_title.setOnMouseClicked(event -> {
+            // TODO: spiegare perchè serve
             postsContainer.getChildren().clear();
-            SceneManager.changeScene("community " + currentCommunityId, "/src/view/fxml/CommunityPage.fxml", new CommunityController(communityservice));
+            // TODO: review
+            CommunityPageController communityPageController = PageControllerFactory.createCommunityPageController(communityId);
+            SceneManager.changeScene("community " + communityId, "/src/view/fxml/CommunityPage.fxml", communityPageController);
         });
 
         if (communityService.isSubscribed()) {
@@ -222,19 +227,20 @@ public class CommunityPageController implements Initializable, Controller {
     }
 
     private void handleSettingsClick() {
-        CommunitySettingsController communitySettingsController = new  CommunitySettingsController(communityservice);
-        GuestContext.setCurrentController(communitySettingsController);
-        SceneManager.changeScene("community settings " + currentCommunityId, "/src/view/fxml/CommunitySettings.fxml", communitySettingsController);
+//        CommunitySettingsPageController communitySettingsPageController = new CommunitySettingsPageController(communityService);
+//        GuestContext.setCurrentController(communitySettingsPageController);
+        CommunitySettingsPageController communitySettingsPageController = PageControllerFactory.createCommunitySettingsController(communityId);
+        SceneManager.changeScene("community settings " + communityId, "/src/view/fxml/CommunitySettings.fxml", communitySettingsPageController);
     }
 
     private void openPostCreationPage() {
-        PostCreationPageController postCreationController = new PostCreationPageController(new PostCreationService());
+        PostCreationPageController postCreationController = PageControllerFactory.createPostCreationPageController();
         GuestContext.setCurrentController(postCreationController);
         SceneManager.changeScene("post creation " + communityId, "/src/view/fxml/PostCreationPage.fxml", postCreationController);
     }
 
     private void handleRolePageClick() {
-        AdminPageController adminPageController = new AdminPageController(communityservice);
+        AdminPageController adminPageController = PageControllerFactory.createAdminPageController(communityId);
         GuestContext.setCurrentController(adminPageController);
         SceneManager.changeScene("Admin Page " + communityId, "/src/view/fxml/AdminPage.fxml", adminPageController);
     }
@@ -392,7 +398,7 @@ public class CommunityPageController implements Initializable, Controller {
             postsContainer.getChildren().clear();
             for (Rule rule : rules) {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/RulesPage.fxml"));
-                    RulesController rulesController = new RulesController(communityservice,rule.getId());
+                    RulesController rulesController = ComponentFactory.createRulesController(communityId, rule.getId());
                     fxmlLoader.setController(rulesController);
                     VBox vBox = fxmlLoader.load();
                     rulesController.setRuleData(rule.getTitle(), rule.getContent());
@@ -432,7 +438,7 @@ public class CommunityPageController implements Initializable, Controller {
         }
         for(var key : postIds_title.keySet()) {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/PinnedPost.fxml"));
-            PinnedPostController pinnedPostController = new PinnedPostController(communityservice);
+            PinnedPostController pinnedPostController = ComponentFactory.createPinnedPostController(communityId);
             fxmlLoader.setController(pinnedPostController);
             HBox pinnedPost = null;
             try {
@@ -474,7 +480,7 @@ public class CommunityPageController implements Initializable, Controller {
     private void handleAddRuleClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/AddRule.fxml"));
-            AddRuleController addRuleController = new AddRuleController(communityservice);
+            AddRuleController addRuleController = PageControllerFactory.createAddRuleController(communityId);
             loader.setController(addRuleController);
             Parent root = loader.load();
             Stage stage = new Stage();

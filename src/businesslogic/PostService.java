@@ -72,6 +72,7 @@ public class PostService {
         return (String) userDAO.retrieveSingleAttribute("User","nickname","id = ?", post.getUserId());
     }
 
+    // TODO: review
     public List<Comment> getRootComments() {
         CommentDAO commentDAO = new CommentDAO();
         List<Comment> rC = commentDAO.getRootComments(post,10, 0);

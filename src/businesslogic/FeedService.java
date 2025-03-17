@@ -14,6 +14,7 @@ public class FeedService {
     private final UserDAO userDAO = new UserDAO();
     private final CommentDAO commentDAO = new CommentDAO();
     Map<Integer,Integer> noOfPostsTaken = new LinkedHashMap<>();
+    // TODO: review and remove this
     Map<Integer,Integer> noOfFirstPostsTaken = new LinkedHashMap<>();
 
     Guest guest;
