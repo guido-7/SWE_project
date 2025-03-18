@@ -238,6 +238,7 @@ public class CommunityPageController implements Initializable, Controller {
     private void handleRolePageClick() {
         AdminPageController adminPageController = PageControllerFactory.createAdminPageController(communityId);
         GuestContext.setCurrentController(adminPageController);
+        SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
         SceneManager.changeScene("Admin Page " + communityId, "/src/view/fxml/AdminPage.fxml", adminPageController);
     }
 

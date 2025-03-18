@@ -133,7 +133,7 @@ public class IntegrationTest {
         postService.toggleLike(user);
 
         // Controllare se il like è stato rimosso
-        assertEquals(null, userDAO.getPostVote(USER_ID, POST_ID));
+        assertNull(userDAO.getPostVote(USER_ID, POST_ID));
     }
 
     // Test per aggiungere e rimuovere il dislike al post
