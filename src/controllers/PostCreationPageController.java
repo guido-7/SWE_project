@@ -33,6 +33,7 @@ public class PostCreationPageController implements Controller, Initializable {
 
     int selectedCommunityId;
     private final PostCreationService postCreationService;
+    private CommunitySearchHelper communitySearchHelper;
 
     public PostCreationPageController(PostCreationService postCreationService) {
         this.postCreationService = postCreationService;
@@ -40,9 +41,9 @@ public class PostCreationPageController implements Controller, Initializable {
 
     @Override
     public void init_data() throws SQLException {
-        contentArea.clear();
-        titleField.clear();
         communitySearchBar.clear();
+        titleField.clear();
+        contentArea.clear();
     }
 
     @Override
@@ -55,16 +56,16 @@ public class PostCreationPageController implements Controller, Initializable {
             String content = contentArea.getText();
             int userId = ((User) GuestContext.getCurrentGuest()).getId();
             try {
-                postCreationService.createPost(title,content,selectedCommunityId,userId);
+                postCreationService.createPost(title, content, selectedCommunityId, userId);
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
 
             SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
         });
+
         SearchService searchService = new SearchService();
-        CommunitySearchHelper communitySearchHelper = new CommunitySearchHelper(communitySearchBar,
-                searchService::searchSubscribedCommunities, this::selectCommunity);
+        communitySearchHelper = new CommunitySearchHelper(communitySearchBar, searchService::searchSubscribedCommunities, this::selectCommunity);
         communitySearchHelper.setupSearchListener();
     }
 
@@ -73,5 +74,10 @@ public class PostCreationPageController implements Controller, Initializable {
         communitySearchBar.positionCaret(communitySearchBar.getText().length());
         communitySearchBar.setEditable(false);
         selectedCommunityId = community.getId();
+    }
+
+    // For tests
+    public CommunitySearchHelper getCommunitySearchHelper(){
+        return communitySearchHelper;
     }
 }
