@@ -3,7 +3,6 @@ package src.managerdatabase;
 import java.sql.*;
 
 public class DBConnection {
-
     private static Connection conn;
     private static final String dbPath = "database/bigDBTest.db";
 
