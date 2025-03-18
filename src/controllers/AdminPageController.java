@@ -104,7 +104,13 @@ public class AdminPageController implements Initializable, Controller {
 
         PromoteButton.setOnMouseClicked(event->handlePromoteButtonClick());
 
-        DismissButton.setOnMouseClicked(event->handleDismissButtonClick());
+        DismissButton.setOnMouseClicked(event-> {
+            try {
+                handleDismissButtonClick();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         SearchSubsBar.setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -269,7 +275,7 @@ public class AdminPageController implements Initializable, Controller {
         return new Pair<>(pane, userInfoController);
     }
 
-    private void handleDismissButtonClick(){
+    private void handleDismissButtonClick() throws SQLException {
         communityService.dismiss(subscriberId);
         removeFromGrid();
         DismissButton.setVisible(false);

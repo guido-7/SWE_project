@@ -189,10 +189,9 @@ public class CommunityService {
         moderatorDAO.save(Map.of("user_id",subscriberId,"community_id",communityId));
     }
 
-    public void dismiss(int subscriberId) {
-        //ModeratorDAO moderatorDAO = new ModeratorDAO();
-        //moderatorDAO.de
-
+    public void dismiss(int subscriberId) throws SQLException {
+        ModeratorDAO moderatorDAO = new ModeratorDAO();
+        moderatorDAO.deleteById(subscriberId);
     }
 
     public Map<Integer,String> getFilteredSubs(String searchTerm) {
