@@ -440,11 +440,6 @@ public class SetDB {
         }
         System.out.println("Users created");
 
-        userDAO.save(Map.of("nickname", "admin", "name", "admin", "surname", "admin"));
-        int id = userDAO.getUserId("admin");
-        userDAO.registerUserAccessInfo(id, "admin", "12345678");
-        System.out.println("admin created");
-
         // create fake communities
         for (int i = 1; i <= numberofCommunity; i++) {
             Map<String, Object> params = new HashMap<>();
@@ -453,9 +448,6 @@ public class SetDB {
             communityDAO.save(params);
         }
         System.out.println("Communities created");
-
-        communityDAO.save(Map.of("title", "news", "description", "community for news"));
-        System.out.println("News Community created");
 
         // create fake rules
         for (int communityId = 1; communityId <= numberofCommunity; communityId++) {
@@ -561,5 +553,12 @@ public class SetDB {
         }
         System.out.println("Post Warnings created\n");
 
+        userDAO.save(Map.of("nickname", "admin", "name", "admin", "surname", "admin"));
+        int id = userDAO.getUserId("admin");
+        userDAO.registerUserAccessInfo(id, "admin", "12345678");
+        System.out.println("admin created");
+
+        communityDAO.save(Map.of("title", "news", "description", "community for news"));
+        System.out.println("News Community created");
     }
 }
