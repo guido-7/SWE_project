@@ -237,7 +237,7 @@ class FunctionalTest extends ApplicationTest {
     @Test
     void testCreateCommunity() throws Exception {
         login();
-        openCommunityCreationPage();
+        pressButton("#createCommunityButton");
 
         TextField titleField = lookup("#titleField").query();
         TextArea descriptionField = lookup("#descriptionArea").query();
@@ -349,12 +349,6 @@ class FunctionalTest extends ApplicationTest {
                 subscribeButton.fireEvent(mouseClick);
             });
         }
-        WaitForAsyncUtils.waitForFxEvents();
-    }
-
-    void openCommunityCreationPage() {
-        Button createCommunityButton = lookup("#createCommunityButton").query();
-        Platform.runLater(() -> createCommunityButton.fireEvent(mouseClick));
         WaitForAsyncUtils.waitForFxEvents();
     }
 
