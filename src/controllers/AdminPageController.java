@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -12,6 +13,8 @@ import javafx.util.Pair;
 import src.businesslogic.CommunityService;
 import src.controllers.factory.ComponentFactory;
 import src.servicemanager.FormattedTime;
+import src.servicemanager.SceneManager;
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -45,6 +48,8 @@ public class AdminPageController implements Initializable, Controller {
     private Pane TRPane;
     @FXML
     private AnchorPane SubInfoContainer;
+    @FXML
+    private ImageView exitButton;
 
     private boolean allPostsLoaded = false;
     private final ContextMenu suggestionsPopup = new ContextMenu();
@@ -62,6 +67,9 @@ public class AdminPageController implements Initializable, Controller {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+
+
         PromoteButton.setVisible(false);
         PromoteButton.setManaged(false);
         DismissButton.setVisible(false);
@@ -79,6 +87,11 @@ public class AdminPageController implements Initializable, Controller {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        exitButton.setOnMouseClicked(e -> {
+            SceneManager.loadPreviousScene();
+        });
+
     }
 
     @Override
