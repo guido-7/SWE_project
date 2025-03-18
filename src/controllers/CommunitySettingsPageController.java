@@ -15,13 +15,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
-import src.businesslogic.UserProfileService;
 import src.controllers.factory.ComponentFactory;
 import src.controllers.factory.PageControllerFactory;
 import src.domainmodel.PostWarnings;
 import javafx.scene.text.Text;
 import src.domainmodel.User;
-import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
 import src.utils.LoadingPost;
 
@@ -230,8 +228,6 @@ public class CommunitySettingsPageController implements Initializable, Controlle
         for (Integer reportedId : reportedIds) {
             try {
                 ArrayList<PostWarnings> reportedReports = reportedUserCount.get(reportedId);
-                // TODO: review
-                //ModeratorDecisionController moderatorDecisionController = new ModeratorDecisionController(reportedReports, communityService);
                 ModeratorDecisionController moderatorDecisionController = ComponentFactory.createModeratorDecisionController(reportedReports, communityService.getCommunityId());
                 FXMLLoader fxmlLoader = new FXMLLoader(LoadingPost.class.getResource("/src/view/fxml/ModeratorDecisionSnapShot.fxml"));
                 fxmlLoader.setController(moderatorDecisionController);
@@ -251,7 +247,13 @@ public class CommunitySettingsPageController implements Initializable, Controlle
         userProfilePageController.deleteSavedPostPane();
         userProfilePageController.moveUserPostPaneToCenter();
         userProfilePageController.setNotEditable();
-        userProfilePageController.getExitButton().setOnMouseClicked(event -> SceneManager.loadPreviousScene());
+        userProfilePageController.getExitButton().setOnMouseClicked(event -> {
+            try {
+                SceneManager.loadPreviousScene();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void backToCommunity() {
