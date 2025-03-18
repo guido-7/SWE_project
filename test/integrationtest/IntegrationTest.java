@@ -97,7 +97,7 @@ public class IntegrationTest {
 
     @Test
     void AddRemovePostLike() throws SQLException {
-        // creao User
+        // creo User
         userDAO.save(Map.of("nickname", "user_test", "name", "Giacomo", "surname", "Rossi"));
         int id = userDAO.getUserId("user_test");
         userDAO.registerUserAccessInfo(id, "user_test", "12345678");
@@ -123,7 +123,7 @@ public class IntegrationTest {
 
     @Test
     void AddRemovePostDislike() throws SQLException {
-        // creao User
+        // creo User
         userDAO.save(Map.of("nickname", "user_test", "name", "Giacomo", "surname", "Rossi"));
         int id = userDAO.getUserId("user_test");
         userDAO.registerUserAccessInfo(id, "user_test", "12345678");
@@ -266,6 +266,24 @@ public class IntegrationTest {
         assertEquals(false, commentService.isLiked(user.getId()));
         assertEquals(true, commentService.isDisliked(user.getId()));
     }
+
+    @Test
+    void registerUserTest() throws SQLException {
+        // Creo User ma senza registrazione
+        userDAO.save(Map.of("nickname", "user_test", "name", "Luigi", "surname", "Bianchi"));
+
+        // Eseguo login con utente non registrato
+        assertEquals(false, userDAO.isValidUser("user_test", "12345678"));
+
+        // Registrazione dell'utente
+        int id = userDAO.getUserId("user_test");
+        userDAO.registerUserAccessInfo(id, "user_test", "12345678");
+
+        // Controllo se l'utente è stato registrato
+        assertEquals(true, userDAO.isRegisteredUser("user_test"));
+    }
+
+
 
 
 }
