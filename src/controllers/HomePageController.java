@@ -53,9 +53,6 @@ public class HomePageController implements Initializable,Controller  {
     public HomePageController(FeedService feedService) {
         this.feedService = feedService;
     }
-    public void setFeedService(FeedService feedService) {
-        this.feedService = feedService;
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -153,14 +150,12 @@ public class HomePageController implements Initializable,Controller  {
     }
 
     private void openCommunityCreationPage() {
-//        CommunityCreationService communityCreationService = new CommunityCreationService();
-//        CommunityCreationPageController communityCreationPageController = new CommunityCreationPageController(communityCreationService);
         CommunityCreationPageController communityCreationPageController = PageControllerFactory.createCommunityCreationPageController();
         SceneManager.changeScene("Community creation", "/src/view/fxml/CommunityCreationPage.fxml", communityCreationPageController);
     }
 
     private void openPostCreationPage() {
-        SceneManager.setPreviousScene(SceneManager.getCurrentScene());
+        SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
         SceneManager.changeScene("postCreation", "/src/view/fxml/PostCreationPage.fxml", PageControllerFactory.createPostCreationPageController());
     }
 
@@ -210,6 +205,10 @@ public class HomePageController implements Initializable,Controller  {
 
     public VBox getPostsContainer(){
         return postsContainer;
+    }
+
+    public void setFeedService(FeedService feedService) {
+        this.feedService = feedService;
     }
 
     // For test
