@@ -378,7 +378,16 @@ public class IntegrationTest {
         // Nomino l'utente come moderatore della community
         communityService.promote(id);
         assertTrue(communityService.isModerator(id));
+
+        // Rimuovo l'utente come moderatore della community
+        communityService.dismiss(id);
+        assertFalse(communityService.isModerator(id));
     }
+
+    // Test per la rimozione di un moderatore
+    //@Test
+
+
 
 
 
