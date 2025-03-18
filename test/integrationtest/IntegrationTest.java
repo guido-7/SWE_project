@@ -95,6 +95,7 @@ public class IntegrationTest {
         }
     }
 
+    // Test per aggiungere e rimuovere il like al commento
     @Test
     void AddRemovePostLike() throws SQLException {
         // creo User
@@ -121,6 +122,7 @@ public class IntegrationTest {
         assertEquals(null, userDAO.getPostVote(USER_ID, POST_ID));
     }
 
+    // Test per aggiungere e rimuovere il dislike al post
     @Test
     void AddRemovePostDislike() throws SQLException {
         // creo User
@@ -147,6 +149,7 @@ public class IntegrationTest {
         assertEquals(null, userDAO.getPostVote(USER_ID, POST_ID));
     }
 
+    // Test per il controllo del voto del post dell'utente
     @Test
     void checkUserVote() throws SQLException {
         // Creo User
@@ -175,6 +178,7 @@ public class IntegrationTest {
         assertEquals(true, postService.isDisliked(user.getId()));
     }
 
+    // Test per aggiungere e rimuovere il like al commento
     @Test
     void AddRemoveCommentLike() throws SQLException {
         // creao User
@@ -205,6 +209,7 @@ public class IntegrationTest {
         assertEquals(null, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
     }
 
+    // Test per aggiungere e rimuovere il dislike al commento
     @Test
     void AddRemoveCommentDislike() throws SQLException {
         // creao User
@@ -235,6 +240,7 @@ public class IntegrationTest {
         assertEquals(null, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
     }
 
+    // Test per il controllo del voto del commento dell'utente
     @Test
     void checkUserVoteComment() throws SQLException {
         // Creo User
@@ -267,6 +273,7 @@ public class IntegrationTest {
         assertEquals(true, commentService.isDisliked(user.getId()));
     }
 
+    // Test per la registrazione dell'utente
     @Test
     void registerUserTest() throws SQLException {
         // Creo User ma senza registrazione
@@ -282,6 +289,7 @@ public class IntegrationTest {
         // Controllo se l'utente è stato registrato
         assertEquals(true, userDAO.isRegisteredUser("user_test"));
     }
+
 
 
 
