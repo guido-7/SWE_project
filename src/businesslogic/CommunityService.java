@@ -185,12 +185,20 @@ public class CommunityService {
 //        return subscriptionDAO.getSubs(, communityId);
 //    }
 
-    public void promote(int subscriberId) throws SQLException {
+    public void promoteToModerator(int subscriberId) throws SQLException {
         moderatorDAO.save(Map.of("user_id",subscriberId,"community_id",communityId));
     }
 
-    public void dismiss(int subscriberId) throws SQLException {
+    public void downgradeModerator(int subscriberId) throws SQLException {
         moderatorDAO.deleteById(subscriberId);
+    }
+
+    public void promoteToAdmin(int subscriberId) throws SQLException {
+        adminDAO.save(Map.of("user_id",subscriberId,"community_id",communityId));
+    }
+
+    public void downgradeAdmin(int subscriberId) throws SQLException {
+        adminDAO.deleteById(subscriberId);
     }
 
     public Map<Integer,String> getFilteredSubs(String searchTerm) {
