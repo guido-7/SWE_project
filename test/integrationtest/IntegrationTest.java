@@ -384,16 +384,5 @@ public class IntegrationTest {
         assertFalse(communityService.isModerator(id));
     }
 
-    // Test per la rimozione di un moderatore
-    //@Test
-
-
-
-
-
-
-
-
-
 
 }
