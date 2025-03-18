@@ -18,11 +18,11 @@ public class CommentReplyController implements Controller, Initializable {
     private Button sendButton;
 
     private final CommentController commentController;
-    private final CommentService commentService;
+    //private final CommentService commentService;
 
     public CommentReplyController(CommentController commentController) {
         this.commentController = commentController;
-        this.commentService = commentController.getCommentService();
+        //this.commentService = commentController.getCommentService();
     }
 
     @Override
@@ -36,6 +36,7 @@ public class CommentReplyController implements Controller, Initializable {
     }
 
     private void handleSendReplayButtonClick(){
+        CommentService commentService = commentController.getCommentService();
         String reply = replyField.getText();
         if (!reply.isEmpty()) {
             try {

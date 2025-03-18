@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import src.businesslogic.LoginService;
+import src.servicemanager.SceneManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,11 +23,15 @@ public class LoginController implements Controller, Initializable {
     @FXML
     private Label errorLabel;
 
-    private HomePageController homePageController;
+    private final LoginService loginService;
+
+    public LoginController(LoginService loginService){
+        this.loginService = loginService;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        loginButton.setOnAction(e -> handleLoginButtonAction());
+        loginButton.setOnAction(e -> handleLoginButtonClick());
         signUp.setOnAction(e -> {
             try {
                 handleSignUpButtonAction();
@@ -36,22 +41,16 @@ public class LoginController implements Controller, Initializable {
         });
     }
 
-    private void handleLoginButtonAction() {
+    private void handleLoginButtonClick() {
         System.out.println("Login button clicked!");
         String username = usernameField.getText();
         String password = passwordField.getText();
         System.out.println("Username: " + username + ", Password: " + password);
-        LoginService loginService = new LoginService();
-        loginService.manageLogin(username, password, errorLabel, homePageController);
+        loginService.manageLogin(username, password, errorLabel);
     }
 
     private void handleSignUpButtonAction() throws IOException {
-        Stage stage = (Stage) usernameField.getScene().getWindow();
-        SignUpController.openSignUpPage(stage);
-    }
-
-    public void setHomePageController(HomePageController homePageController) {
-        this.homePageController = homePageController;
+        SceneManager.changeSecondaryScene("signup", "/src/view/fxml/SignUp.fxml", new SignUpController());
     }
 
     @Override
