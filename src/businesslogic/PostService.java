@@ -1,6 +1,5 @@
 package src.businesslogic;
 
-import src.controllers.CommunityController;
 import src.domainmodel.*;
 import src.orm.CommentDAO;
 import src.orm.CommunityDAO;

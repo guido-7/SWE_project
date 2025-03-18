@@ -1,4 +1,5 @@
 package src.controllers;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -8,19 +9,15 @@ import src.businesslogic.CommunityService;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class AddRuleController implements Initializable,Controller {
     @FXML
     private SplitMenuButton PriorityMenu;
-
     @FXML
     private Button SaveRuleButton;
-
     @FXML
     private TextArea TextAreaNewRule;
-
     @FXML
     private TextField TitleRule;
 

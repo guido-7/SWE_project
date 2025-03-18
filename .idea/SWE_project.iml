@@ -25,6 +25,9 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="testfx-junit5-4.0.18" level="project" />
+    <orderEntry type="library" name="testfx-core-4.0.18" level="project" />
+    <orderEntry type="library" name="hamcrest-2.2" level="project" />
     <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>

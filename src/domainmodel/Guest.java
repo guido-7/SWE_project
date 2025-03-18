@@ -1,6 +1,5 @@
 package src.domainmodel;
 
-import java.util.List;
 import java.util.Set;
 
 public class Guest {
@@ -23,9 +22,11 @@ public class Guest {
     public Set<Permits> getPermits() {
         return permits;
     }
+
     public Role getRole() {
         return role;
     }
+
     public void setRole(Role role) {
         this.role = role;
     }
