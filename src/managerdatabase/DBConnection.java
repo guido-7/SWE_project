@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class DBConnection {
     private static Connection conn;
-    private static final String dbPath = "database/bigDBTest.db";
+    private static String dbPath = "database/bigDB.db";
 
     public static void connect() {
         try {
@@ -98,9 +98,8 @@ public class DBConnection {
         }
     }
 
-    // TODO: REVIEW
-//    public static void changeDBPath(String dbPath) {
-//        DBConnection.dbPath = dbPath;
-//    }
+    public static void changeDBPath(String dbPath) {
+        DBConnection.dbPath = dbPath;
+    }
 
 }
