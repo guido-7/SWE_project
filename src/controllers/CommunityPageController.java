@@ -231,6 +231,7 @@ public class CommunityPageController implements Initializable, Controller {
     private void openPostCreationPage() {
         PostCreationPageController postCreationController = PageControllerFactory.createPostCreationPageController();
         GuestContext.setCurrentController(postCreationController);
+        SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
         SceneManager.changeScene("post creation " + communityId, "/src/view/fxml/PostCreationPage.fxml", postCreationController);
     }
 

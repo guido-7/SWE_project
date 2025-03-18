@@ -160,6 +160,7 @@ public class HomePageController implements Initializable,Controller  {
     }
 
     private void openPostCreationPage() {
+        SceneManager.setPreviousScene(SceneManager.getCurrentScene());
         SceneManager.changeScene("postCreation", "/src/view/fxml/PostCreationPage.fxml", PageControllerFactory.createPostCreationPageController());
     }
 

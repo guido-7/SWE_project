@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class PostCreationPageController implements Controller, Initializable {
-
     @FXML
     private TextField communitySearchBar;
     @FXML
@@ -49,7 +48,7 @@ public class PostCreationPageController implements Controller, Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         exitButton.setOnMouseClicked(e -> {
-            SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
+            SceneManager.loadPreviousScene();
         });
         postButton.setOnMouseClicked(e -> {
             String title = titleField.getText();
@@ -60,8 +59,7 @@ public class PostCreationPageController implements Controller, Initializable {
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
-
-            SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
+            SceneManager.loadPreviousScene();
         });
 
         SearchService searchService = new SearchService();
