@@ -5,17 +5,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import src.businesslogic.CommentService;
+import src.businesslogic.CommunityCreationService;
 import src.businesslogic.CommunityService;
 import src.businesslogic.PostService;
 import src.domainmodel.Comment;
-import src.domainmodel.Guest;
 import src.domainmodel.User;
 import src.managerdatabase.DBConnection;
 import src.managerdatabase.SetDB;
-import src.orm.CommentDAO;
-import src.orm.CommunityDAO;
-import src.orm.PostDAO;
-import src.orm.UserDAO;
+import src.orm.*;
 import src.servicemanager.GuestContext;
 
 import java.io.File;
@@ -56,6 +53,7 @@ public class IntegrationTest {
     CommentDAO commentDAO = new CommentDAO();
     CommunityDAO communityDAO = new CommunityDAO();
     UserDAO userDAO = new UserDAO();
+    AdminDAO adminDAO = new AdminDAO();
 
     @BeforeAll
     static void setUp() {
@@ -373,36 +371,39 @@ public class IntegrationTest {
         assertFalse(communityService.isModerator(id));
 
         // Nomino l'utente come moderatore della community
-        communityService.promote(id);
+        communityService.promoteToModerator(id);
         assertTrue(communityService.isModerator(id));
 
         // Rimuovo l'utente come moderatore della community
-        communityService.dismiss(id);
+        communityService.downgradeModerator(id);
         assertFalse(communityService.isModerator(id));
     }
 
-//    // Test controllo admin
-//    @Test
-//    void checkAdminTest() throws SQLException {
-//        // Creo User
-//        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-//        int id = userDAO.getUserId(USER_NICKNAME);
-//        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-//        User user = userDAO.findById(id).orElse(null);
-//        GuestContext guestContext = new GuestContext();
-//        guestContext.setCurrentGuest(user);
-//
-//        // Controllo se l'utente è un admin
-//        assertFalse(userDAO.isAdmin(id));
-//
-//        // Nomino l'utente come admin
-//        userDAO.promoteAdmin(id);
-//        assertTrue(userDAO.isAdmin(id));
-//
-//        // Rimuovo l'utente come admin
-//        userDAO.dismissAdmin(id);
-//        assertFalse(userDAO.isAdmin(id));
-//    }
+    // Test controllo admin
+    @Test
+    void checkAdminTest() throws SQLException {
+        // Creo User
+        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        int id = userDAO.getUserId(USER_NICKNAME);
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+        User user = userDAO.findById(id).orElse(null);
+        GuestContext.setCurrentGuest(user);
+
+        // Creo Community
+        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
+
+        // Controllo se l'utente è un admin della community
+        CommunityService communityService = new CommunityService(COMMUNITY_ID);
+        assertNull(communityService.getAdmin(id));
+
+        // Nomino l'utente come admin
+        communityService.promoteToAdmin(id);
+        assertTrue(adminDAO.isAdmin(id, COMMUNITY_ID));
+
+        // Rimuovo l'utente come admin della community
+        communityService.downgradeAdmin(id);
+        assertFalse(adminDAO.isAdmin(id, COMMUNITY_ID));
+    }
 
 
 }
