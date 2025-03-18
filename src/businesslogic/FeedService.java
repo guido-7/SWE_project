@@ -6,18 +6,18 @@ import src.orm.*;
 import java.util.*;
 
 public class FeedService {
-
     Map<Integer, Integer> community_partition = new LinkedHashMap<>();// at the end of the loading of feed this should be in
                                                                         // the form of community_id,number of posts from that community
-    PostDAO postDao = new PostDAO();
-    CommunityDAO communityDao = new CommunityDAO();
-    SubscriptionDAO subscriptionDao = new SubscriptionDAO();
-    UserDAO userDAO = new UserDAO();
-    CommentDAO commentDAO = new CommentDAO();
+    private final PostDAO postDAO = new PostDAO();
+    private final CommunityDAO communityDAO = new CommunityDAO();
+    private final SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
+    private final UserDAO userDAO = new UserDAO();
+    private final CommentDAO commentDAO = new CommentDAO();
     Map<Integer,Integer> noOfPostsTaken = new LinkedHashMap<>();
+    // TODO: review and remove this
     Map<Integer,Integer> noOfFirstPostsTaken = new LinkedHashMap<>();
 
-    Guest guest ;
+    Guest guest;
 
     int numberofPosts = 30;
     int numberofCommunities = 10;
@@ -36,7 +36,7 @@ public class FeedService {
             ArrayList<ArrayList<Integer>> community_ids = new ArrayList<>();
 
             //join tables and get the community ids
-            ArrayList<Integer> subscription_C_ids = subscriptionDao.getCommunityIds(((User)guest).getId(),(int)(numberofCommunities * 0.4));
+            ArrayList<Integer> subscription_C_ids = subscriptionDAO.getCommunityIds(((User)guest).getId(),(int)(numberofCommunities * 0.4));
             community_ids.add(subscription_C_ids);
             System.out.println("Length of sub : " + subscription_C_ids.size());
 
@@ -51,7 +51,7 @@ public class FeedService {
             System.out.println("Length of commentc: " + comment_C_ids.size());
 
             // utilize scores and visits
-            ArrayList<Integer> community_C_ids = communityDao.getCommunityIds((int)(numberofCommunities * 0.1 ));
+            ArrayList<Integer> community_C_ids = communityDAO.getCommunityIds((int)(numberofCommunities * 0.1 ));
             community_ids.add(community_C_ids);
             System.out.println("Length of community : " + community_C_ids.size());
 
@@ -72,7 +72,7 @@ public class FeedService {
             }
             System.out.println("Length of idCount: " + idCountMap.size());
             // we take all necessary information from the database about the weights of the communities
-            Map<Integer, Double> scores = communityDao.getScore(idCountMap);
+            Map<Integer, Double> scores = communityDAO.getScore(idCountMap);
 
             //normalization
             double sum = scores.values().stream().mapToDouble(Double::doubleValue).sum();
@@ -125,7 +125,7 @@ public class FeedService {
 
         for (Integer communityId : keys) {
             Integer postCount = community_partition.get(communityId);
-            List<Post> communityPosts = postDao.getPosts(communityId, postCount, 0);
+            List<Post> communityPosts = postDAO.getPosts(communityId, postCount, 0);
             System.out.println("Community ID: " + communityId + ", Number of Posts: " + communityPosts.size());
             noOfPostsTaken.put(communityId,communityPosts.size());
             // 2 : 4
@@ -139,7 +139,7 @@ public class FeedService {
 
         for (Integer communityId : keys) {
             Integer postCount = community_partition.get(communityId);
-            List<Post> communityPosts = postDao.getPosts(communityId, postCount,noOfPostsTaken.get(communityId));
+            List<Post> communityPosts = postDAO.getPosts(communityId, postCount,noOfPostsTaken.get(communityId));
             System.out.println("Community ID: " + communityId + ", Number of Posts: " + communityPosts.size());
             noOfPostsTaken.put(communityId, noOfPostsTaken.getOrDefault(communityId, 0) + communityPosts.size());
             if(communityPosts.isEmpty()){
@@ -157,7 +157,7 @@ public class FeedService {
 
     private List<Post> GuestFeed(){
         int maxPostRetrieved = 3 ;
-        List<Integer> bestCommunityIds = communityDao.getCommunityIds(numberofCommunities);
+        List<Integer> bestCommunityIds = communityDAO.getCommunityIds(numberofCommunities);
         Collections.shuffle(bestCommunityIds);
 
         for(Integer id : bestCommunityIds){

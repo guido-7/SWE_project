@@ -23,7 +23,7 @@ public class AddRuleController implements Initializable,Controller {
 
     private final CommunityService communityService;
 
-    AddRuleController(CommunityService communityService) {
+    public AddRuleController(CommunityService communityService) {
         this.communityService = communityService;
     }
 
@@ -53,6 +53,7 @@ public class AddRuleController implements Initializable,Controller {
                         .toList()
         );
     }
+
     private void handleSaveRuleButtonClick(){
         String title = TitleRule.getText();
         String content = TextAreaNewRule.getText();

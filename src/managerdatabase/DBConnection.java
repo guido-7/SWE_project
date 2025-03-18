@@ -3,9 +3,8 @@ package src.managerdatabase;
 import java.sql.*;
 
 public class DBConnection {
-
     private static Connection conn;
-    private static final String dbPath = "database/bigDB.db";
+    private static final String dbPath = "database/bigDBTest.db";
 
     public static void connect() {
         try {
@@ -98,5 +97,10 @@ public class DBConnection {
             e.printStackTrace();
         }
     }
+
+    // TODO: REVIEW
+//    public static void changeDBPath(String dbPath) {
+//        DBConnection.dbPath = dbPath;
+//    }
 
 }

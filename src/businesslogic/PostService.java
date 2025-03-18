@@ -14,9 +14,12 @@ import java.util.Map;
 public class PostService {
     private  Post post;
     private final PostDAO postDAO = new PostDAO();
+    private final UserDAO userDAO = new UserDAO();
+    private final CommunityDAO communityDAO = new CommunityDAO();
+
     private int offset = 0;
 
-    public PostService(Post post) throws SQLException {
+    public PostService(Post post) {
         this.post = post;
     }
 
@@ -33,7 +36,6 @@ public class PostService {
     }
 
     private void toggleLikeDislike(User guest, String likelihood) throws SQLException {
-        UserDAO userDAO = new UserDAO();
         Integer userVote = getVote((User)guest);
         switch (likelihood) {
             case "like":
@@ -59,20 +61,18 @@ public class PostService {
     }
 
     private Integer getVote(User user) throws SQLException {
-        UserDAO userDAO = new UserDAO();
         return userDAO.getPostVote(user.getId(),post.getId());
     }
 
     public String getCommunityTitle() throws SQLException {
-        CommunityDAO communityDAO = new CommunityDAO();
         return (String) communityDAO.retrieveSingleAttribute("Community","title","id = ?" , post.getCommunityId());
     }
 
     public String getNickname() throws SQLException {
-        UserDAO userDAO = new UserDAO();
         return (String) userDAO.retrieveSingleAttribute("User","nickname","id = ?", post.getUserId());
     }
 
+    // TODO: review
     public List<Comment> getRootComments() {
         CommentDAO commentDAO = new CommentDAO();
         List<Comment> rC = commentDAO.getRootComments(post,10, 0);

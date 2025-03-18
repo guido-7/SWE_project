@@ -36,8 +36,8 @@ public class RulesController implements Controller {
             handleAdminIsWatching();
     }
     private void handleDeleteRule() throws SQLException {
-        CommunityController communityController = (CommunityController) GuestContext.getCurrentController();
-        communityController.getPostsContainer().getChildren().remove(RuleContainer);
+        CommunityPageController communityPageController = (CommunityPageController) GuestContext.getCurrentController();
+        communityPageController.getPostsContainer().getChildren().remove(RuleContainer);
         communityService.deleteRule(ruleId);
     }
 

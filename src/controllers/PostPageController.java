@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import src.businesslogic.CommentService;
 import src.businesslogic.PostService;
+import src.controllers.factory.ComponentFactory;
 import src.domainmodel.Comment;
 import src.domainmodel.Post;
 import src.servicemanager.SceneManager;
@@ -55,7 +56,11 @@ public class PostPageController implements Controller, Initializable {
             });
 
             exitButton.setOnMouseClicked(event -> {
-                SceneManager.loadPreviousScene();
+                try {
+                    SceneManager.loadPreviousScene();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             });
 
         } catch (SQLException e) {
@@ -66,7 +71,7 @@ public class PostPageController implements Controller, Initializable {
     private void loadPost(Post post) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Post.fxml"));
-            PostController postController = new PostController(new PostService(post));
+            PostController postController = ComponentFactory.createPostController(post);
             fxmlLoader.setController(postController);
             VBox vBox = fxmlLoader.load();
             postController.setDataPostPage(post);
@@ -81,7 +86,7 @@ public class PostPageController implements Controller, Initializable {
             try {
                 comment.setPost(postService.getPost());
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Comment.fxml"));
-                CommentController commentController = new CommentController(new CommentService(comment));
+                CommentController commentController = ComponentFactory.createCommentController(comment);
                 fxmlLoader.setController(commentController);
                 VBox vBox = fxmlLoader.load();
                 commentController.setData(comment);

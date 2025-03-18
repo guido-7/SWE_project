@@ -1,14 +1,9 @@
 package src.controllers;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 public class WarningsPopUpController implements Controller {
-
     @FXML
     private Text Content;
     @FXML

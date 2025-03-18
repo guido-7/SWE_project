@@ -9,20 +9,25 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import src.businesslogic.FeedService;
 import src.controllers.*;
+import src.controllers.factory.PageControllerFactory;
 import src.domainmodel.Guest;
 import src.domainmodel.PermitsManager;
 import src.domainmodel.Role;
+import src.managerdatabase.DBConnection;
+import src.managerdatabase.SetDB;
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -53,12 +58,7 @@ class FunctionalTest extends ApplicationTest {
     );
 
     @Override
-    public void start(Stage stage) throws IOException {
-        //initializeApplication(stage);
-    }
-
-    @BeforeEach
-    void setup() {
+    public void start(Stage stage) throws IOException, SQLException {
         Platform.runLater(() -> {
             try {
                 initializeApplication(new Stage());
@@ -67,6 +67,22 @@ class FunctionalTest extends ApplicationTest {
             }
         });
         WaitForAsyncUtils.waitForFxEvents(); // Attendi che l'azione venga eseguita
+    }
+
+    @BeforeAll
+    public static void seDB() throws SQLException {
+        String url = "database/bigDBTest.db";
+        //DBConnection.changeDBPath(url);
+        File dbFile = new File(url);
+        if (dbFile.exists()) {
+            dbFile.delete();
+            System.out.println("Database successfully deleted.");
+        } else {
+            System.out.println("The database does not exist.");
+        }
+        Connection conn = DBConnection.open_connection(url);
+        SetDB.createDB();
+        SetDB.generatefakedata(40, 10, 100, 40);
     }
 
     @Test
@@ -120,11 +136,171 @@ class FunctionalTest extends ApplicationTest {
         assertInstanceOf(PostPageController.class, GuestContext.getCurrentController());
     }
 
+    @Test
+    void testLikePost() throws Exception {
+        login();
+        openPost();
+
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty());
+        VBox post = (VBox) postsContainer.getChildren().getFirst();
+        Button likeButton = from(post).lookup("#likeButton").query();
+        Label likeCount = from(post).lookup("#scoreLabel").query();
+        int initialLikes = Integer.parseInt(likeCount.getText());
+
+        // add like
+        Platform.runLater(likeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        int finalLikes = Integer.parseInt(likeCount.getText());
+        assertEquals(initialLikes + 1, finalLikes);
+
+        // remove like
+        Platform.runLater(likeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+
+    @Test
+    void testDislikePost() throws Exception {
+        login();
+        openPost();
+
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty());
+        VBox post = (VBox) postsContainer.getChildren().getFirst();
+        Button dislikeButton = from(post).lookup("#dislikeButton").query();
+        Label dislikeCount = from(post).lookup("#scoreLabel").query();
+        int initialDislikes = Integer.parseInt(dislikeCount.getText());
+
+        // add dislike
+        Platform.runLater(dislikeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        int finalDislikes = Integer.parseInt(dislikeCount.getText());
+        assertEquals(initialDislikes - 1, finalDislikes);
+
+        // remove dislike
+        Platform.runLater(dislikeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+
+    @Test
+    void testLikeByGuest() {
+        openPost();
+
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty());
+        VBox post = (VBox) postsContainer.getChildren().getFirst();
+        Button likeButton = from(post).lookup("#likeButton").query();
+        Label likeCount = from(post).lookup("#scoreLabel").query();
+        int initialLikes = Integer.parseInt(likeCount.getText());
+
+        // add like
+        Platform.runLater(likeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        int finalLikes = Integer.parseInt(likeCount.getText());
+        assertEquals(initialLikes, finalLikes);
+
+        // remove like
+        Platform.runLater(likeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+
+    @Test
+    void testComment() throws Exception {
+        login();
+        openPost();
+
+        // open reply field
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty());
+        VBox post = (VBox) postsContainer.getChildren().getFirst();
+        Button openReplyButton = from(post).lookup("#postButton").query();
+        Platform.runLater(openReplyButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        TextArea replyText = from(post).lookup("#replyField").query();
+        Button replyButton = from(post).lookup("#sendButton").query();
+        Platform.runLater(() -> {
+            replyText.setText("Test comment");
+            replyButton.fire();
+        });
+        WaitForAsyncUtils.waitForFxEvents();
+
+        VBox reply = (VBox) postsContainer.getChildren().getLast();
+        Label replyTextElement = from(reply).lookup("#content").query();
+        assertEquals("Test comment", replyTextElement.getText());
+    }
+
+    @Test
+    void testCreateCommunity() throws Exception {
+        login();
+        pressButton("#createCommunityButton");
+
+        TextField titleField = lookup("#titleField").query();
+        TextArea descriptionField = lookup("#descriptionArea").query();
+        TextField ruleTitle1 = lookup("#RuleTitle1").query();
+        TextArea ruleDescription1 = lookup("#rule1").query();
+        TextField ruleTitle2 = lookup("#RuleTitle2").query();
+        TextArea ruleDescription2 = lookup("#rule2").query();
+        TextField ruleTitle3 = lookup("#RuleTitle3").query();
+        TextArea ruleDescription3 = lookup("#rule3").query();
+        Button createButton = lookup("#createButton").query();
+        Platform.runLater(() -> {
+            titleField.setText("Test Community");
+            descriptionField.setText("Test description");
+            ruleTitle1.setText("Test rule 1");
+            ruleDescription1.setText("Test rule description 1");
+            ruleTitle2.setText("Test rule 2");
+            ruleDescription2.setText("Test rule description 2");
+            ruleTitle3.setText("Test rule 3");
+            ruleDescription3.setText("Test rule description 3");
+            createButton.fireEvent(mouseClick);
+        });
+        WaitForAsyncUtils.waitForFxEvents();
+
+        openCommunityPage("Test Community");
+
+        Text communityTitle = lookup("#community_title").queryAs(Text.class);
+        assertEquals("Test Community", communityTitle.getText());
+    }
+
+    @Test
+    void testCreatePost() throws Exception {
+        login();
+        subscribeCommunity("news");
+        pressButton("#createPostButton");
+
+        TextField community = lookup("#communitySearchBar").query();
+        TextField titleField = lookup("#titleField").query();
+        TextArea contentField = lookup("#contentArea").query();
+        Platform.runLater(() -> {
+            community.setText("News");
+            titleField.setText("Test Post");
+            contentField.setText("Test content");
+        });
+        WaitForAsyncUtils.waitForFxEvents();
+
+        PostCreationPageController postCreationPageController = (PostCreationPageController) GuestContext.getCurrentController();
+        ContextMenu contextMenu = getPrivateField(postCreationPageController.getCommunitySearchHelper(), "suggestionsPopup");
+        CustomMenuItem firstItem = (CustomMenuItem) contextMenu.getItems().getFirst();
+        Platform.runLater(firstItem::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        pressButton("#postButton");
+        sleep(10000);
+        openPost();
+
+        Text postTitle = lookup("#postTitle").queryAs(Text.class);
+        assertEquals("Test Post", postTitle.getText());
+    }
+
     private void initializeApplication(Stage stage) throws IOException {
         Guest guest = new Guest(PermitsManager.createGuestPermits(), Role.GUEST);
         GuestContext.setCurrentGuest(guest);
         SceneManager.setPrimaryStage(stage);
-        this.homePageController = new HomePageController(new FeedService(guest));
+        this.homePageController = PageControllerFactory.createHomePageController(guest);
         SceneManager.loadPrimaryScene("home", "/src/view/fxml/HomePage.fxml", homePageController);
     }
 
@@ -154,7 +330,7 @@ class FunctionalTest extends ApplicationTest {
         WaitForAsyncUtils.waitForFxEvents();
     }
 
-    void goToCommunityPage(String communityTitle) throws Exception {
+    void openCommunityPage(String communityTitle) throws Exception {
         TextField searchField = lookup("#searchField").query();
         Platform.runLater(() -> {
             searchField.setText(communityTitle);
@@ -168,13 +344,20 @@ class FunctionalTest extends ApplicationTest {
     }
 
     void subscribeCommunity(String communityTitle) throws Exception {
-        goToCommunityPage(communityTitle);
+        openCommunityPage(communityTitle);
         Button subscribeButton = lookup("#subscribeButton").query();
         if(subscribeButton.isVisible()) {
             Platform.runLater(() -> {
                 subscribeButton.fireEvent(mouseClick);
             });
         }
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+
+    void pressButton(String buttonId) {
+        Button button = lookup(buttonId + "").query();
+        //Platform.runLater(button::fire);
+        Platform.runLater(() -> button.fireEvent(mouseClick));
         WaitForAsyncUtils.waitForFxEvents();
     }
 

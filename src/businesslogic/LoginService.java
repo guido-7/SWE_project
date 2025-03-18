@@ -10,8 +10,7 @@ import src.servicemanager.SceneManager;
 import java.sql.SQLException;
 
 public class LoginService {
-
-    UserDAO userDAO = new UserDAO();
+    private final UserDAO userDAO = new UserDAO();
 
     public void manageLogin(String username, String password, Label errorLabel) {
         String validationMessage = validateInput(username, password);

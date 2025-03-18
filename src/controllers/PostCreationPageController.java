@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class PostCreationPageController implements Controller, Initializable {
-
     @FXML
     private TextField communitySearchBar;
     @FXML
@@ -33,38 +32,44 @@ public class PostCreationPageController implements Controller, Initializable {
 
     int selectedCommunityId;
     private final PostCreationService postCreationService;
+    private CommunitySearchHelper communitySearchHelper;
 
-    PostCreationPageController(PostCreationService postCreationService) {
+    public PostCreationPageController(PostCreationService postCreationService) {
         this.postCreationService = postCreationService;
     }
 
     @Override
     public void init_data() throws SQLException {
-        contentArea.clear();
-        titleField.clear();
         communitySearchBar.clear();
+        titleField.clear();
+        contentArea.clear();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         exitButton.setOnMouseClicked(e -> {
-            SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
+            try {
+                SceneManager.loadPreviousScene();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         });
+
+        // TODO: review, implement find community without click on menu
         postButton.setOnMouseClicked(e -> {
             String title = titleField.getText();
             String content = contentArea.getText();
             int userId = ((User) GuestContext.getCurrentGuest()).getId();
             try {
-                postCreationService.createPost(title,content,selectedCommunityId,userId);
+                postCreationService.createPost(title, content, selectedCommunityId, userId);
+                SceneManager.loadPreviousScene(true);
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
-
-            SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
         });
+
         SearchService searchService = new SearchService();
-        CommunitySearchHelper communitySearchHelper = new CommunitySearchHelper(communitySearchBar,
-                searchService::searchSubscribedCommunities, this::selectCommunity);
+        communitySearchHelper = new CommunitySearchHelper(communitySearchBar, searchService::searchSubscribedCommunities, this::selectCommunity);
         communitySearchHelper.setupSearchListener();
     }
 
@@ -73,5 +78,10 @@ public class PostCreationPageController implements Controller, Initializable {
         communitySearchBar.positionCaret(communitySearchBar.getText().length());
         communitySearchBar.setEditable(false);
         selectedCommunityId = community.getId();
+    }
+
+    // For tests
+    public CommunitySearchHelper getCommunitySearchHelper(){
+        return communitySearchHelper;
     }
 }

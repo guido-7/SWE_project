@@ -46,7 +46,7 @@ public class AdminDAO extends BaseDAO<Admin,Integer>{
 
     @Override
     protected String getDeleteQuery() {
-        return "DELETE FROM Admin WHERE id = ?";
+        return "DELETE FROM Admin WHERE user_id = ?";
     }
 
     @Override

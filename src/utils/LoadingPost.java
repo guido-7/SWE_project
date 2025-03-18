@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import src.businesslogic.PostService;
 import src.controllers.PostController;
+import src.controllers.factory.ComponentFactory;
 import src.domainmodel.Post;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class LoadingPost {
         for (Post post : newPosts) {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(LoadingPost.class.getResource("/src/view/fxml/Post.fxml"));
-                PostController postController = new PostController(new PostService(post));
+                PostController postController = ComponentFactory.createPostController(post);
                 fxmlLoader.setController(postController);
                 VBox vBox = fxmlLoader.load();
                 postController.setData(post);
@@ -28,7 +29,7 @@ public class LoadingPost {
             }
         }
     }
-
+    // TODO: review this method with attention
     public static void loadMorePosts(final Boolean isLoading,final Boolean allPostsLoaded, VBox postsContainer, Label progressIndicator, List<Post> newPost) {
         final boolean[] isLoadingWrapper = {isLoading};
         final boolean[] allPostsLoadedWrapper = {allPostsLoaded};

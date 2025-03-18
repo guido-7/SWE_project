@@ -56,11 +56,7 @@ public class UserProfilePageController implements Initializable, Controller {
     private String description;
     private String tempDescription;
 
-    private UserProfileService userProfileService ; //new UserProfileService(new User(1, "nickname", "name", "surname", PermitsManager.createUserPermits()));
-
-    public void setService(UserProfileService userProfileService) {
-        this.userProfileService = userProfileService;
-    }
+    private final UserProfileService userProfileService ; //new UserProfileService(new User(1, "nickname", "name", "surname", PermitsManager.createUserPermits()));
 
     public UserProfilePageController(UserProfileService userProfileService) {
         this.userProfileService = userProfileService;
@@ -77,6 +73,13 @@ public class UserProfilePageController implements Initializable, Controller {
             throw new RuntimeException(e);
         }
         setOnEvent();
+    }
+
+    @Override
+    public void init_data() throws SQLException {
+        clearPosts();
+        LoadingPost.LoadPosts(userProfileService.getUserPosts(), UserPostsContainer);
+        LoadingPost.LoadPosts(userProfileService.getSavedPosts(), SavedPostsContainer);
     }
 
     @FXML
@@ -129,11 +132,6 @@ public class UserProfilePageController implements Initializable, Controller {
         SceneManager.changeScene("home","/src/view/fxml/HomePage.fxml",null);
     }
 
-    private void clearPosts() {
-        UserPostsContainer.getChildren().clear();
-        SavedPostsContainer.getChildren().clear();
-    }
-
     public void setText(String text) {
         PostLabel.setText(text);
     }
@@ -161,13 +159,6 @@ public class UserProfilePageController implements Initializable, Controller {
 
     public ImageView getExitButton() {
         return exit;
-    }
-
-    @Override
-    public void init_data() throws SQLException {
-        clearPosts();
-        LoadingPost.LoadPosts(userProfileService.getUserPosts(), UserPostsContainer);
-        LoadingPost.LoadPosts(userProfileService.getSavedPosts(), SavedPostsContainer);
     }
 
     public void setOnEvent(){
@@ -198,6 +189,11 @@ public class UserProfilePageController implements Initializable, Controller {
         }
 
         tempDescription = profileDescription.getText();
+    }
+
+    private void clearPosts() {
+        UserPostsContainer.getChildren().clear();
+        SavedPostsContainer.getChildren().clear();
     }
 
 }

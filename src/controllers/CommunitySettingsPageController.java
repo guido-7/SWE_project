@@ -15,7 +15,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
-import src.businesslogic.UserProfileService;
+import src.controllers.factory.ComponentFactory;
+import src.controllers.factory.PageControllerFactory;
 import src.domainmodel.PostWarnings;
 import javafx.scene.text.Text;
 import src.domainmodel.User;
@@ -27,7 +28,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 
-public class CommunitySettingsController implements Initializable, Controller {
+public class CommunitySettingsPageController implements Initializable, Controller {
     @FXML
     private VBox ModeratorChoiceContainer;
     @FXML
@@ -50,7 +51,7 @@ public class CommunitySettingsController implements Initializable, Controller {
     private final CommunityService communityService;
     ArrayList<PostWarnings> reports;
 
-    public CommunitySettingsController(CommunityService communityService) {
+    public CommunitySettingsPageController(CommunityService communityService) {
         this.communityService = communityService;
     }
 
@@ -95,7 +96,9 @@ public class CommunitySettingsController implements Initializable, Controller {
                         System.out.println("Vai alla pagina di: " + item);
                         try {
                             User user = communityService.getUser(getTableRow().getItem().getSenderId());
-                            UserProfilePageController userProfilePageController = new UserProfilePageController(new UserProfileService(user));
+                            // TODO: review
+                            //UserProfilePageController userProfilePageController = new UserProfilePageController(new UserProfileService(user));
+                            UserProfilePageController userProfilePageController = PageControllerFactory.createUserProfilePageController(user);
                             SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
                             Stage primaryStage = SceneManager.loadScene( "/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
                             manageLookUpUser(userProfilePageController);
@@ -139,7 +142,9 @@ public class CommunitySettingsController implements Initializable, Controller {
                         System.out.println("Vai alla pagina di: " + item);
                         try {
                             User user = communityService.getUser(getTableRow().getItem().getReportedId());
-                            UserProfilePageController userProfilePageController = new UserProfilePageController(new UserProfileService(user));
+                            // TODO: review
+                            //UserProfilePageController userProfilePageController = new UserProfilePageController(new UserProfileService(user));
+                            UserProfilePageController userProfilePageController = PageControllerFactory.createUserProfilePageController(user);
                             SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
                             Stage primaryStage = SceneManager.loadScene("/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
                             manageLookUpUser(userProfilePageController);
@@ -223,7 +228,7 @@ public class CommunitySettingsController implements Initializable, Controller {
         for (Integer reportedId : reportedIds) {
             try {
                 ArrayList<PostWarnings> reportedReports = reportedUserCount.get(reportedId);
-                ModeratorDecisionController moderatorDecisionController = new ModeratorDecisionController(reportedReports, communityService);
+                ModeratorDecisionController moderatorDecisionController = ComponentFactory.createModeratorDecisionController(reportedReports, communityService.getCommunityId());
                 FXMLLoader fxmlLoader = new FXMLLoader(LoadingPost.class.getResource("/src/view/fxml/ModeratorDecisionSnapShot.fxml"));
                 fxmlLoader.setController(moderatorDecisionController);
                 Pane pane = fxmlLoader.load();
@@ -242,7 +247,13 @@ public class CommunitySettingsController implements Initializable, Controller {
         userProfilePageController.deleteSavedPostPane();
         userProfilePageController.moveUserPostPaneToCenter();
         userProfilePageController.setNotEditable();
-        userProfilePageController.getExitButton().setOnMouseClicked(event -> SceneManager.loadPreviousScene());
+        userProfilePageController.getExitButton().setOnMouseClicked(event -> {
+            try {
+                SceneManager.loadPreviousScene();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void backToCommunity() {

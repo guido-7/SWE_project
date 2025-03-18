@@ -1,4 +1,5 @@
 package src.controllers;
+
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,14 +16,14 @@ import javafx.scene.text.Text;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
-import src.businesslogic.PostCreationService;
 import src.businesslogic.SearchService;
 import src.businesslogic.UserProfileService;
+import src.controllers.factory.ComponentFactory;
+import src.controllers.factory.PageControllerFactory;
 import src.domainmodel.*;
 
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
-import src.controllers.PostCreationPageController;
 import src.utils.LoadingPost;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ import java.util.*;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
-public class CommunityController implements Initializable, Controller {
+public class CommunityPageController implements Initializable, Controller {
     //nav bar
     @FXML
     private ImageView homePageButton;
@@ -84,18 +85,18 @@ public class CommunityController implements Initializable, Controller {
     private VBox pinnedPostsContainer;
 
     private List<Post> posts;
-    private final CommunityService communityservice;
+    private final CommunityService communityService;
     private boolean isLoading = false;
     private boolean allPostsLoaded = false;
     private final ProgressIndicator progressIndicator = new ProgressIndicator();
     private final SearchService searchService = new SearchService();
     private final ContextMenu suggestionsPopup = new ContextMenu();
     private String currentSearchTerm = "";
-    private final int currentCommunityId;
+    private final int communityId;
 
-    public CommunityController(CommunityService communityService) {
-        this.communityservice = communityService;
-        this.currentCommunityId = communityservice.getCommunityId();
+    public CommunityPageController(CommunityService communityService) {
+        this.communityService = communityService;
+        this.communityId = communityService.getCommunityId();
     }
 
     @Override
@@ -121,8 +122,7 @@ public class CommunityController implements Initializable, Controller {
             });
 
             userProfileAccess.onMouseClickedProperty().set(event -> {
-                UserProfileService userProfileService = new UserProfileService((User) GuestContext.getCurrentGuest());
-                UserProfilePageController userProfilePageController = new UserProfilePageController(userProfileService);
+                UserProfilePageController userProfilePageController = PageControllerFactory.createUserProfilePageController((User) GuestContext.getCurrentGuest());
                 SceneManager.changeScene("UserProfilePage", "/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
             });
 
@@ -156,8 +156,8 @@ public class CommunityController implements Initializable, Controller {
 
             subscribeButton.setOnMouseClicked(event -> {
                 try {
-                    if(communityservice.subscribe()) {
-                        setData(communityservice.getCommunity());
+                    if(communityService.subscribe()) {
+                        setData(communityService.getCommunity());
                         subscribeButton.setVisible(false);
                         unsubscribeButton.setVisible(true);
                     }
@@ -168,8 +168,8 @@ public class CommunityController implements Initializable, Controller {
 
             unsubscribeButton.setOnMouseClicked(event -> {
                 try {
-                    if (communityservice.unsubscribe()) {
-                        setData(communityservice.getCommunity());
+                    if (communityService.unsubscribe()) {
+                        setData(communityService.getCommunity());
                         subscribeButton.setVisible(true);
                         unsubscribeButton.setVisible(false);
                     }
@@ -188,15 +188,16 @@ public class CommunityController implements Initializable, Controller {
         searchField.clear();
         postsContainer.getChildren().clear();
         pinnedPostsContainer.getChildren().clear();
-        Community currentCommunity = communityservice.getCommunity();
+        Community currentCommunity = communityService.getCommunity();
         setData(currentCommunity);
 
         community_title.setOnMouseClicked(event -> {
             postsContainer.getChildren().clear();
-            SceneManager.changeScene("community " + currentCommunityId, "/src/view/fxml/CommunityPage.fxml", new CommunityController(communityservice));
+            CommunityPageController communityPageController = PageControllerFactory.createCommunityPageController(communityId);
+            SceneManager.changeScene("community " + communityId, "/src/view/fxml/CommunityPage.fxml", communityPageController);
         });
 
-        if (communityservice.isSubscribed()) {
+        if (communityService.isSubscribed()) {
             subscribeButton.setVisible(false);
             unsubscribeButton.setVisible(true);
         } else {
@@ -209,40 +210,39 @@ public class CommunityController implements Initializable, Controller {
         Guest guest = retriveRightGuest();
         GuestContext.setCurrentGuest(guest);
 
-        posts = new ArrayList<>(communityservice.getPosts());
+        posts = new ArrayList<>(communityService.getPosts());
         loadPosts(posts);
 
-        List<Integer> pinnedPosts = communityservice.getPinnedPosts();
+        List<Integer> pinnedPosts = communityService.getPinnedPosts();
         Map<Integer, String> pinnedPostsTitle = new HashMap<>();
         for (Integer pinnedPostId : pinnedPosts) {
-            pinnedPostsTitle.put(pinnedPostId, communityservice.getPostTitle(pinnedPostId));
+            pinnedPostsTitle.put(pinnedPostId, communityService.getPostTitle(pinnedPostId));
         }
         loadPinnedPost(pinnedPostsTitle);
     }
 
     private void handleSettingsClick() {
-        CommunitySettingsController communitySettingsController = new  CommunitySettingsController(communityservice);
-        GuestContext.setCurrentController(communitySettingsController);
-        SceneManager.changeScene("community settings " + currentCommunityId, "/src/view/fxml/CommunitySettings.fxml", communitySettingsController);
+        CommunitySettingsPageController communitySettingsPageController = PageControllerFactory.createCommunitySettingsController(communityId);
+        SceneManager.changeScene("community settings " + communityId, "/src/view/fxml/CommunitySettings.fxml", communitySettingsPageController);
     }
 
     private void openPostCreationPage() {
-        PostCreationPageController postCreationController = new PostCreationPageController(new PostCreationService());
-        GuestContext.setCurrentController(postCreationController);
-        SceneManager.changeScene("post creation " + currentCommunityId, "/src/view/fxml/PostCreationPage.fxml", postCreationController);
+        PostCreationPageController postCreationController = PageControllerFactory.createPostCreationPageController();
+        SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
+        SceneManager.changeScene("post creation " + communityId, "/src/view/fxml/PostCreationPage.fxml", postCreationController);
     }
 
     private void handleRolePageClick() {
-        AdminPageController adminPageController = new AdminPageController(communityservice);
-        GuestContext.setCurrentController(adminPageController);
-        SceneManager.changeScene("Admin Page " + currentCommunityId, "/src/view/fxml/AdminPage.fxml", adminPageController);
+        AdminPageController adminPageController = PageControllerFactory.createAdminPageController(communityId);
+        SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
+        SceneManager.changeScene("Admin Page " + communityId, "/src/view/fxml/AdminPage.fxml", adminPageController);
     }
 
     private void updateSuggestions(String searchTerm) {
         Task<List<Post>> searchTask = new Task<>() {
             @Override
             protected List<Post> call() {
-                return searchService.searchPosts(searchTerm, communityservice.getCommunityId());
+                return searchService.searchPosts(searchTerm, communityService.getCommunityId());
             }
         };
 
@@ -288,7 +288,7 @@ public class CommunityController implements Initializable, Controller {
         postsContainer.getChildren().clear();
         allPostsLoaded = false;
         try {
-            posts = new ArrayList<>(communityservice.getPosts());
+            posts = new ArrayList<>(communityService.getPosts());
             loadPosts(posts);
         } catch (Exception e) {
             e.printStackTrace();
@@ -303,7 +303,7 @@ public class CommunityController implements Initializable, Controller {
         Task<List<Post>> task = new Task<>() {
             @Override
             protected List<Post> call() {
-                return communityservice.getFilteredPosts(searchTerm);
+                return communityService.getFilteredPosts(searchTerm);
             }
         };
 
@@ -336,9 +336,9 @@ public class CommunityController implements Initializable, Controller {
             @Override
             protected List<Post> call() {
                 if (currentSearchTerm.isEmpty()) {
-                    return communityservice.getNextPosts();
+                    return communityService.getNextPosts();
                 } else {
-                    return communityservice.getNextFilteredPosts(currentSearchTerm);
+                    return communityService.getNextFilteredPosts(currentSearchTerm);
                 }
             }
         };
@@ -377,7 +377,7 @@ public class CommunityController implements Initializable, Controller {
     @FXML
     public void loadRules() {
         try {
-            List<Rule> rules = communityservice.getCommunityRules();
+            List<Rule> rules = communityService.getCommunityRules();
             if (rules.isEmpty()) {
                 Text text = new Text("No rules for this community");
                 text.setStyle("-fx-fill: red; -fx-font-weight: bold;");
@@ -391,7 +391,7 @@ public class CommunityController implements Initializable, Controller {
             postsContainer.getChildren().clear();
             for (Rule rule : rules) {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/RulesPage.fxml"));
-                    RulesController rulesController = new RulesController(communityservice,rule.getId());
+                    RulesController rulesController = ComponentFactory.createRulesController(communityId, rule.getId());
                     fxmlLoader.setController(rulesController);
                     VBox vBox = fxmlLoader.load();
                     rulesController.setRuleData(rule.getTitle(), rule.getContent());
@@ -410,13 +410,13 @@ public class CommunityController implements Initializable, Controller {
             userProfileAccess.setVisible(true);
             createPostButton.setVisible(true);
 
-            Moderator communityModerator = communityservice.getModerator(user.getId());
+            Moderator communityModerator = communityService.getModerator(user.getId());
             if (communityModerator != null && communityModerator.getRole() == Role.MODERATOR) {
                 updateModeratorUI();
                 return communityModerator;
             }
 
-            Admin admin = communityservice.getAdmin(user.getId());
+            Admin admin = communityService.getAdmin(user.getId());
             if (admin != null && admin.getRole() == Role.ADMIN) {
                 updateAdminUI();
                 return admin;
@@ -431,7 +431,7 @@ public class CommunityController implements Initializable, Controller {
         }
         for(var key : postIds_title.keySet()) {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/PinnedPost.fxml"));
-            PinnedPostController pinnedPostController = new PinnedPostController(communityservice);
+            PinnedPostController pinnedPostController = ComponentFactory.createPinnedPostController(communityId);
             fxmlLoader.setController(pinnedPostController);
             HBox pinnedPost = null;
             try {
@@ -453,7 +453,7 @@ public class CommunityController implements Initializable, Controller {
 
         confirmationDialogPageController.setCallback(choice->{
             if(choice){
-                communityservice.deleteCommunity();
+                communityService.deleteCommunity();
                 SceneManager.changeScene("home", "/src/view/fxml/HomePage.fxml",null);
             }
             closePopup();
@@ -473,7 +473,7 @@ public class CommunityController implements Initializable, Controller {
     private void handleAddRuleClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/AddRule.fxml"));
-            AddRuleController addRuleController = new AddRuleController(communityservice);
+            AddRuleController addRuleController = PageControllerFactory.createAddRuleController(communityId);
             loader.setController(addRuleController);
             Parent root = loader.load();
             Stage stage = new Stage();
@@ -488,9 +488,9 @@ public class CommunityController implements Initializable, Controller {
         pinnedPostsContainer.getChildren().clear();
         Map<Integer, String> pinnedPosts = new HashMap<>();
 
-        for (Integer pinnedPostId : communityservice.getPinnedPosts()) {
+        for (Integer pinnedPostId : communityService.getPinnedPosts()) {
             try {
-                pinnedPosts.put(pinnedPostId, communityservice.getPostTitle(pinnedPostId));
+                pinnedPosts.put(pinnedPostId, communityService.getPostTitle(pinnedPostId));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

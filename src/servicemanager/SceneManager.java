@@ -166,9 +166,17 @@ public class SceneManager {
         return primaryStage;
     }
 
-    public static void loadPreviousScene(){
-        GuestContext.setCurrentController(GuestContext.getPreviousContextController());
+    public static void loadPreviousScene() throws SQLException {
+        loadPreviousScene(false);
+    }
+
+    public static void loadPreviousScene(Boolean reload) throws SQLException {
+        Controller ctrl = GuestContext.getPreviousContextController();
+        GuestContext.setCurrentController(ctrl);
         primaryStage.setScene(getPreviousScene());
+        if(reload) {
+            ctrl.init_data();
+        }
         primaryStage.show();
     }
 

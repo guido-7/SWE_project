@@ -12,9 +12,9 @@ import java.util.Map;
 
 public class CommentService {
     private Comment comment;
-    private final  UserDAO userDAO = new UserDAO();
-    private final  PostDAO postDAO = new PostDAO();
-    private final  CommentDAO commentDAO = new CommentDAO();
+    private final UserDAO userDAO = new UserDAO();
+    private final PostDAO postDAO = new PostDAO();
+    private final CommentDAO commentDAO = new CommentDAO();
 
     int noOfCommentsTaken = 0;
     int numberOfComments = 10;
@@ -35,6 +35,7 @@ public class CommentService {
         return userDAO.getNicknameById(comment.getUser_id());
     }
 
+    //TODO: review
     public List<Comment> getRootComments(Post post) {
         List<Comment> rootComments = commentDAO.getRootComments(post, numberOfComments, 0);
         System.out.println("Post ID: " + post.getId());

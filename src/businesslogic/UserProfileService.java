@@ -6,16 +6,16 @@ import src.orm.PostDAO;
 import src.orm.UserDAO;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class UserProfileService {
-    User user ;
-    UserDAO userDAO = new UserDAO();
+    private final User user ;
+    private final UserDAO userDAO = new UserDAO();
+    private final PostDAO postDAO = new PostDAO();
 
-    public UserProfileService(User User) {
-        this.user = User;
+    public UserProfileService(User user) {
+        this.user = user;
     }
 
     public String getDescription() throws SQLException {
@@ -24,7 +24,7 @@ public class UserProfileService {
 
     public void SaveDescription(String description) throws SQLException {
         String [] columns = {"user_id","description"};
-        userDAO.insertMultipleValues("UserDescription",columns,user.getId(),description);
+        userDAO.insertMultipleValues("UserDescription", columns,user.getId(), description);
     }
 
     public void updateDescription(String description) throws SQLException {
@@ -32,12 +32,10 @@ public class UserProfileService {
     }
 
     public List<Post> getUserPosts() {
-        PostDAO postDAO = new PostDAO();
         return postDAO.getPostsByUser(user.getId());
     }
 
     public List<Post> getSavedPosts() {
-        PostDAO postDAO = new PostDAO();
         return postDAO.getSavedPosts(user.getId(),10,0);
     }
 

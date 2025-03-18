@@ -9,8 +9,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import src.businesslogic.CommunityService;
 import src.businesslogic.PostService;
+import src.controllers.factory.ComponentFactory;
+import src.controllers.factory.PageControllerFactory;
 import src.domainmodel.Guest;
 import src.domainmodel.Post;
 import src.domainmodel.Role;
@@ -70,9 +71,11 @@ public class PostController implements Controller, Initializable {
     private boolean isOpenInPostPage = false;
     private boolean isReplying = false;
     private boolean isPinned = false;
+    private Post post;
 
     public PostController(PostService postService) {
         this.postService = postService;
+        this.post = postService.getPost();
     }
 
     @Override
@@ -124,7 +127,7 @@ public class PostController implements Controller, Initializable {
         Controller currentPageController = GuestContext.getCurrentController();
         if (currentPageController instanceof HomePageController homePageController) {
             homePageController.getPostsContainer().getChildren().remove(myVBox);
-        } else if (currentPageController instanceof CommunityController communityPageController) {
+        } else if (currentPageController instanceof CommunityPageController communityPageController) {
             communityPageController.getPostsContainer().getChildren().remove(myVBox);
         } else if (currentPageController instanceof UserProfilePageController userProfilePageController) {
             userProfilePageController.getPostsContainer().getChildren().remove(myVBox);
@@ -169,7 +172,7 @@ public class PostController implements Controller, Initializable {
 
     private void refreshCommunityPage() {
         Controller currentPageController = GuestContext.getCurrentController();
-        if (currentPageController instanceof CommunityController communityPageController) {
+        if (currentPageController instanceof CommunityPageController communityPageController) {
             communityPageController.refreshPinnedPosts();
         }
     }
@@ -264,6 +267,8 @@ public class PostController implements Controller, Initializable {
 
     private void goToPostPage() {
         String fxmlfile = "/src/view/fxml/PostPage.fxml";
+        // TODO: cosa fare in questo caso?
+        //PostPageController postPageController = PageControllerFactory.createPostPageController(postService.getPost());
         PostPageController postPageController = new PostPageController(postService);
         SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
         SceneManager.loadScene(fxmlfile, postPageController);
@@ -272,7 +277,8 @@ public class PostController implements Controller, Initializable {
     private void loadReplyBox() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/src/view/fxml/Reply.fxml"));
-            PostReplyController postReplyController = new PostReplyController(this);
+            // TODO: review this method with attention
+            PostReplyController postReplyController = ComponentFactory.createPostReplyController(this);
             fxmlLoader.setController(postReplyController);
             VBox replyBox = fxmlLoader.load();
             repliesContainer.getChildren().addFirst(replyBox);

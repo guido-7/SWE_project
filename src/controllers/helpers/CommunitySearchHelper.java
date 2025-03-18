@@ -43,9 +43,10 @@ public class CommunitySearchHelper {
         Task<List<Community>> searchTask = new Task<>() {
             @Override
             protected List<Community> call() {
-                return searchFunction.apply(query);// action for search
+                return searchFunction.apply(query); // action for search
             }
         };
+
         searchField.setOnMouseClicked(e -> {
             isCommunitySelected = false;
             searchField.setEditable(true);
