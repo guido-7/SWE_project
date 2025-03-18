@@ -22,6 +22,7 @@ public class GuestContext {
     }
 
     public static void setCurrentController(Controller currentController) {
+        GuestContext.previousContextController = GuestContext.currentController;
         GuestContext.currentController = currentController;
     }
 
