@@ -129,7 +129,7 @@ public class IntegrationTest {
         postService.toggleLike(user);
 
         // Controllare se il like è stato inserito
-        assertEquals(1, userDAO.getPostVote(USER_ID, POST_ID));
+        assertEquals(LIKE, userDAO.getPostVote(USER_ID, POST_ID));
 
         // Rimuovo il like al Post
         postService.toggleLike(user);
@@ -157,12 +157,12 @@ public class IntegrationTest {
         PostService postService = new PostService(postDAO.findById(POST_ID).orElse(null));
         postService.toggleDislike(user);
         // controllare se il like è stato inserito
-        assertEquals(0, userDAO.getPostVote(USER_ID, POST_ID));
+        assertEquals(DISLIKE, userDAO.getPostVote(USER_ID, POST_ID));
 
         // rimuovo il dislike al Post
         postService.toggleDislike(user);
         // controllare se il dislike è stato rimosso
-        assertEquals(null, userDAO.getPostVote(USER_ID, POST_ID));
+        assertNull(userDAO.getPostVote(USER_ID, POST_ID));
     }
 
     // Test per il controllo del voto del post dell'utente
@@ -185,13 +185,13 @@ public class IntegrationTest {
         postService.toggleLike(user);
 
         // controllo se il like è stato inserito
-        assertEquals(true, postService.isLiked(user.getId()));
-        assertEquals(false, postService.isDisliked(user.getId()));
+        assertTrue(postService.isLiked(USER_ID));
+        assertFalse(postService.isDisliked(USER_ID));
 
         // inserisco il dislike e controllo se è stato inserito
         postService.toggleDislike(user);
-        assertEquals(false, postService.isLiked(user.getId()));
-        assertEquals(true, postService.isDisliked(user.getId()));
+        assertFalse(postService.isLiked(USER_ID));
+        assertTrue(postService.isDisliked(USER_ID));
     }
 
     // Test per aggiungere e rimuovere il like al commento
@@ -217,12 +217,12 @@ public class IntegrationTest {
         CommentService commentService = new CommentService(comment);
         commentService.toggleLike(user);
         // controllo se il like è stato inserito
-        assertEquals(1, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
+        assertEquals(LIKE, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
 
         // rimuovo il like al Comment
         commentService.toggleLike(user);
         // controllare se il like è stato rimosso
-        assertEquals(null, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
+        assertNull(userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
     }
 
     // Test per aggiungere e rimuovere il dislike al commento
@@ -248,12 +248,12 @@ public class IntegrationTest {
         CommentService commentService = new CommentService(comment);
         commentService.toggleDislike(user);
         // controllare se il like è stato inserito
-        assertEquals(0, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
+        assertEquals(DISLIKE, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
 
         // Rimuovo il dislike al comment
         commentService.toggleDislike(user);
         // controllare se il dislike è stato rimosso
-        assertEquals(null, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
+        assertNull(userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
     }
 
     // Test per il controllo del voto del commento dell'utente
@@ -280,13 +280,13 @@ public class IntegrationTest {
         commentService.toggleLike(user);
 
         // Controllo se il like è stato inserito
-        assertEquals(true, commentService.isLiked(user.getId()));
-        assertEquals(false, commentService.isDisliked(user.getId()));
+        assertTrue(commentService.isLiked(USER_ID));
+        assertFalse(commentService.isDisliked(USER_ID));
 
         // inserisco il dislike e controllo se è stato inserito
         commentService.toggleDislike(user);
-        assertEquals(false, commentService.isLiked(user.getId()));
-        assertEquals(true, commentService.isDisliked(user.getId()));
+        assertFalse(commentService.isLiked(USER_ID));
+        assertTrue(commentService.isDisliked(USER_ID));
     }
 
 
@@ -297,14 +297,14 @@ public class IntegrationTest {
         userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
 
         // Eseguo login con utente non registrato
-        assertEquals(false, userDAO.isValidUser(USER_NICKNAME, USER_PASSWORD));
+        assertFalse(userDAO.isValidUser(USER_NICKNAME, USER_PASSWORD));
 
         // Registrazione dell'utente
         int id = userDAO.getUserId(USER_NICKNAME);
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
         // Controllo se l'utente è stato registrato
-        assertEquals(true, userDAO.isRegisteredUser(USER_NICKNAME));
+        assertTrue(userDAO.isRegisteredUser(USER_NICKNAME));
     }
 
     // Test per l'iscrizione ad una community
@@ -315,23 +315,22 @@ public class IntegrationTest {
         int id = userDAO.getUserId(USER_NICKNAME);
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
         User user = userDAO.findById(id).orElse(null);
-        GuestContext guestContext = new GuestContext();
-        guestContext.setCurrentGuest(user);
+        GuestContext.setCurrentGuest(user);
 
         // Creo Community
         communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
 
         // Controllo se l'utente è iscritto alla community
         CommunityService communityService = new CommunityService(COMMUNITY_ID);
-        assertEquals(false, communityService.isSubscribed());
+        assertFalse(communityService.isSubscribed());
 
         // Iscrizione dell'utente alla community
         communityService.subscribe();
-        assertEquals(true, communityService.isSubscribed());
+        assertTrue(communityService.isSubscribed());
 
         // L'utente si disiscrive dalla community
         communityService.unsubscribe();
-        assertEquals(false, communityService.isSubscribed());
+        assertFalse(communityService.isSubscribed());
     }
 
     // Test per il controllo dell'utente bannato
@@ -342,22 +341,21 @@ public class IntegrationTest {
         int id = userDAO.getUserId(USER_NICKNAME);
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
         User user = userDAO.findById(id).orElse(null);
-        GuestContext guestContext = new GuestContext();
-        guestContext.setCurrentGuest(user);
+        GuestContext.setCurrentGuest(user);
 
         // Creo Community
         communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
 
         // Controllo se l'utente è bannato dalla community
         CommunityService communityService = new CommunityService(COMMUNITY_ID);
-        assertEquals(false, communityService.checkBannedUser());
+        assertFalse(communityService.checkBannedUser());
 
         // Banno l'utente dalla community
         communityService.banUser(id, "Reason");
-        assertEquals(true, communityService.checkBannedUser());
+        assertTrue(communityService.checkBannedUser());
     }
 
-    // test controllo moderator
+    // Test controllo moderator
     @Test
     void checkModeratorTest() throws SQLException {
         // Creo User
@@ -365,8 +363,7 @@ public class IntegrationTest {
         int id = userDAO.getUserId(USER_NICKNAME);
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
         User user = userDAO.findById(id).orElse(null);
-        GuestContext guestContext = new GuestContext();
-        guestContext.setCurrentGuest(user);
+        GuestContext.setCurrentGuest(user);
 
         // Creo Community
         communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
@@ -383,6 +380,29 @@ public class IntegrationTest {
         communityService.dismiss(id);
         assertFalse(communityService.isModerator(id));
     }
+
+//    // Test controllo admin
+//    @Test
+//    void checkAdminTest() throws SQLException {
+//        // Creo User
+//        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+//        int id = userDAO.getUserId(USER_NICKNAME);
+//        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+//        User user = userDAO.findById(id).orElse(null);
+//        GuestContext guestContext = new GuestContext();
+//        guestContext.setCurrentGuest(user);
+//
+//        // Controllo se l'utente è un admin
+//        assertFalse(userDAO.isAdmin(id));
+//
+//        // Nomino l'utente come admin
+//        userDAO.promoteAdmin(id);
+//        assertTrue(userDAO.isAdmin(id));
+//
+//        // Rimuovo l'utente come admin
+//        userDAO.dismissAdmin(id);
+//        assertFalse(userDAO.isAdmin(id));
+//    }
 
 
 }
