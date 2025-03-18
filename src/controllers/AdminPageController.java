@@ -259,6 +259,8 @@ public class AdminPageController implements Initializable, Controller {
         }
     }
 
+
+
     private Pair<AnchorPane, SubInfoComponentController> loadUserInfoComponent(Object[] subInfo,int subId) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/UserInfoComponent.fxml"));
         // TODO: review!!!
@@ -276,7 +278,7 @@ public class AdminPageController implements Initializable, Controller {
     }
 
     private void handleDismissButtonClick() throws SQLException {
-        communityService.dismiss(subscriberId);
+        communityService.downgradeModerator(subscriberId);
         removeFromGrid();
         DismissButton.setVisible(false);
         DismissButton.setManaged(false);
@@ -285,7 +287,7 @@ public class AdminPageController implements Initializable, Controller {
 
     private void handlePromoteButtonClick(){
         try {
-            communityService.promote(subscriberId);
+            communityService.promoteToModerator(subscriberId);
             removeFromGrid();
             PromoteButton.setVisible(false);
             PromoteButton.setManaged(false);
