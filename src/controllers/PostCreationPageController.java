@@ -48,18 +48,24 @@ public class PostCreationPageController implements Controller, Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         exitButton.setOnMouseClicked(e -> {
-            SceneManager.loadPreviousScene();
+            try {
+                SceneManager.loadPreviousScene();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         });
+
+        // TODO: review, implement find community without click on menu
         postButton.setOnMouseClicked(e -> {
             String title = titleField.getText();
             String content = contentArea.getText();
             int userId = ((User) GuestContext.getCurrentGuest()).getId();
             try {
                 postCreationService.createPost(title, content, selectedCommunityId, userId);
+                SceneManager.loadPreviousScene(true);
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
-            SceneManager.loadPreviousScene();
         });
 
         SearchService searchService = new SearchService();
