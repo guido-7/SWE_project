@@ -190,7 +190,6 @@ public class CommunityService {
     }
 
     public void dismiss(int subscriberId) throws SQLException {
-        ModeratorDAO moderatorDAO = new ModeratorDAO();
         moderatorDAO.deleteById(subscriberId);
     }
 
