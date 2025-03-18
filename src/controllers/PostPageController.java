@@ -56,7 +56,11 @@ public class PostPageController implements Controller, Initializable {
             });
 
             exitButton.setOnMouseClicked(event -> {
-                SceneManager.loadPreviousScene();
+                try {
+                    SceneManager.loadPreviousScene();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             });
 
         } catch (SQLException e) {
