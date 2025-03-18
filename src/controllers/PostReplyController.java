@@ -4,7 +4,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import src.businesslogic.CommentService;
 import src.businesslogic.PostService;
 import src.servicemanager.GuestContext;
 
@@ -61,6 +60,6 @@ public class PostReplyController implements Controller, Initializable {
                 throw new RuntimeException(e);
             }
         }
-
     }
+
 }
