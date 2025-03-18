@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IntegrationTest {
 
@@ -316,7 +316,7 @@ public class IntegrationTest {
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
         User user = userDAO.findById(id).orElse(null);
         GuestContext guestContext = new GuestContext();
-        guestContext.setCurrentGuest( (Guest) user);
+        guestContext.setCurrentGuest(user);
 
         // Creo Community
         communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
@@ -343,7 +343,7 @@ public class IntegrationTest {
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
         User user = userDAO.findById(id).orElse(null);
         GuestContext guestContext = new GuestContext();
-        guestContext.setCurrentGuest( (Guest) user);
+        guestContext.setCurrentGuest(user);
 
         // Creo Community
         communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
@@ -356,6 +356,33 @@ public class IntegrationTest {
         communityService.banUser(id, "Reason");
         assertEquals(true, communityService.checkBannedUser());
     }
+
+    // test controllo moderator
+    @Test
+    void checkModeratorTest() throws SQLException {
+        // Creo User
+        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        int id = userDAO.getUserId(USER_NICKNAME);
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+        User user = userDAO.findById(id).orElse(null);
+        GuestContext guestContext = new GuestContext();
+        guestContext.setCurrentGuest(user);
+
+        // Creo Community
+        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
+
+        // Controllo se l'utente è un moderatore della community
+        CommunityService communityService = new CommunityService(COMMUNITY_ID);
+        assertFalse(communityService.isModerator(id));
+
+        // Nomino l'utente come moderatore della community
+        communityService.promote(id);
+        assertTrue(communityService.isModerator(id));
+    }
+
+
+
+
 
 
 
