@@ -89,7 +89,11 @@ public class AdminPageController implements Initializable, Controller {
         }
 
         exitButton.setOnMouseClicked(e -> {
-            SceneManager.loadPreviousScene();
+            try {
+                SceneManager.loadPreviousScene();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
     }
