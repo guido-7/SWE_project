@@ -222,22 +222,18 @@ public class CommunityPageController implements Initializable, Controller {
     }
 
     private void handleSettingsClick() {
-//        CommunitySettingsPageController communitySettingsPageController = new CommunitySettingsPageController(communityService);
-//        GuestContext.setCurrentController(communitySettingsPageController);
         CommunitySettingsPageController communitySettingsPageController = PageControllerFactory.createCommunitySettingsController(communityId);
         SceneManager.changeScene("community settings " + communityId, "/src/view/fxml/CommunitySettings.fxml", communitySettingsPageController);
     }
 
     private void openPostCreationPage() {
         PostCreationPageController postCreationController = PageControllerFactory.createPostCreationPageController();
-        GuestContext.setCurrentController(postCreationController);
         SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
         SceneManager.changeScene("post creation " + communityId, "/src/view/fxml/PostCreationPage.fxml", postCreationController);
     }
 
     private void handleRolePageClick() {
         AdminPageController adminPageController = PageControllerFactory.createAdminPageController(communityId);
-        GuestContext.setCurrentController(adminPageController);
         SceneManager.changeScene("Admin Page " + communityId, "/src/view/fxml/AdminPage.fxml", adminPageController);
     }
 
