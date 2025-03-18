@@ -72,7 +72,7 @@ class FunctionalTest extends ApplicationTest {
     @BeforeAll
     public static void seDB() throws SQLException {
         String url = "database/bigDBTest.db";
-        //DBConnection.changeDBPath(url);
+        DBConnection.changeDBPath(url);
         File dbFile = new File(url);
         if (dbFile.exists()) {
             dbFile.delete();
@@ -80,7 +80,7 @@ class FunctionalTest extends ApplicationTest {
         } else {
             System.out.println("The database does not exist.");
         }
-        Connection conn = DBConnection.open_connection(url);
+        DBConnection.open_connection(url);
         SetDB.createDB();
         SetDB.generatefakedata(40, 10, 100, 40);
     }
