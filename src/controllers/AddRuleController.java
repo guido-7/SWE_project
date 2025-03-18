@@ -53,7 +53,7 @@ public class AddRuleController implements Initializable,Controller {
                         .toList()
         );
     }
-    public void handleSaveRuleButtonClick(){
+    private void handleSaveRuleButtonClick(){
         String title = TitleRule.getText();
         String content = TextAreaNewRule.getText();
         int priority = Integer.parseInt(PriorityMenu.getText());

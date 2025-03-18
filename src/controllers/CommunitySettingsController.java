@@ -185,7 +185,7 @@ public class CommunitySettingsController implements Initializable, Controller {
                                 WarningsPopUpController popUpController = new WarningsPopUpController();
                                 loader.setController(popUpController);
                                 Parent root = loader.load();
-                                popUpController.setData(titoloPost, fullcontent);
+                                popUpController.setWarningData(titoloPost, fullcontent);
                                 Stage stage = new Stage();
                                 stage.setScene(new Scene(root));
                                 stage.show();
