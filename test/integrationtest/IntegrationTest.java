@@ -5,8 +5,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import src.businesslogic.CommentService;
+import src.businesslogic.CommunityService;
 import src.businesslogic.PostService;
 import src.domainmodel.Comment;
+import src.domainmodel.Guest;
 import src.domainmodel.User;
 import src.managerdatabase.DBConnection;
 import src.managerdatabase.SetDB;
@@ -14,6 +16,7 @@ import src.orm.CommentDAO;
 import src.orm.CommunityDAO;
 import src.orm.PostDAO;
 import src.orm.UserDAO;
+import src.servicemanager.GuestContext;
 
 import java.io.File;
 import java.sql.Connection;
@@ -26,9 +29,11 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class IntegrationTest {
+
     // Connessione
     private static Connection conn;
     static String url = "database/bigDBTest.db";
+
     // Parametri
     final int USER_ID = 1;
     final int COMMUNITY_ID = 1;
@@ -36,15 +41,24 @@ public class IntegrationTest {
     final int DISLIKE = 0;
     int POST_ID = 1;
     int COMMENT_ID = 1;
-    //DAO
+    String USER_NAME = "Luigi";
+    String USER_SURNAME = "Bianchi";
+    String USER_NICKNAME = "user_test";
+    String USER_PASSWORD = "12345678";
+    String COMMUNITY_TITLE = "Test Community";
+    String COMMUNITY_DESCRIPTION = "Test Description";
+    String POST_TITLE = "Test Title";
+    String POST_CONTENT = "Test Content";
+
+
+    // DAO
     PostDAO postDAO = new PostDAO();
     CommentDAO commentDAO = new CommentDAO();
     CommunityDAO communityDAO = new CommunityDAO();
     UserDAO userDAO = new UserDAO();
 
-
     @BeforeAll
-    static void setUp(){
+    static void setUp() {
         File dbFile = new File(url);
         if (dbFile.exists()) {
             dbFile.delete();
@@ -98,27 +112,29 @@ public class IntegrationTest {
     // Test per aggiungere e rimuovere il like al commento
     @Test
     void AddRemovePostLike() throws SQLException {
-        // creo User
-        userDAO.save(Map.of("nickname", "user_test", "name", "Giacomo", "surname", "Rossi"));
-        int id = userDAO.getUserId("user_test");
-        userDAO.registerUserAccessInfo(id, "user_test", "12345678");
+        // Creo User
+        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        int id = userDAO.getUserId(USER_NICKNAME);
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
-        //creo Community
-        communityDAO.save(Map.of("title", "Test Community", "description", "Test Description"));
+        // Creo Community
+        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
 
-        // creo Post
-        POST_ID = postDAO.save(Map.of("title", "Test Title", "content", "Test Content", "community_id", COMMUNITY_ID, "user_id", USER_ID));
+        // Creo Post
+        POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
 
-        // Inserisco il like al post
+        // Inserisco il like al Post
         User user = userDAO.findById(USER_ID).orElse(null);
         PostService postService = new PostService(postDAO.findById(POST_ID).orElse(null));
         postService.toggleLike(user);
-        // controllare se il like è stato inserito
+
+        // Controllare se il like è stato inserito
         assertEquals(1, userDAO.getPostVote(USER_ID, POST_ID));
 
-        // Rimuovo il like al post
+        // Rimuovo il like al Post
         postService.toggleLike(user);
-        // controllare se il like è stato rimosso
+
+        // Controllare se il like è stato rimosso
         assertEquals(null, userDAO.getPostVote(USER_ID, POST_ID));
     }
 
@@ -126,24 +142,24 @@ public class IntegrationTest {
     @Test
     void AddRemovePostDislike() throws SQLException {
         // creo User
-        userDAO.save(Map.of("nickname", "user_test", "name", "Giacomo", "surname", "Rossi"));
-        int id = userDAO.getUserId("user_test");
-        userDAO.registerUserAccessInfo(id, "user_test", "12345678");
+        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        int id = userDAO.getUserId(USER_NICKNAME);
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
-        //creo Community
-        communityDAO.save(Map.of("title", "Test Community", "description", "Test Description"));
+        // creo Community
+        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
 
         // creo Post
-        POST_ID = postDAO.save(Map.of("title", "Test Title", "content", "Test Content", "community_id", COMMUNITY_ID, "user_id", USER_ID));
+        POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
 
-        // Inserisco il like al post
+        // inserisco il like al Post
         User user = userDAO.findById(USER_ID).orElse(null);
         PostService postService = new PostService(postDAO.findById(POST_ID).orElse(null));
         postService.toggleDislike(user);
         // controllare se il like è stato inserito
         assertEquals(0, userDAO.getPostVote(USER_ID, POST_ID));
 
-        // Rimuovo il dislike al post
+        // rimuovo il dislike al Post
         postService.toggleDislike(user);
         // controllare se il dislike è stato rimosso
         assertEquals(null, userDAO.getPostVote(USER_ID, POST_ID));
@@ -152,23 +168,23 @@ public class IntegrationTest {
     // Test per il controllo del voto del post dell'utente
     @Test
     void checkUserVote() throws SQLException {
-        // Creo User
-        userDAO.save(Map.of("nickname", "user_test", "name", "Giacomo", "surname", "Rossi"));
-        int id = userDAO.getUserId("user_test");
-        userDAO.registerUserAccessInfo(id, "user_test", "12345678");
+        // creo User
+        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        int id = userDAO.getUserId(USER_NICKNAME);
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
-        // Creo Community
-        communityDAO.save(Map.of("title", "Test Community", "description", "Test Description"));
+        // creo Community
+        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
 
-        // Creo Post
-        POST_ID = postDAO.save(Map.of("title", "Test Title", "content", "Test Content", "community_id", COMMUNITY_ID, "user_id", USER_ID));
+        // creo Post
+        POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
 
-        // Inserisco il like al post
+        // inserisco il like al Post
         User user = userDAO.findById(USER_ID).orElse(null);
         PostService postService = new PostService(postDAO.findById(POST_ID).orElse(null));
         postService.toggleLike(user);
 
-        // Controllo se il like è stato inserito
+        // controllo se il like è stato inserito
         assertEquals(true, postService.isLiked(user.getId()));
         assertEquals(false, postService.isDisliked(user.getId()));
 
@@ -181,29 +197,29 @@ public class IntegrationTest {
     // Test per aggiungere e rimuovere il like al commento
     @Test
     void AddRemoveCommentLike() throws SQLException {
-        // creao User
-        userDAO.save(Map.of("nickname", "user_test", "name", "Giacomo", "surname", "Rossi"));
-        int id = userDAO.getUserId("user_test");
-        userDAO.registerUserAccessInfo(id, "user_test", "12345678");
+        // creo User
+        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        int id = userDAO.getUserId(USER_NICKNAME);
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
-        //creo Community
-        communityDAO.save(Map.of("title", "Test Community", "description", "Test Description"));
+        // creo Community
+        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
 
         // creo Post
-        POST_ID = postDAO.save(Map.of("title", "Test Title", "content", "Test Content", "community_id", COMMUNITY_ID, "user_id", USER_ID));
+        POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
 
         // creo Comment
-        COMMENT_ID = commentDAO.save(Map.of("post_id", POST_ID, "level",0, "user_id", USER_ID, "content", "Test Content","community_id", COMMUNITY_ID));
+        COMMENT_ID = commentDAO.save(Map.of("post_id", POST_ID, "level", 0, "user_id", USER_ID, "content", "Test Content", "community_id", COMMUNITY_ID));
 
-        // Inserisco il like al comment
+        // Inserisco il like al Comment
         User user = userDAO.findById(USER_ID).orElse(null);
         Comment comment = commentDAO.findById(List.of(POST_ID, COMMENT_ID)).orElse(null);
         CommentService commentService = new CommentService(comment);
         commentService.toggleLike(user);
-        // controllare se il like è stato inserito
+        // controllo se il like è stato inserito
         assertEquals(1, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
 
-        // Rimuovo il like al comment
+        // rimuovo il like al Comment
         commentService.toggleLike(user);
         // controllare se il like è stato rimosso
         assertEquals(null, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
@@ -212,19 +228,19 @@ public class IntegrationTest {
     // Test per aggiungere e rimuovere il dislike al commento
     @Test
     void AddRemoveCommentDislike() throws SQLException {
-        // creao User
-        userDAO.save(Map.of("nickname", "user_test", "name", "Giacomo", "surname", "Rossi"));
-        int id = userDAO.getUserId("user_test");
-        userDAO.registerUserAccessInfo(id, "user_test", "12345678");
+        // creo User
+        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        int id = userDAO.getUserId(USER_NICKNAME);
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
-        //creo Community
-        communityDAO.save(Map.of("title", "Test Community", "description", "Test Description"));
+        // creo Community
+        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
 
         // creo Post
-        POST_ID = postDAO.save(Map.of("title", "Test Title", "content", "Test Content", "community_id", COMMUNITY_ID, "user_id", USER_ID));
+        POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
 
         // creo Comment
-        COMMENT_ID = commentDAO.save(Map.of("post_id", POST_ID, "level",0, "user_id", USER_ID, "content", "Test Content","community_id", COMMUNITY_ID));
+        COMMENT_ID = commentDAO.save(Map.of("post_id", POST_ID, "level", 0, "user_id", USER_ID, "content", "Test Content", "community_id", COMMUNITY_ID));
 
         // Inserisco il like al comment
         User user = userDAO.findById(USER_ID).orElse(null);
@@ -244,18 +260,18 @@ public class IntegrationTest {
     @Test
     void checkUserVoteComment() throws SQLException {
         // Creo User
-        userDAO.save(Map.of("nickname", "user_test", "name", "Giacomo", "surname", "Rossi"));
-        int id = userDAO.getUserId("user_test");
-        userDAO.registerUserAccessInfo(id, "user_test", "12345678");
+        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        int id = userDAO.getUserId(USER_NICKNAME);
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
         // Creo Community
-        communityDAO.save(Map.of("title", "Test Community", "description", "Test Description"));
+        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
 
         // Creo Post
-        POST_ID = postDAO.save(Map.of("title", "Test Title", "content", "Test Content", "community_id", COMMUNITY_ID, "user_id", USER_ID));
+        POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
 
         // Creo Comment
-        COMMENT_ID = commentDAO.save(Map.of("post_id", POST_ID, "level",0, "user_id", USER_ID, "content", "Test Content","community_id", COMMUNITY_ID));
+        COMMENT_ID = commentDAO.save(Map.of("post_id", POST_ID, "level", 0, "user_id", USER_ID, "content", "Test Content", "community_id", COMMUNITY_ID));
 
         // Inserisco il like al comment
         User user = userDAO.findById(USER_ID).orElse(null);
@@ -273,23 +289,73 @@ public class IntegrationTest {
         assertEquals(true, commentService.isDisliked(user.getId()));
     }
 
+
     // Test per la registrazione dell'utente
     @Test
     void registerUserTest() throws SQLException {
         // Creo User ma senza registrazione
-        userDAO.save(Map.of("nickname", "user_test", "name", "Luigi", "surname", "Bianchi"));
+        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
 
         // Eseguo login con utente non registrato
-        assertEquals(false, userDAO.isValidUser("user_test", "12345678"));
+        assertEquals(false, userDAO.isValidUser(USER_NICKNAME, USER_PASSWORD));
 
         // Registrazione dell'utente
-        int id = userDAO.getUserId("user_test");
-        userDAO.registerUserAccessInfo(id, "user_test", "12345678");
+        int id = userDAO.getUserId(USER_NICKNAME);
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
         // Controllo se l'utente è stato registrato
-        assertEquals(true, userDAO.isRegisteredUser("user_test"));
+        assertEquals(true, userDAO.isRegisteredUser(USER_NICKNAME));
     }
 
+    // Test per l'iscrizione ad una community
+    @Test
+    void subscribeCommunityTest() throws SQLException {
+        // Creo User
+        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        int id = userDAO.getUserId(USER_NICKNAME);
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+        User user = userDAO.findById(id).orElse(null);
+        GuestContext guestContext = new GuestContext();
+        guestContext.setCurrentGuest( (Guest) user);
+
+        // Creo Community
+        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
+
+        // Controllo se l'utente è iscritto alla community
+        CommunityService communityService = new CommunityService(COMMUNITY_ID);
+        assertEquals(false, communityService.isSubscribed());
+
+        // Iscrizione dell'utente alla community
+        communityService.subscribe();
+        assertEquals(true, communityService.isSubscribed());
+
+        // L'utente si disiscrive dalla community
+        communityService.unsubscribe();
+        assertEquals(false, communityService.isSubscribed());
+    }
+
+    // Test per il controllo dell'utente bannato
+    @Test
+    void checkBannedUserTest() throws SQLException {
+        // Creo User
+        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        int id = userDAO.getUserId(USER_NICKNAME);
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+        User user = userDAO.findById(id).orElse(null);
+        GuestContext guestContext = new GuestContext();
+        guestContext.setCurrentGuest( (Guest) user);
+
+        // Creo Community
+        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
+
+        // Controllo se l'utente è bannato dalla community
+        CommunityService communityService = new CommunityService(COMMUNITY_ID);
+        assertEquals(false, communityService.checkBannedUser());
+
+        // Banno l'utente dalla community
+        communityService.banUser(id, "Reason");
+        assertEquals(true, communityService.checkBannedUser());
+    }
 
 
 
