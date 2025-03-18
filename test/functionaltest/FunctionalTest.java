@@ -227,7 +227,6 @@ class FunctionalTest extends ApplicationTest {
             replyButton.fire();
         });
         WaitForAsyncUtils.waitForFxEvents();
-        //sleep(5000);
 
         VBox reply = (VBox) postsContainer.getChildren().getLast();
         Label replyTextElement = from(reply).lookup("#content").query();
@@ -271,23 +270,26 @@ class FunctionalTest extends ApplicationTest {
     void testCreatePost() throws Exception {
         login();
         subscribeCommunity("news");
-        sleep(5000);
-        //openCommunityCreationPage();
         pressButton("#createPostButton");
-        sleep(5000);
 
         TextField community = lookup("#communitySearchBar").query();
         TextField titleField = lookup("#titleField").query();
         TextArea contentField = lookup("#contentArea").query();
-        Button createButton = lookup("#postButton").query();
         Platform.runLater(() -> {
             community.setText("News");
             titleField.setText("Test Post");
             contentField.setText("Test content");
-            createButton.fire();
         });
         WaitForAsyncUtils.waitForFxEvents();
 
+        PostCreationPageController postCreationPageController = (PostCreationPageController) GuestContext.getCurrentController();
+        ContextMenu contextMenu = getPrivateField(postCreationPageController.getCommunitySearchHelper(), "suggestionsPopup");
+        CustomMenuItem firstItem = (CustomMenuItem) contextMenu.getItems().getFirst();
+        Platform.runLater(firstItem::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        pressButton("#postButton");
+        sleep(10000);
         openPost();
 
         Text postTitle = lookup("#postTitle").queryAs(Text.class);
