@@ -12,7 +12,7 @@ import java.sql.SQLException;
 public class LoginService {
     private final UserDAO userDAO = new UserDAO();
 
-    public void manageLogin(String username, String password, Label errorLabel,HomePageController homePageController) {
+    public void manageLogin(String username, String password, Label errorLabel) {
         String validationMessage = validateInput(username, password);
 
         if (validationMessage != null) {
@@ -27,7 +27,7 @@ public class LoginService {
             }
 
             User user = userDAO.createUser(username);
-            initializeUserSession(user,homePageController);
+            initializeUserSession(user);
 
         } catch (SQLException e) {
             showError(errorLabel, "Database error! Please try again.");
@@ -48,14 +48,14 @@ public class LoginService {
         errorLabel.setText(message);
     }
 
-    private void initializeUserSession(User user,HomePageController homePageController) {
+    private void initializeUserSession(User user) {
         GuestContext.setCurrentGuest(user);
 
         FeedService feedService = new FeedService(user);
+
+        HomePageController homePageController = (HomePageController)SceneManager.changeScene("home", "/src/view/fxml/Homepage.fxml", null);
+
         homePageController.setFeedService(feedService);
-
-        SceneManager.changeScene("home", "/src/view/fxml/Homepage.fxml", homePageController);
-
         homePageController.LoadUserPosts();
         homePageController.setLoginButtonVisibility(false);
         homePageController.setUserProfileAccessVisibility(true);

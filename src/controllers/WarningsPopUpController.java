@@ -9,7 +9,7 @@ public class WarningsPopUpController implements Controller {
     @FXML
     private Text Title;
 
-    public void setData(String title, String content) {
+    public void setWarningData(String title, String content) {
         Title.setText(title);
         Title.setFont(javafx.scene.text.Font.font("bold", 20));
         Content.setText(content);

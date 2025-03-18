@@ -22,7 +22,7 @@ public class BanReasonController implements Initializable {
     private final CommunityService communityService;
     private final String nickname;
     private final int reportedId;
-    private BanUserCallback banUserCallback;
+    private final BanUserCallback banUserCallback;
 
     public BanReasonController(int reportedId,String nickname,CommunityService communityService,BanUserCallback banUserCallBack){
         this.communityService = communityService;
@@ -34,15 +34,16 @@ public class BanReasonController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         banButton.setText("Ban"+ nickname );
-        banButton.setOnMouseClicked( event ->{
-            String banReason = banReasonTextArea.getText();
-            //validateBanReason(banReason);
-            communityService.banUser(reportedId,banReason);
-            banUserCallback.execute();
-            ((Stage) banButton.getScene().getWindow()).close(); // Chiude la finestra
+        banButton.setOnMouseClicked( event ->handleBanButtonClick());
+    }
 
-        });
+    private void handleBanButtonClick(){
+        String banReason = banReasonTextArea.getText();
+        communityService.banUser(reportedId,banReason);
+        banUserCallback.execute();
 
+
+        ((Stage) banButton.getScene().getWindow()).close(); // Chiude la finestra
     }
 
 }

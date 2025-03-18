@@ -1,14 +1,10 @@
 package src.businesslogic;
 
-import javafx.scene.control.Label;
 import src.domainmodel.User;
 import src.orm.UserDAO;
 import src.servicemanager.GuestContext;
-import src.servicemanager.FormattedTime;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+import java.util.Map;
 
 public class BannedService {
     private final int communityId;
@@ -18,21 +14,9 @@ public class BannedService {
         this.communityId = communityId;
     }
 
-    public void setLabels(Label banDurationLabel, Label banReasonLabel) {
+    public Map<String,String> getBannedInfo(){
         User user = (User) GuestContext.getCurrentGuest();
-
-        HashMap<String, String> bannedInfo = userDAO.getBannedInfo(user.getId(), communityId);
-        if (bannedInfo != null) {
-            LocalDateTime banDate = LocalDateTime.parse(bannedInfo.get("ban_date"), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-            FormattedTime formattedTime = new FormattedTime();
-            String formattedBanDuration = formattedTime.getBanTime(banDate);
-
-            banDurationLabel.setText(formattedBanDuration);
-            banReasonLabel.setText(bannedInfo.get("reason"));
-        } else {
-            banDurationLabel.setText("N/A");
-            banReasonLabel.setText("N/A");
-        }
+        return userDAO.getBannedInfo(user.getId(), communityId);
     }
 
 }

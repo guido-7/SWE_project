@@ -32,7 +32,7 @@ public class SignUpService {
             userDAO.registerUserAccessInfo(id, nickname, password);
 
             System.out.println("User registered successfully!");
-            SceneManager.changeSecondaryScene("login", "/src/view/fxml/Login.fxml", new LoginController());
+            SceneManager.changeSecondaryScene("login", "/src/view/fxml/Login.fxml", new LoginController(new LoginService()));
 
         } catch (Exception e) {
             System.err.println("Registration failed: " + e.getMessage());

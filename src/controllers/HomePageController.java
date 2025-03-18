@@ -45,8 +45,8 @@ public class HomePageController implements Initializable,Controller  {
     private FeedService feedService;
     private Boolean isLoading = false;
     private Boolean allPostsLoaded = false;
-    private ProgressIndicator progressIndicator = new ProgressIndicator();
     private CommunitySearchHelper communitySearchHelper;
+    private final ProgressIndicator progressIndicator = new ProgressIndicator();
 
     private final SearchService searchService = new SearchService();
 
@@ -161,8 +161,7 @@ public class HomePageController implements Initializable,Controller  {
 
     public void handleLoginButton() {
         System.out.println("Login button clicked!");
-        LoginController loginController = new LoginController();
-        loginController.setHomePageController(this);
+        LoginController loginController = new LoginController(new LoginService());
         Stage stage = (Stage) searchField.getScene().getWindow();
         SceneManager.openModal("login", "/src/view/fxml/Login.fxml", loginController, stage);
     }
@@ -185,9 +184,7 @@ public class HomePageController implements Initializable,Controller  {
 
     @Override
     public void init_data() {
-        if (scrollPane.getContent() instanceof Pane) {
-            ((Pane) scrollPane.getContent()).getChildren().clear();
-        }
+        postsContainer.getChildren().clear();
         boolean isUser = !(GuestContext.getCurrentGuest().getRole() == Role.GUEST);
         createPostButton.setVisible(isUser);
         createPostButton.setManaged(isUser);
@@ -197,7 +194,7 @@ public class HomePageController implements Initializable,Controller  {
         searchField.clear();
         searchField.setEditable(false);
         List<Post> post = feedService.getFeed();
-        if(!(post ==null) ){
+        if (!(post == null)) {
             posts = new ArrayList<>(feedService.getFeed());
             loadPosts(posts);
         }
