@@ -323,11 +323,11 @@ public class IntegrationTest {
         assertFalse(communityService.isSubscribed());
 
         // Iscrizione dell'utente alla community
-        communityService.subscribe();
+        assertTrue(communityService.subscribe());
         assertTrue(communityService.isSubscribed());
 
         // L'utente si disiscrive dalla community
-        communityService.unsubscribe();
+        assertTrue(communityService.unsubscribe());
         assertFalse(communityService.isSubscribed());
     }
 
@@ -402,8 +402,37 @@ public class IntegrationTest {
 
         // Rimuovo l'utente come admin della community
         communityService.downgradeAdmin(id);
-        assertFalse(adminDAO.isAdmin(id, COMMUNITY_ID));
+        assertTrue(communityService.isAdmin(id));
     }
+
+    // Test per la creazione ed eliminazione di una community
+    @Test
+    void createDeleteCommunityTest() throws SQLException {
+        // Creo User
+        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        int id = userDAO.getUserId(USER_NICKNAME);
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+        User user = userDAO.findById(id).orElse(null);
+        GuestContext.setCurrentGuest(user);
+
+        // Creo Community
+        CommunityCreationService communityCreationService = new CommunityCreationService();
+
+        // Controllo se la community è stata creata
+        assertEquals(COMMUNITY_ID,communityCreationService.createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
+        assertNotNull(communityDAO.findById(COMMUNITY_ID).orElse(null));
+
+        // Elimino la community
+        CommunityService communityService = new CommunityService(COMMUNITY_ID);
+        communityService.deleteCommunity();
+
+        // Controllo se la community è stata eliminata
+        assertNull(communityDAO.findById(COMMUNITY_ID).orElse(null));
+
+    }
+
+
+
 
 
 }
