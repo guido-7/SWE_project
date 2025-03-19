@@ -398,7 +398,7 @@ public class IntegrationTest {
 
         // Nomino l'utente come admin
         communityService.promoteToAdmin(id);
-        assertTrue(adminDAO.isAdmin(id, COMMUNITY_ID));
+        assertTrue(communityService.isAdmin(id));
 
         // Rimuovo l'utente come admin della community
         communityService.downgradeAdmin(id);
