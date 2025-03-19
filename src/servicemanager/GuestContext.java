@@ -3,18 +3,23 @@ package src.servicemanager;
 import src.controllers.Controller;
 import src.domainmodel.Guest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GuestContext {
     private static Guest previousContextGuest;
     private static  Guest currentGuest;
     private static Controller currentController;
-    private static Controller previousContextController;
+    private static final List<Controller> previousContextController = new ArrayList<Controller>();
 
     public static Controller getPreviousContextController() {
-        return previousContextController;
+        Controller ctrl = previousContextController.getLast();
+        previousContextController.removeLast();
+        return ctrl;
     }
 
     public static void setPreviousContextController(Controller previousContextController) {
-        GuestContext.previousContextController = previousContextController;
+        GuestContext.previousContextController.addLast(previousContextController);
     }
 
     public static Controller getCurrentController() {
@@ -22,7 +27,7 @@ public class GuestContext {
     }
 
     public static void setCurrentController(Controller currentController) {
-        GuestContext.previousContextController = GuestContext.currentController;
+        setPreviousContextController(currentController);
         GuestContext.currentController = currentController;
     }
 
@@ -46,4 +51,5 @@ public class GuestContext {
         currentGuest = previousContextGuest;
         previousContextGuest = null;
     }
+
 }
