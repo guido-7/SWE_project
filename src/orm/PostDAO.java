@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -318,7 +319,7 @@ public class PostDAO extends BaseDAO<Post, Integer> {
     }
 
     public void removePinnedPost(int postId, int communityId) {
-        String query = "DELETE FROM PinnedPost WHERE post_id = ? and community_id= ?";
+        String query = "DELETE FROM PinnedPost WHERE post_id = ? and community_id = ?";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, postId);
@@ -361,4 +362,22 @@ public class PostDAO extends BaseDAO<Post, Integer> {
         return posts;
     }
 
+    public Map<Integer, Integer> getSenders(ArrayList<Post> posts) {
+        Map<Integer, Integer> senderIds = new HashMap<>();
+        String query = "SELECT sender_id FROM PostWarnings WHERE post_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            for (Post post : posts) {
+                statement.setInt(1, post.getId());
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        senderIds.put(resultSet.getInt("sender_id"), post.getId());
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return senderIds;
+    }
 }

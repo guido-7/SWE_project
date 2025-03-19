@@ -13,15 +13,16 @@ import java.util.Map;
 public class SetDB {
 
     public static void main(String[] args) throws SQLException {
-        DBConnection.connect();
-        createDB();
-        DBConnection.disconnect();
+        //DBConnection.connect();
+        //createDB();
+        //DBConnection.disconnect();
         final int numberofPosts = 40;
         final int numberofCommunities = 10;
         final int numberofUser = 100;
         final int numberofComments = 40;
 
-        generatefakedata(numberofPosts, numberofCommunities, numberofUser, numberofComments);
+        //generatefakedata(numberofPosts, numberofCommunities, numberofUser, numberofComments);
+        generateFakeWarningsForSpecificCommunity(10,1,3,10);
     }
 
     public static void createDB() {
@@ -551,6 +552,8 @@ public class SetDB {
             Post post = postDAO.findById((int) ((Math.random() * numberofPosts) + 1)).orElse(null);
             postDAO.addPostWarning(post, user.getId());
         }
+        //generate more warning for a specific community
+        //generateFakeWarningsForSpecificCommunity(numberofPosts,1,numberofPosts,numberofUsers);
         System.out.println("Post Warnings created\n");
 
         userDAO.save(Map.of("nickname", "admin", "name", "admin", "surname", "admin"));
@@ -563,19 +566,21 @@ public class SetDB {
     }
 
     public static void generateFakeWarningsForSpecificCommunity(int noOfWarnings,int communityId,int numberOfPost,int numberOfUsers) throws SQLException {
-        //add query to get the people who already have signaled the post
         UserDAO userDAO = new UserDAO();
         PostDAO postDAO = new PostDAO();
-        ArrayList<Integer> senderIds = new ArrayList<>();
         ArrayList<Post> posts = postDAO.getPosts(communityId,numberOfPost,0);
+        Map<Integer,Integer> SenderIds = postDAO.getSenders(posts);
+
         int i = 0;
         do {
             User user = userDAO.findById((int) ((Math.random() * numberOfUsers) + 1)).orElse(null);
             int userId = user.getId();
-            if(!senderIds.contains(userId)){
-                senderIds.add(userId);
-                int j = (int) ((Math.random() * posts.size()));
-                postDAO.addPostWarning(posts.get(j),user.getId());
+            int j = (int) ((Math.random() * posts.size()));
+            Post randomPost = posts.get(j);
+            int randomPostId = randomPost.getId();
+            if (!SenderIds.containsKey(userId) || SenderIds.get(userId) != randomPostId) {
+                SenderIds.put(userId, randomPostId);
+                postDAO.addPostWarning(randomPost, user.getId());
                 i++;
             }
         }while (i < noOfWarnings);
