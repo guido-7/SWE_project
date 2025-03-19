@@ -561,4 +561,23 @@ public class SetDB {
         communityDAO.save(Map.of("title", "news", "description", "community for news"));
         System.out.println("News Community created");
     }
+
+    public static void generateFakeWarningsForSpecificCommunity(int noOfWarnings,int communityId,int numberOfPost,int numberOfUsers) throws SQLException {
+        //add query to get the people who already have signaled the post
+        UserDAO userDAO = new UserDAO();
+        PostDAO postDAO = new PostDAO();
+        ArrayList<Integer> senderIds = new ArrayList<>();
+        ArrayList<Post> posts = postDAO.getPosts(communityId,numberOfPost,0);
+        int i = 0;
+        do {
+            User user = userDAO.findById((int) ((Math.random() * numberOfUsers) + 1)).orElse(null);
+            int userId = user.getId();
+            if(!senderIds.contains(userId)){
+                senderIds.add(userId);
+                int j = (int) ((Math.random() * posts.size()));
+                postDAO.addPostWarning(posts.get(j),user.getId());
+                i++;
+            }
+        }while (i < noOfWarnings);
+    }
 }
