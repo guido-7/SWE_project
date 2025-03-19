@@ -207,8 +207,13 @@ public class CommunityService {
         return subscriptionDAO.getFilteredSubs(communityId, searchTerm, maxnumberOfSubsShown, 0);
 
     }
+
     public boolean isModerator(int moderatorId) {
         return moderatorDAO.isModerator(moderatorId, communityId);
+    }
+
+    public boolean isAdmin(int userId) {
+        return adminDAO.isAdmin(userId, communityId);
     }
 
     public User getUser(int userId) throws SQLException {
