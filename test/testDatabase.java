@@ -50,10 +50,11 @@ class SetDBTest {
             stmt.executeUpdate("PRAGMA foreign_keys = OFF;");
 
             List<String> tables = Arrays.asList(
-                    "User", "Community", "UserAccess", "Admin", "Rules",
-                    "Post", "Comment", "CommentHierarchy", "BannedUsers",
-                    "Moderator", "Subscription", "PostVotes", "PostWarnings",
-                    "CommentWarnings"
+                    "Admin", "BannedUsers", "Comment", "CommentHierarchy",
+                    "CommentVotes", "CommentWarnings", "Community",
+                    "Moderator", "Post", "PostVotes", "PostWarnings",
+                    "Rules", "SavedPost", "Subscription", "TimeOut",
+                    "User", "UserAccess", "UserDescription"
             );
             for (String t : tables) {
                 stmt.executeUpdate("DELETE FROM " + t + ";");
@@ -66,7 +67,6 @@ class SetDBTest {
 
             stmt.executeUpdate("PRAGMA foreign_keys = ON;");
         }
-
         conn.close();
 
         try (Connection connVacuum = DBConnection.open_connection(url);
