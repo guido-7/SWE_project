@@ -4,10 +4,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import src.businesslogic.CommentService;
-import src.businesslogic.CommunityCreationService;
-import src.businesslogic.CommunityService;
-import src.businesslogic.PostService;
+import src.businesslogic.*;
 import src.domainmodel.Comment;
 import src.domainmodel.User;
 import src.managerdatabase.DBConnection;
@@ -312,8 +309,7 @@ public class IntegrationTest {
         userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         int id = userDAO.getUserId(USER_NICKNAME);
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-        User user = userDAO.findById(id).orElse(null);
-        GuestContext.setCurrentGuest(user);
+        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
 
         // Creo Community
         communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
@@ -338,8 +334,7 @@ public class IntegrationTest {
         userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         int id = userDAO.getUserId(USER_NICKNAME);
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-        User user = userDAO.findById(id).orElse(null);
-        GuestContext.setCurrentGuest(user);
+        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
 
         // Creo Community
         communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
@@ -360,8 +355,7 @@ public class IntegrationTest {
         userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         int id = userDAO.getUserId(USER_NICKNAME);
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-        User user = userDAO.findById(id).orElse(null);
-        GuestContext.setCurrentGuest(user);
+        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
 
         // Creo Community
         communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
@@ -386,8 +380,7 @@ public class IntegrationTest {
         userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         int id = userDAO.getUserId(USER_NICKNAME);
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-        User user = userDAO.findById(id).orElse(null);
-        GuestContext.setCurrentGuest(user);
+        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
 
         // Creo Community
         communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
@@ -402,7 +395,7 @@ public class IntegrationTest {
 
         // Rimuovo l'utente come admin della community
         communityService.downgradeAdmin(id);
-        assertTrue(communityService.isAdmin(id));
+        assertFalse(communityService.isAdmin(id));
     }
 
     // Test per la creazione ed eliminazione di una community
@@ -412,8 +405,7 @@ public class IntegrationTest {
         userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         int id = userDAO.getUserId(USER_NICKNAME);
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-        User user = userDAO.findById(id).orElse(null);
-        GuestContext.setCurrentGuest(user);
+        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
 
         // Creo Community
         CommunityCreationService communityCreationService = new CommunityCreationService();
@@ -428,9 +420,36 @@ public class IntegrationTest {
 
         // Controllo se la community è stata eliminata
         assertNull(communityDAO.findById(COMMUNITY_ID).orElse(null));
-
     }
 
+    // Test per la creazione di un post
+    @Test
+    void createPostTest() throws SQLException {
+        // Creo User
+        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        int id = userDAO.getUserId(USER_NICKNAME);
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
+
+        // Creo Community
+        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
+
+        // Creo Post
+        PostCreationService postCreationService = new PostCreationService();
+        postCreationService.createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, id);
+
+        // Controllo se il post è stato creato
+        assertNotNull(postDAO.findById(POST_ID).orElse(null));
+        assertEquals(POST_ID, postDAO.findById(POST_ID).orElse(null).getId());
+
+        // Elimino il post
+        PostService postService = new PostService(postDAO.findById(POST_ID).orElse(null));
+        postService.deletePost(POST_ID);
+
+        // Controllo se il post è stato eliminato
+        assertNull(postDAO.findById(POST_ID).orElse(null));
+
+    }
 
 
 
