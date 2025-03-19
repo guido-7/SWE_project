@@ -13,16 +13,16 @@ import java.util.Map;
 public class SetDB {
 
     public static void main(String[] args) throws SQLException {
-        //DBConnection.connect();
-        //createDB();
-        //DBConnection.disconnect();
+        DBConnection.connect();
+        createDB();
+        DBConnection.disconnect();
         final int numberofPosts = 40;
         final int numberofCommunities = 10;
         final int numberofUser = 100;
         final int numberofComments = 40;
 
-        //generatefakedata(numberofPosts, numberofCommunities, numberofUser, numberofComments);
-        generateFakeWarningsForSpecificCommunity(10,1,3,10);
+        generatefakedata(numberofPosts, numberofCommunities, numberofUser, numberofComments);
+        //generateFakeWarningsForSpecificCommunity(10,1,3,10);
     }
 
     public static void createDB() {
@@ -556,8 +556,7 @@ public class SetDB {
         //generateFakeWarningsForSpecificCommunity(numberofPosts,1,numberofPosts,numberofUsers);
         System.out.println("Post Warnings created\n");
 
-        userDAO.save(Map.of("nickname", "admin", "name", "admin", "surname", "admin"));
-        int id = userDAO.getUserId("admin");
+        int id = userDAO.save(Map.of("nickname", "admin", "name", "admin", "surname", "admin"));
         userDAO.registerUserAccessInfo(id, "admin", "12345678");
         System.out.println("admin created");
 
@@ -585,4 +584,5 @@ public class SetDB {
             }
         }while (i < noOfWarnings);
     }
+
 }
