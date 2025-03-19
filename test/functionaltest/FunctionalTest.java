@@ -26,7 +26,6 @@ import src.servicemanager.SceneManager;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -272,27 +271,35 @@ class FunctionalTest extends ApplicationTest {
         subscribeCommunity("news");
         pressButton("#createPostButton");
 
+        // select community
         TextField community = lookup("#communitySearchBar").query();
-        TextField titleField = lookup("#titleField").query();
-        TextArea contentField = lookup("#contentArea").query();
-        Platform.runLater(() -> {
-            community.setText("News");
-            titleField.setText("Test Post");
-            contentField.setText("Test content");
-        });
+        Platform.runLater(() -> community.setText("News"));
         WaitForAsyncUtils.waitForFxEvents();
 
+        //select first suggestion
         PostCreationPageController postCreationPageController = (PostCreationPageController) GuestContext.getCurrentController();
         ContextMenu contextMenu = getPrivateField(postCreationPageController.getCommunitySearchHelper(), "suggestionsPopup");
         CustomMenuItem firstItem = (CustomMenuItem) contextMenu.getItems().getFirst();
         Platform.runLater(firstItem::fire);
         WaitForAsyncUtils.waitForFxEvents();
 
+        TextField titleField = lookup("#titleField").query();
+        TextArea contentField = lookup("#contentArea").query();
+        Platform.runLater(() -> {
+            titleField.setText("Test Post");
+            contentField.setText("Test content");
+        });
+        WaitForAsyncUtils.waitForFxEvents();
+
         pressButton("#postButton");
-        sleep(10000);
         openPost();
 
-        Text postTitle = lookup("#postTitle").queryAs(Text.class);
+        // get post
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty());
+        VBox post = (VBox) postsContainer.getChildren().getFirst();
+
+        Label postTitle = from(post).lookup("#title").queryAs(Label.class);
         assertEquals("Test Post", postTitle.getText());
     }
 
@@ -310,13 +317,13 @@ class FunctionalTest extends ApplicationTest {
         return (T) field.get(object);
     }
 
-    void goToLoginPage() throws Exception {
+    private void goToLoginPage() throws Exception {
         Button login = lookup("#login").query();
         Platform.runLater(() -> login.fireEvent(mouseClick));
         WaitForAsyncUtils.waitForFxEvents();
     }
 
-    void login() throws Exception {
+    private void login() throws Exception {
         goToLoginPage();
         TextField usernameField = lookup("#usernameField").query();
         TextField passwordField = lookup("#passwordField").query();
@@ -330,11 +337,9 @@ class FunctionalTest extends ApplicationTest {
         WaitForAsyncUtils.waitForFxEvents();
     }
 
-    void openCommunityPage(String communityTitle) throws Exception {
+    private void openCommunityPage(String communityTitle) throws Exception {
         TextField searchField = lookup("#searchField").query();
-        Platform.runLater(() -> {
-            searchField.setText(communityTitle);
-        });
+        Platform.runLater(() -> searchField.setText(communityTitle));
         WaitForAsyncUtils.waitForFxEvents();
 
         ContextMenu contextMenu = getPrivateField(homePageController.getCommunitySearchHelper(), "suggestionsPopup");
@@ -343,7 +348,7 @@ class FunctionalTest extends ApplicationTest {
         WaitForAsyncUtils.waitForFxEvents();
     }
 
-    void subscribeCommunity(String communityTitle) throws Exception {
+    private void subscribeCommunity(String communityTitle) throws Exception {
         openCommunityPage(communityTitle);
         Button subscribeButton = lookup("#subscribeButton").query();
         if(subscribeButton.isVisible()) {
@@ -354,14 +359,14 @@ class FunctionalTest extends ApplicationTest {
         WaitForAsyncUtils.waitForFxEvents();
     }
 
-    void pressButton(String buttonId) {
+    private void pressButton(String buttonId) {
         Button button = lookup(buttonId + "").query();
         //Platform.runLater(button::fire);
         Platform.runLater(() -> button.fireEvent(mouseClick));
         WaitForAsyncUtils.waitForFxEvents();
     }
 
-    void openPost() {
+    private void openPost() {
         VBox postsContainer = lookup("#postsContainer").query();
         assertFalse(postsContainer.getChildren().isEmpty());
         VBox post = (VBox) postsContainer.getChildren().getFirst();
