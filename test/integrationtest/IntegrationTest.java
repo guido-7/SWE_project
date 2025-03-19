@@ -54,6 +54,7 @@ public class IntegrationTest {
 
     @BeforeAll
     static void setUp() {
+        DBConnection.changeDBPath(url);
         File dbFile = new File(url);
         if (dbFile.exists()) {
             dbFile.delete();
@@ -108,8 +109,7 @@ public class IntegrationTest {
     @Test
     void AddRemovePostLike() throws SQLException {
         // Creo User
-        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        int id = userDAO.getUserId(USER_NICKNAME);
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
         // Creo Community
