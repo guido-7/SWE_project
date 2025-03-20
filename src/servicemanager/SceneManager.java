@@ -144,7 +144,6 @@ public class SceneManager {
 
     private static void LoadScene(String fileFxml, Controller controller, Stage stage) {
         try {
-            GuestContext.setPreviousContextController(GuestContext.getCurrentController());
             GuestContext.setCurrentController(controller);
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fileFxml));
             loader.setController(controller);
