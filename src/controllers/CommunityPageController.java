@@ -206,7 +206,7 @@ public class CommunityPageController implements Initializable, Controller {
         }
 
         // get user role and set UI
-        GuestContext.setPreviousContextGuest(GuestContext.getCurrentGuest());
+        //GuestContext.setPreviousContextGuest(GuestContext.getCurrentGuest());
         Guest guest = retriveRightGuest();
         GuestContext.setCurrentGuest(guest);
 
