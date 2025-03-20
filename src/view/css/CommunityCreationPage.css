@@ -41,3 +41,12 @@ Text {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
 }
+
+#errorLabel{
+    -fx-font-size: 16px;
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial", sans-serif;
+    -fx-alignment: center;
+    -fx-opacity: 0;
+}

@@ -38,6 +38,8 @@ public class CommunityCreationPageController implements Controller, Initializabl
     private TextField RuleTitle3;
     @FXML
     private ImageView exitButton;
+    @FXML
+    private Label errorLabel;
 
     private final CommunityCreationService communityCreationService;
 
@@ -72,11 +74,16 @@ public class CommunityCreationPageController implements Controller, Initializabl
         RuleTitle2.clear();
         RuleTitle3.clear();
     }
+
     private void createCommunity(){
         String title = titleField.getText();
         String description = descriptionArea.getText();
+        communityCreationService.setErrorLabel(errorLabel);
         try {
             int communityId = communityCreationService.createCommunity(title, description);
+            // Se communityId è -1 significa che c'è stato un errore, quindi non cambiare pagina
+            if (communityId == -1) return;
+
             ArrayList<TextArea> rules = new ArrayList<>(List.of(rule1, rule2, rule3));
             ArrayList<TextField> rulesTitle = new ArrayList<>(List.of(RuleTitle1, RuleTitle2, RuleTitle3));
             Map<Integer,ArrayList<String>> ruleMapping = new HashMap<>();
@@ -93,7 +100,6 @@ public class CommunityCreationPageController implements Controller, Initializabl
             throw new RuntimeException(ex);
         }
         SceneManager.changeScene("home", "/src/view/fxml/HomePage.fxml",null);
-
 
     }
 

@@ -317,5 +317,19 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
         }
         return false;
     }
+
+    public boolean findByTitle(String community_title) {
+        String sql = "SELECT * FROM Community WHERE title = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, community_title);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }
 

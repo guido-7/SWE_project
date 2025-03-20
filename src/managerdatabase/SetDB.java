@@ -50,11 +50,12 @@ public class SetDB {
     public static void createCommunityTable() {
         String sql = "CREATE TABLE IF NOT EXISTS Community ("
                 + " id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + " title TEXT NOT NULL,"
+                + " title TEXT NOT NULL UNIQUE,"
                 + " description TEXT,"
                 + " visits INTEGER DEFAULT 0,"
                 + " scores REAL DEFAULT 1,"
-                + " subs INTEGER DEFAULT 0"
+                + " subs INTEGER DEFAULT 0,"
+                + " UNIQUE(title)"
                 + ");";
 
         DBConnection.query(sql);
