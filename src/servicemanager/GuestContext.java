@@ -8,7 +8,7 @@ import java.util.List;
 
 public class GuestContext {
     private static Guest previousContextGuest;
-    private static  Guest currentGuest;
+    private static Guest currentGuest;
     private static Controller currentController;
     private static final List<Controller> previousContextController = new ArrayList<Controller>();
 
@@ -27,7 +27,7 @@ public class GuestContext {
     }
 
     public static void setCurrentController(Controller currentController) {
-        setPreviousContextController(currentController);
+        setPreviousContextController(GuestContext.currentController);
         GuestContext.currentController = currentController;
     }
 
