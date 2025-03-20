@@ -44,7 +44,6 @@ public class IntegrationTest {
     String POST_TITLE = "Test Title";
     String POST_CONTENT = "Test Content";
 
-
     // DAO
     PostDAO postDAO = new PostDAO();
     CommentDAO commentDAO = new CommentDAO();
@@ -137,8 +136,7 @@ public class IntegrationTest {
     @Test
     void AddRemovePostDislike() throws SQLException {
         // creo User
-        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        int id = userDAO.getUserId(USER_NICKNAME);
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
         // creo Community
@@ -164,8 +162,7 @@ public class IntegrationTest {
     @Test
     void checkUserVote() throws SQLException {
         // creo User
-        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        int id = userDAO.getUserId(USER_NICKNAME);
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
         // creo Community
@@ -193,8 +190,7 @@ public class IntegrationTest {
     @Test
     void AddRemoveCommentLike() throws SQLException {
         // creo User
-        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        int id = userDAO.getUserId(USER_NICKNAME);
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
         // creo Community
@@ -224,8 +220,7 @@ public class IntegrationTest {
     @Test
     void AddRemoveCommentDislike() throws SQLException {
         // creo User
-        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        int id = userDAO.getUserId(USER_NICKNAME);
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
         // creo Community
@@ -255,8 +250,7 @@ public class IntegrationTest {
     @Test
     void checkUserVoteComment() throws SQLException {
         // Creo User
-        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        int id = userDAO.getUserId(USER_NICKNAME);
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
 
         // Creo Community
@@ -306,8 +300,7 @@ public class IntegrationTest {
     @Test
     void subscribeCommunityTest() throws SQLException {
         // Creo User
-        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        int id = userDAO.getUserId(USER_NICKNAME);
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
         GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
 
@@ -331,8 +324,7 @@ public class IntegrationTest {
     @Test
     void checkBannedUserTest() throws SQLException {
         // Creo User
-        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        int id = userDAO.getUserId(USER_NICKNAME);
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
         GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
 
@@ -352,8 +344,7 @@ public class IntegrationTest {
     @Test
     void checkModeratorTest() throws SQLException {
         // Creo User
-        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        int id = userDAO.getUserId(USER_NICKNAME);
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
         GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
 
@@ -377,8 +368,7 @@ public class IntegrationTest {
     @Test
     void checkAdminTest() throws SQLException {
         // Creo User
-        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        int id = userDAO.getUserId(USER_NICKNAME);
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
         GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
 
@@ -402,8 +392,7 @@ public class IntegrationTest {
     @Test
     void createDeleteCommunityTest() throws SQLException {
         // Creo User
-        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        int id = userDAO.getUserId(USER_NICKNAME);
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
         GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
 
@@ -424,10 +413,9 @@ public class IntegrationTest {
 
     // Test per la creazione di un post
     @Test
-    void createPostTest() throws SQLException {
+    void createDeletePostTest() throws SQLException {
         // Creo User
-        userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        int id = userDAO.getUserId(USER_NICKNAME);
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
         userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
         GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
 
@@ -448,8 +436,8 @@ public class IntegrationTest {
 
         // Controllo se il post è stato eliminato
         assertNull(postDAO.findById(POST_ID).orElse(null));
-
     }
+
 
 
 
