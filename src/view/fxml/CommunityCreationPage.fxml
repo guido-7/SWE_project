@@ -15,7 +15,7 @@
 
 <AnchorPane prefHeight="650" prefWidth="910.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
 
-    <VBox  alignment="TOP_CENTER" layoutX="20.0" layoutY="14.0" prefHeight="650.0" prefWidth="900.0" spacing="10" stylesheets="@../css/CommunityCreationPage.css" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+    <VBox alignment="TOP_CENTER" layoutX="20.0" layoutY="14.0" prefHeight="650.0" prefWidth="900.0" spacing="10" stylesheets="@../css/CommunityCreationPage.css" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
         <HBox prefHeight="100.0" prefWidth="200.0">
             <children>
                 <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />

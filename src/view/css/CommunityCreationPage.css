@@ -43,7 +43,7 @@ Text {
 }
 
 #errorLabel{
-    -fx-font-size: 16px;
+    -fx-font-size: 14px;
     -fx-text-fill: red;
     -fx-font-weight: bold;
     -fx-font-family: "Arial", sans-serif;
