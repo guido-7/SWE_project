@@ -6,6 +6,8 @@ public class DBConnection {
     private static Connection conn;
     private static String dbPath = "database/bigDB.db";
 
+    private DBConnection(){}
+
     public static void connect() {
         try {
             if (conn == null || conn.isClosed()) {
