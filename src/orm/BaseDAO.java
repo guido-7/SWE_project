@@ -119,7 +119,7 @@ public abstract class BaseDAO<T, ID> {
     public void insertMultipleValues(String tableName, String[] columnNames, Object... values) throws SQLException {
         String columnName = String.join(",", columnNames);
         String placeholders = String.join(",", Collections.nCopies(values.length, "?"));
-        String query = "INSERT OR UPDATE INTO " + tableName + " (" + columnName + ") VALUES (" + placeholders + ")";
+        String query = "INSERT OR REPLACE INTO " + tableName + " (" + columnName + ") VALUES (" + placeholders + ")";
 
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement statement = connection.prepareStatement(query)) {
