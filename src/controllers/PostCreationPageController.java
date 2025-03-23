@@ -3,6 +3,7 @@ package src.controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -29,6 +30,8 @@ public class PostCreationPageController implements Controller, Initializable {
     private Button postButton;
     @FXML
     private TextField titleField;
+    @FXML
+    private Label errorLabel;
 
     int selectedCommunityId;
     private final PostCreationService postCreationService;
@@ -55,13 +58,14 @@ public class PostCreationPageController implements Controller, Initializable {
             }
         });
 
-        // TODO: review, implement find community without click on menu
         postButton.setOnMouseClicked(e -> {
             String title = titleField.getText();
             String content = contentArea.getText();
+            String community = communitySearchBar.getText();
+            postCreationService.setErrorLabel(errorLabel);
             int userId = ((User) GuestContext.getCurrentGuest()).getId();
             try {
-                postCreationService.createPost(title, content, selectedCommunityId, userId);
+                if(!(postCreationService.createPost(community, title, content, selectedCommunityId, userId))) return;
                 SceneManager.loadPreviousScene(true);
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);

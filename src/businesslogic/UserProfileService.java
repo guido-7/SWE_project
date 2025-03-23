@@ -24,7 +24,7 @@ public class UserProfileService {
 
     public void SaveDescription(String description) throws SQLException {
         String [] columns = {"user_id","description"};
-        userDAO.insertMultipleValues("UserDescription", columns,user.getId(), description);
+        userDAO.insertMultipleValues("UserDescription", columns, user.getId(), description);
     }
 
     public void updateDescription(String description) throws SQLException {

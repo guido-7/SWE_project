@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -32,6 +33,7 @@
                 </ImageView>
             </children>
         </HBox>
+      <Label fx:id="errorLabel" text="SELEZIONA COMMUNITY" />
         <TextField fx:id="communitySearchBar" maxHeight="38.0" maxWidth="580.0" minHeight="38.0" minWidth="320.0" prefHeight="38.0" prefWidth="580.0" promptText="Search Community" stylesheets="@../css/SearchField.css">
             <VBox.margin>
                 <Insets bottom="20.0" />
@@ -53,6 +55,6 @@
         </TextArea>
 
         <!-- Bottone per inviare il post -->
-        <Button fx:id="postButton" text="Posta" />
+        <Button fx:id="postButton" text="Post" />
     </VBox>
 </AnchorPane>
