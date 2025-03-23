@@ -424,7 +424,7 @@ public class IntegrationTest {
 
         // Creo Post
         PostCreationService postCreationService = new PostCreationService();
-        postCreationService.createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, id);
+        postCreationService.createPost(COMMUNITY_TITLE, POST_TITLE, POST_CONTENT, COMMUNITY_ID, id);
 
         // Controllo se il post è stato creato
         assertNotNull(postDAO.findById(POST_ID).orElse(null));
@@ -436,6 +436,28 @@ public class IntegrationTest {
 
         // Controllo se il post è stato eliminato
         assertNull(postDAO.findById(POST_ID).orElse(null));
+    }
+
+    // Test per creare community già esistente
+    @Test
+    void createExistingCommunity() throws SQLException {
+        // Creo User
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
+
+        // Creo Community
+        CommunityCreationService communityCreationService = new CommunityCreationService();
+
+        // Controllo se la community è stata creata
+        assertEquals(COMMUNITY_ID,communityCreationService.createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
+        assertNotNull(communityDAO.findById(COMMUNITY_ID).orElse(null));
+
+        //todo da finire
+        // Provo a ricrearla
+        //assertThrows(SQLException.class, () -> communityCreationService.createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
+        //assertEquals(-1,communityCreationService.createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
+
     }
 
 
