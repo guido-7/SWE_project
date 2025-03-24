@@ -40,4 +40,18 @@
     -fx-max-height: 0;
 }
 
+.table-view .column-header-background {
+    -fx-background-color: #C27933; /* Cambia con il colore desiderato */
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent; /* Mantiene il contrasto con lo sfondo */
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white; /* Colore del testo nelle intestazioni */
+    -fx-font-weight: bold;
+}
+
+
 

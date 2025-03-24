@@ -27,7 +27,7 @@
             </VBox.margin>
             <children>
       
-                  <TableView fx:id="reportsTable" maxWidth="594.0" prefHeight="451.0" prefWidth="489.0" stylesheets="@../css/CommunitySettings.css">
+                  <TableView fx:id="reportsTable" maxWidth="594.0" prefHeight="451.0" prefWidth="489.0" stylesheets="@../css/ReportPage.css">
                       <columns>
                           <TableColumn fx:id="reportNo" text="Report #" />
                           <TableColumn fx:id="reporter" text="Reporter" />

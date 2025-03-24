@@ -1,11 +1,10 @@
 .button {
-    -fx-background-color: #F8F8F8;
-    -fx-background-radius: 20;
+    -fx-background-color: #C27933;
+    -fx-text-fill: white;
+    -fx-border-color: #C27933;    -fx-background-radius: 20;
     -fx-border-radius: 20;
-    -fx-border-color: E0E0E0;
     -fx-padding: 5px 10px;
     -fx-border-width: 1px;
-    -fx-text-fill: #333333;
     -fx-font-size: 12px;
 }
 .post-container {
@@ -17,4 +16,10 @@
     -fx-border-radius: 5;
     /* Per dare un effetto card, puoi aggiungere anche un'ombra */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.5, 0, 2);
+}
+
+.button:hover{
+    -fx-background-color: #7D3F0F;
+    -fx-text-fill: white;
+    -fx-border-color: #7D3F0F;
 }

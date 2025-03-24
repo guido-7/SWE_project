@@ -17,7 +17,6 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import src.businesslogic.CommunityService;
 import src.businesslogic.SearchService;
-import src.businesslogic.UserProfileService;
 import src.controllers.factory.ComponentFactory;
 import src.controllers.factory.PageControllerFactory;
 import src.domainmodel.*;
@@ -222,7 +221,7 @@ public class CommunityPageController implements Initializable, Controller {
 
     private void handleSettingsClick() {
         CommunitySettingsPageController communitySettingsPageController = PageControllerFactory.createCommunitySettingsController(communityId);
-        SceneManager.changeScene("community settings " + communityId, "/src/view/fxml/CommunitySettings.fxml", communitySettingsPageController);
+        SceneManager.changeScene("community settings " + communityId, "/src/view/fxml/ReportPage.fxml", communitySettingsPageController);
     }
 
     private void openPostCreationPage() {
