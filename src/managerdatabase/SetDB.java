@@ -432,6 +432,7 @@ public class SetDB {
         PostDAO postDAO = new PostDAO();
         CommentDAO commentDAO = new CommentDAO();
         AdminDAO adminDAO = new AdminDAO();
+        ModeratorDAO moderatorDAO = new ModeratorDAO();
 
         // create fake users
         for (int i = 1; i <= numberofUsers; i++) {
@@ -558,15 +559,15 @@ public class SetDB {
         //generateFakeWarningsForSpecificCommunity(numberofPosts,1,numberofPosts,numberofUsers);
         System.out.println("Post Warnings created\n");
 
-        int idUser = userDAO.save(Map.of("nickname", "admin", "name", "admin", "surname", "admin"));
-        userDAO.registerUserAccessInfo(idUser, "admin", "12345678");
+        int userId = userDAO.save(Map.of("nickname", "admin", "name", "admin", "surname", "admin"));
+        userDAO.registerUserAccessInfo(userId, "admin", "12345678");
         System.out.println("admin created");
 
-        int idCommunity = communityDAO.save(Map.of("title", "news", "description", "community for news"));
+        int communityId = communityDAO.save(Map.of("title", "news", "description", "community for news"));
         System.out.println("News Community created");
 
-        adminDAO.save(Map.of("user_id",idUser,"community_id",idCommunity));
-
+        adminDAO.save(Map.of("user_id", userId,"community_id", communityId));
+        System.out.println("Admin added to News Community");
     }
 
     public static void generateFakeWarningsForSpecificCommunity(int noOfWarnings,int communityId,int numberOfPost,int numberOfUsers) throws SQLException {
