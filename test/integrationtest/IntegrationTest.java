@@ -460,8 +460,9 @@ public class IntegrationTest {
 
     }
 
-
-
-
-
+    private int createUser() throws SQLException {
+        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
+        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+        return id;
+    }
 }
