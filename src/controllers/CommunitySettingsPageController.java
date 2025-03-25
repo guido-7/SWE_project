@@ -96,8 +96,6 @@ public class CommunitySettingsPageController implements Initializable, Controlle
                         System.out.println("Vai alla pagina di: " + item);
                         try {
                             User user = communityService.getUser(getTableRow().getItem().getSenderId());
-                            // TODO: review
-                            //UserProfilePageController userProfilePageController = new UserProfilePageController(new UserProfileService(user));
                             UserProfilePageController userProfilePageController = PageControllerFactory.createUserProfilePageController(user);
                             SceneManager.setPreviousScene(SceneManager.getPrimaryStage().getScene());
                             Stage primaryStage = SceneManager.loadScene( "/src/view/fxml/UserProfilePage.fxml", userProfilePageController);
@@ -242,7 +240,7 @@ public class CommunitySettingsPageController implements Initializable, Controlle
         }
     }
 
-    private  void manageLookUpUser(UserProfilePageController userProfilePageController) {
+    private void manageLookUpUser(UserProfilePageController userProfilePageController) {
         userProfilePageController.setText("Posts");
         userProfilePageController.deleteSavedPostPane();
         userProfilePageController.moveUserPostPaneToCenter();
@@ -257,7 +255,7 @@ public class CommunitySettingsPageController implements Initializable, Controlle
     }
 
     private void backToCommunity() {
-        SceneManager.changeScene("community " + communityService.getCommunityId(), "/src/view/fxml/CommunityPage.fxml",null);
+        SceneManager.changeScene("community " + communityService.getCommunityId(), "/src/view/fxml/CommunityPage.fxml", null);
     }
 
     public void setData(ArrayList<PostWarnings> reports) {
