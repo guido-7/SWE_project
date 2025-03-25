@@ -187,11 +187,8 @@ public class ScenarioTest  extends ApplicationTest {
         Label title = from(post).lookup("#title").queryAs(Label.class);
         Label content = from(post).lookup("#content").queryAs(Label.class);
         Button likeButton = from(post).lookup("#likeButton").queryAs(Button.class);
-        //String buttonStyle = likeButton.getGraphic();
-        //likeButton.getGraphic().
-        //sleep(2000);
-        //String color = buttonStyle.substring(buttonStyle.indexOf("-fx-background-color:") + 21, buttonStyle.indexOf(";", buttonStyle.indexOf("-fx-background-color:")));
-        //assertEquals("00aa00", color);
+        boolean isGreen = likeButton.getStyleClass().contains("selected");
+        assertTrue(isGreen);
 
         String isLiked ="SELECT * FROM Post JOIN main.PostVotes WHERE title = ? AND content = ? AND vote_type = 1";
         connection = DBConnection.open_connection();

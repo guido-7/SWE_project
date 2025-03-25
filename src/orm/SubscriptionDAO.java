@@ -149,7 +149,7 @@ public class SubscriptionDAO extends BaseDAO<Subscription, List<Integer>> {
 
     }
 
-    public Map<Integer, String> getFilteredSubs(int communityId, String searchTerm, int maxnumberOfSubsShown, int offset) {
+    public synchronized Map<Integer, String> getFilteredSubs(int communityId, String searchTerm, int maxnumberOfSubsShown, int offset) {
         Map<Integer, String> filteredSubs = new HashMap<>();
         String sql = "SELECT User.id, User.nickname FROM Subscription JOIN User ON Subscription.user_id = User.id WHERE community_id = ? AND User.nickname LIKE ? LIMIT ? OFFSET ?";
         try (Connection connection = DBConnection.open_connection();
