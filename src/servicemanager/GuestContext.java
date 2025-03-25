@@ -44,6 +44,7 @@ public class GuestContext {
     }
 
     public static void setCurrentGuest(Guest currentUser) {
+        setPreviousContextGuest(GuestContext.getCurrentGuest());
         GuestContext.currentGuest = currentUser;
     }
 
