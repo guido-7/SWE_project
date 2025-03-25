@@ -30,7 +30,7 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FunctionalTest extends ApplicationTest {
+public class FunctionalTest extends ApplicationTest {
     private HomePageController homePageController;
 
     MouseEvent mouseClick = new MouseEvent(
