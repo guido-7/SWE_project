@@ -58,8 +58,15 @@ public class UITestUtils extends ApplicationTest {
         WaitForAsyncUtils.waitForFxEvents();
     }
 
-    public void login(String username, String password) throws Exception {
+    public void goToRegisterPage() throws Exception {
         goToLoginPage();
+        Hyperlink register = lookup("#signUp").query();
+        Platform.runLater(register::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+
+    public void login(String username, String password) throws Exception {
+        //goToLoginPage();
         TextField usernameField = lookup("#usernameField").query();
         TextField passwordField = lookup("#passwordField").query();
         Button loginButton = lookup("#loginButton").query();
@@ -70,6 +77,25 @@ public class UITestUtils extends ApplicationTest {
             loginButton.fire();
         });
         WaitForAsyncUtils.waitForFxEvents();
+    }
+
+    public void register(String name, String surname, String nickname, String password) throws Exception {
+        TextField nameField = lookup("#name").query();
+        TextField surnameField = lookup("#surname").query();
+        TextField nicknameField = lookup("#nickname").query();
+        TextField passwordField = lookup("#password_id").query();
+        Button registerButton = lookup("#SignUpButton").query();
+
+        Platform.runLater(() -> {
+            nameField.setText(name);
+            surnameField.setText(surname);
+            nicknameField.setText(nickname);
+            passwordField.setText(password);
+            registerButton.fire();
+        });
+        WaitForAsyncUtils.waitForFxEvents();
+
+        //pressButton("#SignUpButton");
     }
 
     public void createCommunity(String title, String description, ArrayList<Pair<String, String>> rules) throws Exception {
@@ -140,6 +166,12 @@ public class UITestUtils extends ApplicationTest {
     public void pinPost(VBox post) {
         Button pinButton = from(post).lookup("#pinPostButton").query();
         Platform.runLater(() -> pinButton.fireEvent(mouseClick));
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+
+    public void like(VBox post) {
+        Button likeButton = from(post).lookup("#likeButton").query();
+        Platform.runLater(() -> likeButton.fire());
         WaitForAsyncUtils.waitForFxEvents();
     }
 

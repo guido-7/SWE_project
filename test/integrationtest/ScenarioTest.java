@@ -17,6 +17,7 @@ import src.controllers.factory.PageControllerFactory;
 import src.domainmodel.Guest;
 import src.domainmodel.PermitsManager;
 import src.domainmodel.Role;
+import src.domainmodel.User;
 import src.managerdatabase.DBConnection;
 import src.managerdatabase.SetDB;
 import src.orm.CommunityDAO;
@@ -70,6 +71,7 @@ public class ScenarioTest  extends ApplicationTest {
 
     @Test
     public void createCommunityAndPinPost() throws Exception {
+        uiTestUtils.goToLoginPage();
         uiTestUtils.login("admin", "12345678");
 
         // create community with rules
@@ -142,6 +144,63 @@ public class ScenarioTest  extends ApplicationTest {
         pinnedPost.getChildren().getFirst();
         Label postPinTitle = lookup("#postTitle").queryAs(Label.class);
         assertEquals(title, postPinTitle.getText());
+    }
+
+    @Test
+    public void registerAndLoginAndLikePost() throws Exception {
+        String name = "Luca";
+        String surname = "Bianchi";
+        String nickname = "LucaBianchi";
+        String password = "qwerty1234";
+
+        uiTestUtils.goToRegisterPage();
+        uiTestUtils.register(name, surname, nickname, password);
+
+        String isUserQuery = "SELECT id FROM main.User  WHERE name = ? AND surname = ? AND nickname = ?";
+        connection = DBConnection.open_connection();
+        PreparedStatement stm = connection.prepareStatement(isUserQuery);
+        stm.setString(1,name);
+        stm.setString(2, surname);
+        stm.setString(3, nickname);
+        ResultSet rs = stm.executeQuery();
+        assertNotNull(rs);
+        assertTrue(rs.next());
+        int userId = rs.getInt("id");
+
+        String isSensitiveInfoSavedQuery ="SELECT * FROM main.UserAccess WHERE email = ? AND password = ?";
+        stm = connection.prepareStatement(isSensitiveInfoSavedQuery);
+        stm.setString(1, nickname);
+        stm.setString(2, password);
+        rs = stm.executeQuery();
+        assertNotNull(rs);
+        assertTrue(rs.next());
+
+        uiTestUtils.login(nickname, password);
+        int currentId = ((User) GuestContext.getCurrentGuest()).getId();
+        assertEquals(currentId, userId);
+
+        //metti like a aggiorni la UI
+        //verificare se il bottone like è verde
+        VBox post = uiTestUtils.getFirstPost();
+        uiTestUtils.like(post);
+        sleep(2000);
+        Label title = from(post).lookup("#title").queryAs(Label.class);
+        Label content = from(post).lookup("#content").queryAs(Label.class);
+        Button likeButton = from(post).lookup("#likeButton").queryAs(Button.class);
+        //String buttonStyle = likeButton.getGraphic();
+        //likeButton.getGraphic().
+        //sleep(2000);
+        //String color = buttonStyle.substring(buttonStyle.indexOf("-fx-background-color:") + 21, buttonStyle.indexOf(";", buttonStyle.indexOf("-fx-background-color:")));
+        //assertEquals("00aa00", color);
+
+        String isLiked ="SELECT * FROM Post JOIN main.PostVotes WHERE title = ? AND content = ? AND vote_type = 1";
+        connection = DBConnection.open_connection();
+        stm = connection.prepareStatement(isLiked);
+        stm.setString(1,title.getText());
+        stm.setString(2, content.getText());
+        rs = stm.executeQuery();
+        assertNotNull(rs);
+        assertTrue(rs.next());
     }
 
     private void initializeApplication(Stage stage) throws IOException {
