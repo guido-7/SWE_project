@@ -120,11 +120,11 @@ public class ScenarioTest  extends ApplicationTest {
         assertEquals(content, rs.getString("content"));
         int idPost = rs.getInt("id");
 
-        //pin post
+        // pin post
         uiTestUtils.pinPost(post);
 
         connection = DBConnection.open_connection();
-        query = "SELECT * FROM PinnedPost JOIN Post ON PinnedPost.post_id = Post.id WHERE id = ?";
+        query = "SELECT * FROM PinnedPost JOIN Post ON PinnedPost.post_id = Post.id WHERE Post.id = ?";
         stm = connection.prepareStatement(query);
         stm.setInt(1, idPost);
         rs = stm.executeQuery();
@@ -132,13 +132,14 @@ public class ScenarioTest  extends ApplicationTest {
         assertEquals(title, rs.getString("title"));
         assertEquals(content, rs.getString("content"));
 
+        // test pin button is changed
         Button pinButton = from(post).lookup("#pinPostButton").query();
         ImageView image = (ImageView) pinButton.getGraphic();
         String urlPinPost = image.getImage().getUrl();
         urlPinPost = urlPinPost.substring(urlPinPost.indexOf("src"));
         assertEquals("src/view/images/PinClickIcon.png", urlPinPost);
 
-        //verifica che il post sia stato pinnato nel box
+        // test that the post is pinned in the box
         VBox pinnedPost = lookup("#pinnedPostsContainer").query();
         assertFalse(pinnedPost.getChildren().isEmpty());
         pinnedPost.getChildren().getFirst();
@@ -179,17 +180,18 @@ public class ScenarioTest  extends ApplicationTest {
         int currentId = ((User) GuestContext.getCurrentGuest()).getId();
         assertEquals(currentId, userId);
 
-        //metti like a aggiorni la UI
-        //verificare se il bottone like è verde
+        // add like to the first post
         VBox post = uiTestUtils.getFirstPost();
         uiTestUtils.like(post);
-        sleep(2000);
-        Label title = from(post).lookup("#title").queryAs(Label.class);
-        Label content = from(post).lookup("#content").queryAs(Label.class);
+
+        // verify like button is changed color
         Button likeButton = from(post).lookup("#likeButton").queryAs(Button.class);
         boolean isGreen = likeButton.getStyleClass().contains("selected");
         assertTrue(isGreen);
 
+        // verify that like is correctly saved in the database
+        Label title = from(post).lookup("#title").queryAs(Label.class);
+        Label content = from(post).lookup("#content").queryAs(Label.class);
         String isLiked ="SELECT * FROM Post JOIN main.PostVotes WHERE title = ? AND content = ? AND vote_type = 1";
         connection = DBConnection.open_connection();
         stm = connection.prepareStatement(isLiked);
