@@ -2,6 +2,7 @@ package test.functionaltest;
 
 import javafx.application.Platform;
 
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -15,11 +16,10 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 import src.controllers.*;
 import src.controllers.factory.PageControllerFactory;
-import src.domainmodel.Guest;
-import src.domainmodel.PermitsManager;
-import src.domainmodel.Role;
+import src.domainmodel.*;
 import src.managerdatabase.DBConnection;
 import src.managerdatabase.SetDB;
+import src.orm.SubscriptionDAO;
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
 import test.UITestUtils;
@@ -27,6 +27,8 @@ import test.UITestUtils;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -342,6 +344,55 @@ public class FunctionalTest extends ApplicationTest {
 
         uiTestUtils.openCommunityPage("Community Title 1");
         assertEquals(Role.USER, GuestContext.getCurrentGuest().getRole());
+    }
+
+    @Test
+    public void testFeed() throws Exception {
+        uiTestUtils.goToLoginPage();
+        uiTestUtils.login("admin", "12345678");
+
+        // todo iscriversi con UI
+        // mi iscrivo a 3 community
+//        uiTestUtils.subscribeCommunity("Community Title 1");
+//        uiTestUtils.subscribeCommunity("Community Title 2");
+//        uiTestUtils.subscribeCommunity("Community Title 3");
+        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
+        subscriptionDAO.subscribe(101, 1);
+        subscriptionDAO.subscribe(101, 2);
+        subscriptionDAO.subscribe(101, 3);
+        subscriptionDAO.subscribe(101, 4);
+
+        // Recupero i post dalla homepage
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty(), "Il feed non dovrebbe essere vuoto");
+
+        Map<String, Integer> communityPostCount = new HashMap<>();
+        int totalPosts = postsContainer.getChildren().size();
+        int targetCommunityPosts = 0;
+
+        for (Node postNode : postsContainer.getChildren()) {
+            VBox post = (VBox) postNode;
+
+            // Label che indica la community del post
+            Label communityLabel = from(post).lookup("#community").query();
+            String communityName = communityLabel.getText();
+
+            // Incrementa il contatore per questa community
+            communityPostCount.put(communityName, communityPostCount.getOrDefault(communityName, 0) + 1);
+
+            // Conta i post provenienti dalle community 1, 2, 3
+            if (communityName.equals("r/Community Title 1") || communityName.equals("r/Community Title 2") || communityName.equals("r/Community Title 3"))
+                targetCommunityPosts++;
+
+            System.out.println("--------------------------------------------------------------------------");
+            System.out.println("Community label text: " + communityName);
+            System.out.println("--------------------------------------------------------------------------");
+        }
+
+        // Verifica che i post delle community 1,2,3 siano almeno il 40% del totale
+        double percentage = (double) targetCommunityPosts / totalPosts * 100;
+        assertTrue(percentage >= 40, "I post delle community 1,2,3 devono essere almeno il 40% del totale, attualmente sono: " + percentage + "%");
+
     }
 
     private void initializeApplication(Stage stage) throws IOException {
