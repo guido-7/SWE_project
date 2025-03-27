@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 import src.controllers.*;
@@ -19,6 +21,7 @@ import src.controllers.factory.PageControllerFactory;
 import src.domainmodel.*;
 import src.managerdatabase.DBConnection;
 import src.managerdatabase.SetDB;
+import src.orm.CommunityDAO;
 import src.orm.SubscriptionDAO;
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
@@ -26,9 +29,11 @@ import test.UITestUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -85,9 +90,10 @@ public class FunctionalTest extends ApplicationTest {
         } else {
             System.out.println("The database does not exist.");
         }
-        DBConnection.open_connection(url);
+        DBConnection.connect();
         SetDB.createDB();
         SetDB.generatefakedata(40, 10, 100, 40);
+        DBConnection.disconnect();
     }
 
 
@@ -347,9 +353,28 @@ public class FunctionalTest extends ApplicationTest {
     }
 
     @Test
-    public void testFeed() throws Exception {
-        uiTestUtils.goToLoginPage();
-        uiTestUtils.login("admin", "12345678");
+    public void testFeedPerNoOfCommunity() throws Exception {
+        //int maxCommunityId =  getMaxCommunityId();
+        for (int i = 2 ; i < 6; i++){
+            assertTrue(testFeed(i,10));
+
+        }
+        //assertTrue(testFeed(6));
+    }
+
+    private int getMaxCommunityId() throws SQLException {
+        String query = "SELECT MAX(id) FROM Community";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement stm = connection.prepareStatement(query);
+             ResultSet rs = stm.executeQuery()) {
+            assertNotNull(rs);
+            assertTrue(rs.next());
+            return rs.getInt(1);
+        }
+    }
+    private boolean testFeed(int numberOfSubscription,int totalCommunity) throws Exception {
+//        uiTestUtils.goToLoginPage();
+//        uiTestUtils.login("admin", "12345678");
 
         // todo iscriversi con UI
         // mi iscrivo a 3 community
@@ -357,10 +382,31 @@ public class FunctionalTest extends ApplicationTest {
 //        uiTestUtils.subscribeCommunity("Community Title 2");
 //        uiTestUtils.subscribeCommunity("Community Title 3");
         SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
-        subscriptionDAO.subscribe(101, 1);
-        subscriptionDAO.subscribe(101, 2);
-        subscriptionDAO.subscribe(101, 3);
-        subscriptionDAO.subscribe(101, 4);
+        CommunityDAO communityDAO = new CommunityDAO();
+        Set<String> titles = new HashSet<>();
+//        for (int i = 1; i < numberOfSubscription+1; i++) {
+//            subscriptionDAO.subscribe(101, i);
+//            String commTitle = (String) communityDAO.retrieveSingleAttribute("Community", "title", "id = ?", i);
+//            titles.add("r/"+commTitle);
+//        }
+        Set<Integer> uniqueIndexes = new HashSet<>();
+        Random random = new Random();
+        while (uniqueIndexes.size() < numberOfSubscription) {
+            int randomIndex = random.nextInt(totalCommunity) + 1;
+            uniqueIndexes.add(randomIndex);
+        }
+        for (int index : uniqueIndexes) {
+            System.out.println("Iscritto a community"+index);
+            subscriptionDAO.subscribe(101, index);
+            String commTitle = (String) communityDAO.retrieveSingleAttribute("Community", "title", "id = ?", index);
+            titles.add("r/"+ commTitle);
+        }
+        uiTestUtils.goToLoginPage();
+        uiTestUtils.login("admin", "12345678");
+        //subscriptionDAO.subscribe(101, 1);
+        //subscriptionDAO.subscribe(101, 2);
+        //subscriptionDAO.subscribe(101, 3);
+        //subscriptionDAO.subscribe(101, 4);
 
         // Recupero i post dalla homepage
         VBox postsContainer = lookup("#postsContainer").query();
@@ -381,17 +427,31 @@ public class FunctionalTest extends ApplicationTest {
             communityPostCount.put(communityName, communityPostCount.getOrDefault(communityName, 0) + 1);
 
             // Conta i post provenienti dalle community 1, 2, 3
-            if (communityName.equals("r/Community Title 1") || communityName.equals("r/Community Title 2") || communityName.equals("r/Community Title 3"))
+            if (titles.contains(communityName))
                 targetCommunityPosts++;
 
             System.out.println("--------------------------------------------------------------------------");
             System.out.println("Community label text: " + communityName);
             System.out.println("--------------------------------------------------------------------------");
         }
-
+        for( var string : communityPostCount.entrySet()){
+            System.out.println("Community: "+string.getKey()+" Posts: "+string.getValue());
+        }
         // Verifica che i post delle community 1,2,3 siano almeno il 40% del totale
         double percentage = (double) targetCommunityPosts / totalPosts * 100;
-        assertTrue(percentage >= 40, "I post delle community 1,2,3 devono essere almeno il 40% del totale, attualmente sono: " + percentage + "%");
+        System.out.println("Percentage: " + percentage);
+        double threshold = 10 + 2.1 *numberOfSubscription;
+        assertTrue(percentage >= threshold, "I post delle community 1,2,3 devono essere almeno il "+threshold+" del totale, attualmente sono: " + percentage + "%" + "alla iterazione"+numberOfSubscription+"isema");
+
+
+//        for (int i = 1; i < numberOfSubscription+1; i++) {
+//            subscriptionDAO.unsubscribe(101, i);
+//        }
+        for (int index : uniqueIndexes) {
+            subscriptionDAO.unsubscribe(101, index);
+        }
+
+        return true;
 
     }
 

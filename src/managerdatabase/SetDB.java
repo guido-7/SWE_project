@@ -476,17 +476,29 @@ public class SetDB {
         System.out.println("Subscriptions created");
 
         // create fake Posts
+//        for (int i = 1; i <= numberofPosts; i++) {
+//            Map<String, Object> params = new HashMap<>();
+//            int user_id = (int) ((Math.random() * numberofUsers) + 1);
+//            int community_id = (int) ((Math.random() * numberofCommunity) + 1);
+//            params.put("title", "Title Post " + i);
+//            params.put("content", "Content " + i);
+//            params.put("user_id", user_id);
+//            params.put("community_id", community_id);
+//            postDAO.save(params);
+//        }
+//        System.out.println("Posts created");
+        // create fake Posts
         for (int i = 1; i <= numberofPosts; i++) {
             Map<String, Object> params = new HashMap<>();
             int user_id = (int) ((Math.random() * numberofUsers) + 1);
-            int community_id = (int) ((Math.random() * numberofCommunity) + 1);
             params.put("title", "Title Post " + i);
             params.put("content", "Content " + i);
             params.put("user_id", user_id);
-            params.put("community_id", community_id);
+            params.put("community_id", (i % numberofCommunity+1));
             postDAO.save(params);
         }
         System.out.println("Posts created");
+
 
         // create fake PostVotes
         for (int i = 1; i <= (numberofPosts * 2); i++) {
