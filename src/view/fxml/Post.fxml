@@ -55,9 +55,9 @@
          </graphic>
       </Button>
     </HBox>
-    <Label fx:id="title" maxWidth="540.0" styleClass="post-title" text="Post Title" wrapText="true" VBox.vgrow="ALWAYS" />
 
     <!-- Contenuto del post -->
+    <Label fx:id="title" maxWidth="540.0" styleClass="post-title" text="Post Title" wrapText="true" VBox.vgrow="ALWAYS" />
     <Label fx:id="content" maxWidth="540.0" styleClass="post-content" text="Contenuto del post..." wrapText="true" VBox.vgrow="ALWAYS" />
 
     <!-- Area delle reazioni: like, punteggio, dislike -->
