@@ -15,8 +15,7 @@ public class FeedService {
     private final CommentDAO commentDAO = new CommentDAO();
     Map<Integer,Integer> noOfPostsTaken = new LinkedHashMap<>();
     // TODO: review and remove this
-    Map<Integer,Integer> noOfFirstPostsTaken = new LinkedHashMap<>();
-
+    Set<Integer> seenPosts = new HashSet<>();
     Guest guest;
 
     int numberofPosts = 30;
@@ -36,6 +35,7 @@ public class FeedService {
             ArrayList<ArrayList<Integer>> community_ids = new ArrayList<>();
 
             //join tables and get the community ids
+            //takes the ids of the communities to which the user is subscribed
             ArrayList<Integer> subscription_C_ids = subscriptionDAO.getCommunityIds(((User)guest).getId(),(int)(numberofCommunities * 0.4));
             community_ids.add(subscription_C_ids);
             System.out.println("Length of sub : " + subscription_C_ids.size());
@@ -45,15 +45,16 @@ public class FeedService {
             community_ids.add(votes_C_ids);
             System.out.println("Length of votes: " + votes_C_ids.size());
 
-            //
+            //takes the ids of the communities to which the user has commented
             ArrayList<Integer> comment_C_ids = commentDAO.getCommunityIds(((User)guest).getId(),(int)(numberofCommunities * 0.2 ));
             community_ids.add(comment_C_ids);
             System.out.println("Length of commentc: " + comment_C_ids.size());
 
-            // utilize scores and visits
+            // utilize scores and visits of all communities
             ArrayList<Integer> community_C_ids = communityDAO.getCommunityIds((int)(numberofCommunities * 0.1 ));
             community_ids.add(community_C_ids);
             System.out.println("Length of community : " + community_C_ids.size());
+
 
             //merge
             ArrayList<Integer> mergedList = new ArrayList<>();
@@ -91,11 +92,13 @@ public class FeedService {
     //
     private void getPartition(Map<Integer,Double> scores){
         int maxKey = findmaxKey(scores);
+        //1 : 1      2 : 2   4:7
+
         List<Integer> community_ids = new ArrayList<>(scores.keySet());
 
         for (int i = 0; i < scores.size(); i++) {
             int value;
-            if (i == maxKey) {
+            if (community_ids.get(i) == maxKey) {
                 value = (int) Math.floor(scores.get(community_ids.get(i)) * numberofPosts) + 1;
                 // nel rigo sotto
             } else {
@@ -146,6 +149,14 @@ public class FeedService {
                 community_partition.remove(communityId);
             }
             posts.addAll(communityPosts);
+        }
+        for(Post post : posts){
+            if(seenPosts.contains(post.getId())){
+                posts.remove(post);
+            }
+            else{
+                seenPosts.add(post.getId());
+            }
         }
         return posts;
     }

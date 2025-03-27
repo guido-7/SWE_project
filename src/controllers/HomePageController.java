@@ -184,6 +184,7 @@ public class HomePageController implements Initializable,Controller  {
 
     @Override
     public void init_data() {
+        allPostsLoaded = false;
         postsContainer.getChildren().clear();
         boolean isUser = !(GuestContext.getCurrentGuest().getRole() == Role.GUEST);
         createPostButton.setVisible(isUser);
