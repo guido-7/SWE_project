@@ -168,7 +168,7 @@ public class UITestUtils extends ApplicationTest {
 
     public void openPost() {
         VBox postsContainer = lookup("#postsContainer").query();
-        assertFalse(postsContainer.getChildren().isEmpty());
+        assertFalse(postsContainer.getChildren().isEmpty(), "No posts found");
         VBox post = (VBox) postsContainer.getChildren().getFirst();
         Button postPage = from(post).lookup("#postButton").query();
         Platform.runLater(postPage::fire);
