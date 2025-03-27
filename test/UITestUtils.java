@@ -2,6 +2,7 @@ package test;
 
 import javafx.application.Platform;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
@@ -168,7 +169,7 @@ public class UITestUtils extends ApplicationTest {
 
     public void openPost() {
         VBox postsContainer = lookup("#postsContainer").query();
-        assertFalse(postsContainer.getChildren().isEmpty());
+        assertFalse(postsContainer.getChildren().isEmpty(), "No posts found");
         VBox post = (VBox) postsContainer.getChildren().getFirst();
         Button postPage = from(post).lookup("#postButton").query();
         Platform.runLater(postPage::fire);
@@ -194,9 +195,8 @@ public class UITestUtils extends ApplicationTest {
         WaitForAsyncUtils.waitForFxEvents();
     }
 
-    // TODO: implement deletePost method
     public void deletePost(VBox post) {
-        Button deleteButton = from(post).lookup("#deletePostButton").query();
+        ImageView deleteButton = from(post).lookup("#deletePostButton").query();
         Platform.runLater(() -> deleteButton.fireEvent(mouseClick));
         WaitForAsyncUtils.waitForFxEvents();
     }

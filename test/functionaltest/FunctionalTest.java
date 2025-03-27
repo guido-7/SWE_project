@@ -455,6 +455,85 @@ public class FunctionalTest extends ApplicationTest {
 
     }
 
+    @Test
+    public void testOpenPostInCommunity() throws Exception {
+        String communityTitle = "Community Title 1";
+        uiTestUtils.openCommunityPage(communityTitle);
+
+        Connection connection = DBConnection.open_connection();
+        String query = "SELECT * FROM Community WHERE title = ?";
+        PreparedStatement stm = connection.prepareStatement(query);
+        stm.setString(1, communityTitle);
+        ResultSet rs = stm.executeQuery();
+        assertTrue(rs.next());
+        int id = rs.getInt("id");
+
+        uiTestUtils.openPost();
+
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty());
+        VBox post = (VBox) postsContainer.getChildren().getFirst();
+        Label title = from(post).lookup("#title").queryAs(Label.class);
+        Label content = from(post).lookup("#content").queryAs(Label.class);
+
+        connection = DBConnection.open_connection();
+        String query2 = "SELECT * FROM Post WHERE title = ? AND content = ?";
+        stm = connection.prepareStatement(query2);
+        stm.setString(1, title.getText());
+        stm.setString(2, content.getText());
+        rs = stm.executeQuery();
+        assertTrue(rs.next());
+        assertEquals(id, rs.getInt("community_id"));
+    }
+
+    @Test
+    public void testCreateAndDeletePost() throws Exception {
+        String username = "admin";
+        String password = "12345678";
+        String communityTitle = "news";
+        String postTitle = "Test Post";
+        String postContent = "Test content";
+
+        uiTestUtils.goToLoginPage();
+        uiTestUtils.login(username, password);
+        uiTestUtils.subscribeCommunity(communityTitle);
+
+        Connection connection = DBConnection.open_connection();
+        String query = "SELECT * FROM Community WHERE  title = ?";
+        PreparedStatement stm = connection.prepareStatement(query);
+        stm.setString(1, communityTitle);
+        ResultSet rs = stm.executeQuery();
+        assertTrue(rs.next());
+        int communityId = rs.getInt("id");
+
+        uiTestUtils.createPost(communityTitle, postTitle, postContent);
+        sleep(500);
+
+        connection = DBConnection.open_connection();
+        String query2 = "SELECT * FROM Post WHERE  community_id = ? AND title = ? AND content = ?";
+        stm = connection.prepareStatement(query2);
+        stm.setInt(1, communityId);
+        stm.setString(2, postTitle);
+        stm.setString(3, postContent);
+        rs = stm.executeQuery();
+        assertTrue(rs.next(), "Post not correctly created");
+        assertEquals(communityId, rs.getInt("community_id"));
+        assertEquals(postTitle, rs.getString("title"));
+        assertEquals(postContent, rs.getString("content"));
+
+        VBox post = uiTestUtils.getFirstPost();
+        uiTestUtils.deletePost(post);
+
+        connection = DBConnection.open_connection();
+        String query3 = "SELECT * FROM Post WHERE  community_id = ? AND title = ? AND content = ?";
+        stm = connection.prepareStatement(query3);
+        stm.setInt(1, communityId);
+        stm.setString(2, postTitle);
+        stm.setString(3, postContent);
+        rs = stm.executeQuery();
+        assertFalse(rs.next(), "Post not correctly deleted");
+    }
+
     private void initializeApplication(Stage stage) throws IOException {
         Guest guest = new Guest(PermitsManager.createGuestPermits(), Role.GUEST);
         GuestContext.setCurrentGuest(guest);

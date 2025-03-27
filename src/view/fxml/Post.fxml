@@ -30,34 +30,33 @@
             </HBox.margin>
             <Image url="@../images/delete.png" />
         </ImageView>
+
         <ImageView fx:id="reportPostButton" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
             <Image url="@../images/WarningPostIcon.png" />
             <HBox.margin>
                 <Insets left="5.0" />
             </HBox.margin>
         </ImageView>
+
         <Button fx:id="pinPostButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;">
          <graphic>
-            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/PinIcon.png" />
-               </image>
-            </ImageView>
+             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                 <Image url="@../images/PinIcon.png"/>
+             </ImageView>
          </graphic>
         </Button>
+
       <Button fx:id="savePostButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;">
          <graphic>
-            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/SavedIcon.png" />
-               </image>
-            </ImageView>
+             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                 <Image url="@../images/SavedIcon.png"/>
+             </ImageView>
          </graphic>
       </Button>
     </HBox>
-    <Label fx:id="title" maxWidth="540.0" styleClass="post-title" text="Post Title" wrapText="true" VBox.vgrow="ALWAYS" />
 
     <!-- Contenuto del post -->
+    <Label fx:id="title" maxWidth="540.0" styleClass="post-title" text="Post Title" wrapText="true" VBox.vgrow="ALWAYS" />
     <Label fx:id="content" maxWidth="540.0" styleClass="post-content" text="Contenuto del post..." wrapText="true" VBox.vgrow="ALWAYS" />
 
     <!-- Area delle reazioni: like, punteggio, dislike -->
