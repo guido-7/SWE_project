@@ -1,6 +1,8 @@
-package test;
+package test.UnitTest.DBTest;
 
 import org.junit.jupiter.api.*;
+import src.businesslogic.CommentService;
+import src.businesslogic.CommunityService;
 import src.managerdatabase.DBConnection;
 import src.managerdatabase.SetDB;
 import src.orm.*;
@@ -10,6 +12,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,8 @@ class SetDBTest {
     private static final PostDAO postDAO = new PostDAO();
     private static final RulesDAO rulesDAO = new RulesDAO();
     private static final UserDAO userDAO = new UserDAO();
+    private static final ModeratorDAO moderatorDAO = new ModeratorDAO();
+
 
     @BeforeAll
     static void setUp() {
@@ -34,7 +39,9 @@ class SetDBTest {
         } else {
             System.out.println("The database does not exist.");
         }
-        conn = DBConnection.open_connection(url);
+        DBConnection.changeDBPath(url);
+        conn = DBConnection.open_connection();
+        //conn = DBConnection.open_connection(url);
         SetDB.createDB();
     }
 
@@ -45,6 +52,7 @@ class SetDBTest {
 
     @BeforeEach
     void clearAllTable() throws SQLException {
+        conn = DBConnection.open_connection();
         conn.setAutoCommit(true);
         try (Statement stmt = conn.createStatement()) {
             stmt.executeUpdate("PRAGMA foreign_keys = OFF;");
@@ -100,7 +108,8 @@ class SetDBTest {
         assertEquals("rossi", rs.getString("surname"), "The user's surname does not match.");
 
         userDAO.save(Map.of("nickname", "mario1", "name", "mario", "surname", "rossi"));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         stmt = conn.createStatement();
         rs = stmt.executeQuery("SELECT * FROM User WHERE id = 2;");
         assertEquals("mario1", rs.getString("nickname"), "The user's nickname does not match.");
@@ -130,7 +139,8 @@ class SetDBTest {
         assertEquals("A community dedicated to technology", rs.getString("description"), "The community description does not match.");
 
         communityDAO.save(Map.of("title", "News", "description", "A community dedicated to news"));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         stmt = conn.createStatement();
         rs = stmt.executeQuery("SELECT * FROM Community WHERE id = 2;");
         assertEquals("News", rs.getString("title"), "The community name does not match.");
@@ -178,7 +188,8 @@ class SetDBTest {
     void testInsertRules() throws SQLException {
         Statement stmt = conn.createStatement();
         communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         stmt = conn.createStatement();
 
         stmt.executeUpdate("INSERT INTO Rules (id, community_id, title, content, priority) VALUES (1, 1, 'Rule 1', 'No insulti', 3);");
@@ -189,9 +200,9 @@ class SetDBTest {
         assertEquals("No insulti", rs.getString("content"), "The rule content does not match.");
         assertEquals(3, rs.getInt("priority"), "The rule priority does not match.");
         assertEquals(1, rs.getInt("community_id"), "The community ID does not match.");
-
         rulesDAO.save(Map.of("community_id", 1, "title", "Rule 2", "content", "No spam", "priority", 2));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         stmt = conn.createStatement();
         rs = stmt.executeQuery("SELECT * FROM Rules WHERE title = 'Rule 2';");
         assertTrue(rs.next(), "The rule 'Rule 2' was not inserted correctly.");
@@ -203,7 +214,8 @@ class SetDBTest {
     @Test
     void testRulesTrigger() throws SQLException {
         communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         Statement stmt = conn.createStatement();
 
         stmt.executeUpdate("INSERT INTO Rules (community_id, title, content) VALUES (1, 'title 1', 'Rule 1 test');");
@@ -231,11 +243,12 @@ class SetDBTest {
     @Test
     void testInsertPost() throws SQLException {
         userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         userDAO.save(Map.of("nickname", "Mario1", "name", "mario", "surname", "rossi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         Statement stmt = conn.createStatement();
         stmt.executeUpdate("INSERT INTO Post (time, title, content, user_id, community_id) VALUES ('2025-01-29 12:00:00', 'Title 1', 'Post content 1', 1, 1);");
         stmt.executeUpdate("INSERT INTO Post (time, title, content, user_id, community_id) VALUES ('2025-01-29 14:00:00', 'Title 2', 'Post content 2', 2, 1);");
@@ -265,11 +278,12 @@ class SetDBTest {
     @Test
     void testInsertComment() throws SQLException {
         userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         postDAO.save(Map.of( "title", "Title 1", "content", "Post content 1", "user_id", 1, "community_id", 1));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         Statement stmt = conn.createStatement();
         stmt.executeUpdate("INSERT INTO Comment (post_id, level, user_id, content, community_id) VALUES (1, 0, 1, 'Comment content 1', 1);");
 
@@ -280,9 +294,10 @@ class SetDBTest {
         assertEquals("Comment content 1", rs.getString("content"), "The comment content does not match.");
 
         postDAO.save(Map.of( "title", "Title 2", "content", "Post content 2", "user_id", 1, "community_id", 1));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         commentDAO.save(Map.of("post_id", 2, "level", 0, "user_id", 1, "content", "Comment content 2", "community_id", 1));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         stmt = conn.createStatement();
         rs = stmt.executeQuery("SELECT * FROM Comment WHERE post_id = 2 AND user_id = 1;");
         assertTrue(rs.next(), "Comment for user_id = 1 not found.");
@@ -294,17 +309,18 @@ class SetDBTest {
     @Test
     void testCommentTrigger() throws SQLException {
         userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         userDAO.save(Map.of("nickname", "Mario1", "name", "mario", "surname", "rossi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         postDAO.save(Map.of( "title", "Title 1", "content", "Post content 1", "user_id", 1, "community_id", 1));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         commentDAO.save(Map.of("post_id", 1, "level", 0, "user_id", 1, "content", "Comment 1", "community_id", 1));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection();
         commentDAO.save(Map.of("post_id", 1, "level", 0, "user_id", 2, "content", "Comment 2", "community_id", 1));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         Statement stmt = conn.createStatement();
 
         ResultSet rs = stmt.executeQuery("SELECT id FROM Comment WHERE content = 'Comment 2';");
@@ -322,15 +338,16 @@ class SetDBTest {
     @Test
     void testInsertCommentHierarchy() throws SQLException {
         userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         postDAO.save(Map.of( "title", "Title 1", "content", "Post content 1", "user_id", 1, "community_id", 1));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         commentDAO.save(Map.of("post_id", 1, "level", 0, "user_id", 1, "content", "Comment content 1", "community_id", 1));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         commentDAO.save(Map.of("post_id", 1, "level", 1, "user_id", 1, "content", "Comment content 2", "community_id", 1));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         Statement stmt = conn.createStatement();
         stmt.executeUpdate("INSERT INTO CommentHierarchy (post_id, parent_id, child_id) VALUES (1, 1, 2);");
 
@@ -363,9 +380,10 @@ class SetDBTest {
     @Test
     void testInsertBannedUsers() throws SQLException {
         userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         Statement stmt = conn.createStatement();
         stmt.executeUpdate("INSERT INTO BannedUsers (user_id, community_id, ban_date, reason) VALUES (1, 1, '2025-01-29', 'Ban reason');");
 
@@ -387,9 +405,10 @@ class SetDBTest {
     @Test
     void testInsertModerator() throws SQLException {
         userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         Statement stmt = conn.createStatement();
         stmt.executeUpdate("INSERT INTO Moderator (user_id, community_id, assigned_date) VALUES (1, 1, '2025-01-29');");
 
@@ -410,9 +429,10 @@ class SetDBTest {
     @Test
     void testInsertSubscription() throws SQLException {
         userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         Statement stmt = conn.createStatement();
         stmt.executeUpdate("INSERT INTO Subscription (user_id, community_id, subscription_date) VALUES (1, 1, '2025-01-29');");
 
@@ -433,13 +453,14 @@ class SetDBTest {
     @Test
     void testInsertPostVotes() throws SQLException {
         userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         userDAO.save(Map.of("nickname", "Mario1", "name", "mario", "surname", "rossi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         postDAO.save(Map.of( "title", "Title 1", "content", "Post content 1", "user_id", 1, "community_id", 1));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         Statement stmt = conn.createStatement();
         stmt.executeUpdate("INSERT INTO PostVotes (user_id, post_id, community_id, vote_type) VALUES (1, 1, 1, 0);");
 
@@ -456,9 +477,9 @@ class SetDBTest {
         assertEquals(1, rs.getInt("post_id"), "The post_id for user_id = 2 does not match.");
 
         userDAO.save(Map.of("nickname", "Luigi2", "name", "luigi", "surname", "bianchi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         userDAO.insertPostVotes(Map.of("user_id", 3, "post_id", 1, "community_id", 1, "vote_type", 1));
-        conn = DBConnection.open_connection(url);
+        conn = DBConnection.open_connection();
         stmt = conn.createStatement();
         rs = stmt.executeQuery("SELECT * FROM PostVotes WHERE user_id = 3 AND post_id = 1;");
 
@@ -467,7 +488,8 @@ class SetDBTest {
         assertEquals(1, rs.getInt("post_id"), "The post_id for user_id = 2 does not match.");
 
         userDAO.insertPostVotes(Map.of("user_id", 3, "post_id", 1, "community_id", 1, "vote_type", 0));
-        conn = DBConnection.open_connection(url);
+
+        conn = DBConnection.open_connection();
         stmt = conn.createStatement();
         rs = stmt.executeQuery("SELECT * FROM PostVotes WHERE user_id = 3 AND post_id = 1;");
         assertTrue(rs.next(), "Vote for user_id = 3 and post_id = 1 not found.");
@@ -478,23 +500,23 @@ class SetDBTest {
     void testTriggerUpdatePostLikes() throws SQLException {
         // Verify that likes in Post table are updated correctly
         userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         userDAO.save(Map.of("nickname", "Mario1", "name", "mario", "surname", "rossi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         userDAO.save(Map.of("nickname", "Luigi2", "name", "luigi", "surname", "bianchi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         postDAO.save(Map.of( "title", "Title 1", "content", "Post content 1", "user_id", 1, "community_id", 1));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         userDAO.insertPostVotes(Map.of("user_id", 1, "post_id", 1, "community_id", 1, "vote_type", 1));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         userDAO.insertPostVotes(Map.of("user_id", 2, "post_id", 1, "community_id", 1, "vote_type", 1));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         userDAO.insertPostVotes(Map.of("user_id", 3, "post_id", 1, "community_id", 1, "vote_type", 0));
-        conn = DBConnection.open_connection(url);
-        Statement stmt = conn.createStatement();
 
+        conn = DBConnection.open_connection();
+        Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM Post WHERE id = 1;");
         assertTrue(rs.next(), "Post with id = 1 not found.");
         assertEquals(2, rs.getInt("likes"), "The likes in Post does not match.");
@@ -502,9 +524,9 @@ class SetDBTest {
 
         // Test replace
         userDAO.insertPostVotes(Map.of("user_id", 3, "post_id", 1, "community_id", 1, "vote_type", 1));
-        conn = DBConnection.open_connection(url);
-        stmt = conn.createStatement();
 
+        conn = DBConnection.open_connection();
+        stmt = conn.createStatement();
         rs = stmt.executeQuery("SELECT * FROM Post WHERE id = 1;");
         assertTrue(rs.next(), "Post with id = 1 not found.");
         assertEquals(3, rs.getInt("likes"), "The likes in Post does not match.");
@@ -521,11 +543,12 @@ class SetDBTest {
     @Test
     void testInsertPostWarnings() throws SQLException {
         userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         postDAO.save(Map.of( "title", "Title 1", "content", "Post content 1", "user_id", 1, "community_id", 1));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
+        conn = DBConnection.open_connection();
         Statement stmt = conn.createStatement();
         stmt.executeUpdate("INSERT INTO PostWarnings (sender_id, post_id, community_id) VALUES (1, 1, 1);");
 
@@ -545,13 +568,14 @@ class SetDBTest {
     @Test
     void testInsertCommentWarningsData() throws SQLException {
         userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         postDAO.save(Map.of( "title", "Title 1", "content", "Post content 1", "user_id", 1, "community_id", 1));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
         commentDAO.save(Map.of("post_id", 1, "level", 0, "user_id", 1, "content", "Comment content 1", "community_id", 1));
-        conn = DBConnection.open_connection(url);
+        //conn = DBConnection.open_connection(url);
+        conn = DBConnection.open_connection();
         Statement stmt = conn.createStatement();
         stmt.executeUpdate("INSERT INTO CommentWarnings (sender_id, comment_id, post_id, community_id) VALUES (1, 1, 1, 1);");
 
@@ -560,5 +584,43 @@ class SetDBTest {
         assertEquals(1, rs.getInt("sender_id"), "The sender_id inserted does not match.");
         assertEquals(1, rs.getInt("comment_id"), "The comment_id inserted does not match.");
         assertEquals(1, rs.getInt("post_id"), "The post_id inserted does not match.");
+    }
+    @Test
+    void testBanUser() throws SQLException {
+        //create community and user
+        int reportedId = userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
+        int communityId = communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
+        String banReason = "Ban reason";
+        communityDAO.banUser(reportedId,communityId,banReason);
+        assertTrue(communityDAO.isBanned(reportedId, communityId));
+
+    }
+    @Test
+    void testTimeOutUser() throws SQLException {
+        int reportedId = userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
+        int communityId = communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
+        communityDAO.timeOutUser(reportedId,communityId, LocalDateTime.now());
+        assertTrue(communityDAO.isTimedOut(reportedId, communityId));
+
+    }
+    @Test
+    void testPromoteUser() throws SQLException {
+        int reportedId = userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
+        int communityId = communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
+        CommunityService communityService = new CommunityService(communityId);
+        communityService.promoteToModerator(reportedId);
+        assertTrue(communityService.isModerator(reportedId));
+
+    }
+    @Test
+    void testDismissUser() throws SQLException {
+        int reportedId = userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
+        int communityId = communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
+        moderatorDAO.save(Map.of("user_id", reportedId, "community_id", communityId, "assigned_date", LocalDateTime.now()));
+        CommunityService communityService = new CommunityService(communityId);
+        assertTrue(communityService.isModerator(reportedId));
+        communityService.downgradeModerator(reportedId);
+        assertFalse(communityService.isModerator(reportedId));
+
     }
 }

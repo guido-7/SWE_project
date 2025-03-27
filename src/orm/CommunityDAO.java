@@ -288,6 +288,19 @@ public class CommunityDAO extends BaseDAO<Community, Integer> {
         }
         return false;
     }
+    public boolean isTimedOut(int userId, int communityId) {
+        String sql = "SELECT * FROM main.TimeOut WHERE user_id = ? AND community_id = ?";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, communityId);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public int getLastPriority(int communityId) {
         String sql = "SELECT MAX(priority) FROM Rules WHERE community_id = ?";
