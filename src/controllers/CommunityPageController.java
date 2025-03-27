@@ -112,6 +112,7 @@ public class CommunityPageController implements Initializable, Controller {
             init_data();
 
             homePageButton.onMouseClickedProperty().set(event -> {
+                GuestContext.backToPreviousContext();
                 SceneManager.changeScene("home", "/src/view/fxml/HomePage.fxml", null);
             });
 

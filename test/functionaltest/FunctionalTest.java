@@ -22,16 +22,17 @@ import src.managerdatabase.DBConnection;
 import src.managerdatabase.SetDB;
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
+import test.UITestUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FunctionalTest extends ApplicationTest {
     private HomePageController homePageController;
+    private final UITestUtils uiTestUtils = new UITestUtils();
 
     MouseEvent mouseClick = new MouseEvent(
             MouseEvent.MOUSE_CLICKED,   // Tipo di evento
@@ -74,8 +75,11 @@ public class FunctionalTest extends ApplicationTest {
         DBConnection.changeDBPath(url);
         File dbFile = new File(url);
         if (dbFile.exists()) {
-            dbFile.delete();
-            System.out.println("Database successfully deleted.");
+            boolean isDeleted = dbFile.delete();
+            if(isDeleted)
+                System.out.println("Database deleted successfully");
+            else
+                System.out.println("Database not deleted successfully");
         } else {
             System.out.println("The database does not exist.");
         }
@@ -84,11 +88,12 @@ public class FunctionalTest extends ApplicationTest {
         SetDB.generatefakedata(40, 10, 100, 40);
     }
 
+
     @Test
     void testVisibilityGuest() throws Exception {
-        ImageView userProfileAccess = getPrivateField(homePageController, "userProfileAccess");
-        Button createCommunityButton = getPrivateField(homePageController, "createCommunityButton");
-        Button login = getPrivateField(homePageController, "login");
+        ImageView userProfileAccess = uiTestUtils.getPrivateField(homePageController, "userProfileAccess");
+        Button createCommunityButton = uiTestUtils.getPrivateField(homePageController, "createCommunityButton");
+        Button login = uiTestUtils.getPrivateField(homePageController, "login");
 
         // Test visibilità iniziale degli elementi
         assertFalse(userProfileAccess.isVisible());
@@ -103,22 +108,30 @@ public class FunctionalTest extends ApplicationTest {
 
     @Test
     void testGoToLoginPage() throws Exception {
-        goToLoginPage();
+        uiTestUtils.goToLoginPage();
 
         assertEquals("login", SceneManager.getCurrentStageName());
     }
 
     @Test
     void testLogin() throws Exception {
-        login();
+        uiTestUtils.goToLoginPage();
+        uiTestUtils.login("admin", "12345678");
 
         assertEquals("home", SceneManager.getCurrentStageName());
+
+        ImageView userProfileAccess = uiTestUtils.getPrivateField(homePageController, "userProfileAccess");
+        Button login = uiTestUtils.getPrivateField(homePageController, "login");
+        assertTrue(userProfileAccess.isVisible());
+        assertFalse(login.isVisible());
+        assertFalse(login.isManaged());
     }
 
     @Test
     void testSubscribeCommunity() throws Exception {
-        login();
-        subscribeCommunity("news");
+        uiTestUtils.goToLoginPage();
+        uiTestUtils.login("admin", "12345678");
+        uiTestUtils.subscribeCommunity("news");
 
         Text communityTitle = lookup("#community_title").queryAs(Text.class);
         String titleText = communityTitle.getText();
@@ -130,62 +143,59 @@ public class FunctionalTest extends ApplicationTest {
 
     @Test
     void testOpenPost() {
-        openPost();
+        uiTestUtils.openPost();
 
         assertInstanceOf(PostPageController.class, GuestContext.getCurrentController());
     }
 
     @Test
     void testLikePost() throws Exception {
-        login();
-        openPost();
+        uiTestUtils.goToLoginPage();
+        uiTestUtils.login("admin", "12345678");
+        uiTestUtils.openPost();
 
         VBox postsContainer = lookup("#postsContainer").query();
         assertFalse(postsContainer.getChildren().isEmpty());
         VBox post = (VBox) postsContainer.getChildren().getFirst();
-        Button likeButton = from(post).lookup("#likeButton").query();
+
         Label likeCount = from(post).lookup("#scoreLabel").query();
         int initialLikes = Integer.parseInt(likeCount.getText());
 
-        // add like
-        Platform.runLater(likeButton::fire);
-        WaitForAsyncUtils.waitForFxEvents();
+        uiTestUtils.like(post);
 
         int finalLikes = Integer.parseInt(likeCount.getText());
         assertEquals(initialLikes + 1, finalLikes);
 
         // remove like
-        Platform.runLater(likeButton::fire);
-        WaitForAsyncUtils.waitForFxEvents();
+        uiTestUtils.like(post);
     }
 
     @Test
     void testDislikePost() throws Exception {
-        login();
-        openPost();
+        uiTestUtils.goToLoginPage();
+        uiTestUtils.login("admin", "12345678");
+        uiTestUtils.openPost();
 
         VBox postsContainer = lookup("#postsContainer").query();
         assertFalse(postsContainer.getChildren().isEmpty());
         VBox post = (VBox) postsContainer.getChildren().getFirst();
-        Button dislikeButton = from(post).lookup("#dislikeButton").query();
+
         Label dislikeCount = from(post).lookup("#scoreLabel").query();
         int initialDislikes = Integer.parseInt(dislikeCount.getText());
 
         // add dislike
-        Platform.runLater(dislikeButton::fire);
-        WaitForAsyncUtils.waitForFxEvents();
+        uiTestUtils.dislike(post);
 
         int finalDislikes = Integer.parseInt(dislikeCount.getText());
         assertEquals(initialDislikes - 1, finalDislikes);
 
         // remove dislike
-        Platform.runLater(dislikeButton::fire);
-        WaitForAsyncUtils.waitForFxEvents();
+        uiTestUtils.dislike(post);
     }
 
     @Test
     void testLikeByGuest() {
-        openPost();
+        uiTestUtils.openPost();
 
         VBox postsContainer = lookup("#postsContainer").query();
         assertFalse(postsContainer.getChildren().isEmpty());
@@ -208,8 +218,9 @@ public class FunctionalTest extends ApplicationTest {
 
     @Test
     void testComment() throws Exception {
-        login();
-        openPost();
+        uiTestUtils.goToLoginPage();
+        uiTestUtils.login("admin", "12345678");
+        uiTestUtils.openPost();
 
         // open reply field
         VBox postsContainer = lookup("#postsContainer").query();
@@ -234,8 +245,9 @@ public class FunctionalTest extends ApplicationTest {
 
     @Test
     void testCreateCommunity() throws Exception {
-        login();
-        pressButton("#createCommunityButton");
+        uiTestUtils.goToLoginPage();
+        uiTestUtils.login("admin", "12345678");
+        uiTestUtils.pressButton("#createCommunityButton");
 
         TextField titleField = lookup("#titleField").query();
         TextArea descriptionField = lookup("#descriptionArea").query();
@@ -259,7 +271,7 @@ public class FunctionalTest extends ApplicationTest {
         });
         WaitForAsyncUtils.waitForFxEvents();
 
-        openCommunityPage("Test Community");
+        uiTestUtils.openCommunityPage("Test Community");
 
         Text communityTitle = lookup("#community_title").queryAs(Text.class);
         assertEquals("Test Community", communityTitle.getText());
@@ -267,9 +279,10 @@ public class FunctionalTest extends ApplicationTest {
 
     @Test
     void testCreatePost() throws Exception {
-        login();
-        subscribeCommunity("news");
-        pressButton("#createPostButton");
+        uiTestUtils.goToLoginPage();
+        uiTestUtils.login("admin", "12345678");
+        uiTestUtils.subscribeCommunity("news");
+        uiTestUtils.pressButton("#createPostButton");
 
         // select community
         TextField community = lookup("#communitySearchBar").query();
@@ -278,7 +291,7 @@ public class FunctionalTest extends ApplicationTest {
 
         //select first suggestion
         PostCreationPageController postCreationPageController = (PostCreationPageController) GuestContext.getCurrentController();
-        ContextMenu contextMenu = getPrivateField(postCreationPageController.getCommunitySearchHelper(), "suggestionsPopup");
+        ContextMenu contextMenu = uiTestUtils.getPrivateField(postCreationPageController.getCommunitySearchHelper(), "suggestionsPopup");
         CustomMenuItem firstItem = (CustomMenuItem) contextMenu.getItems().getFirst();
         Platform.runLater(firstItem::fire);
         WaitForAsyncUtils.waitForFxEvents();
@@ -291,8 +304,8 @@ public class FunctionalTest extends ApplicationTest {
         });
         WaitForAsyncUtils.waitForFxEvents();
 
-        pressButton("#postButton");
-        openPost();
+        uiTestUtils.pressButton("#postButton");
+        uiTestUtils.openPost();
 
         // get post
         VBox postsContainer = lookup("#postsContainer").query();
@@ -303,76 +316,40 @@ public class FunctionalTest extends ApplicationTest {
         assertEquals("Test Post", postTitle.getText());
     }
 
+    @Test
+    public void testChangingRole() throws Exception {
+        assertEquals(Role.GUEST, GuestContext.getCurrentGuest().getRole());
+
+        uiTestUtils.goToLoginPage();
+        uiTestUtils.login("admin", "12345678");
+        assertEquals(Role.USER, GuestContext.getCurrentGuest().getRole());
+
+        //user go to a community where user is admin
+        uiTestUtils.openCommunityPage("news");
+        assertEquals(Role.ADMIN,GuestContext.getCurrentGuest().getRole());
+
+        //go to homepage
+        ImageView goToHomePage = lookup("#homePageButton").query();
+        Platform.runLater(() -> goToHomePage.fireEvent(mouseClick));
+        sleep(2000);
+
+        uiTestUtils.openCommunityPage("sport");
+        assertEquals(Role.MODERATOR, GuestContext.getCurrentGuest().getRole());
+
+        ImageView goToHomePage2 = lookup("#homePageButton").query();
+        Platform.runLater(() -> goToHomePage2.fireEvent(mouseClick));
+        sleep(2000);
+
+        uiTestUtils.openCommunityPage("Community Title 1");
+        assertEquals(Role.USER, GuestContext.getCurrentGuest().getRole());
+    }
+
     private void initializeApplication(Stage stage) throws IOException {
         Guest guest = new Guest(PermitsManager.createGuestPermits(), Role.GUEST);
         GuestContext.setCurrentGuest(guest);
         SceneManager.setPrimaryStage(stage);
         this.homePageController = PageControllerFactory.createHomePageController(guest);
         SceneManager.loadPrimaryScene("home", "/src/view/fxml/HomePage.fxml", homePageController);
-    }
-
-    private <T> T getPrivateField(Object object, String fieldName) throws Exception {
-        Field field = object.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        return (T) field.get(object);
-    }
-
-    private void goToLoginPage() throws Exception {
-        Button login = lookup("#login").query();
-        Platform.runLater(() -> login.fireEvent(mouseClick));
-        WaitForAsyncUtils.waitForFxEvents();
-    }
-
-    private void login() throws Exception {
-        goToLoginPage();
-        TextField usernameField = lookup("#usernameField").query();
-        TextField passwordField = lookup("#passwordField").query();
-        Button loginButton = lookup("#loginButton").query();
-
-        Platform.runLater(() -> {
-            usernameField.setText("admin");
-            passwordField.setText("12345678");
-            loginButton.fire();
-        });
-        WaitForAsyncUtils.waitForFxEvents();
-    }
-
-    private void openCommunityPage(String communityTitle) throws Exception {
-        TextField searchField = lookup("#searchField").query();
-        Platform.runLater(() -> searchField.setText(communityTitle));
-        WaitForAsyncUtils.waitForFxEvents();
-
-        ContextMenu contextMenu = getPrivateField(homePageController.getCommunitySearchHelper(), "suggestionsPopup");
-        CustomMenuItem firstItem = (CustomMenuItem) contextMenu.getItems().getFirst();
-        Platform.runLater(firstItem::fire);
-        WaitForAsyncUtils.waitForFxEvents();
-    }
-
-    private void subscribeCommunity(String communityTitle) throws Exception {
-        openCommunityPage(communityTitle);
-        Button subscribeButton = lookup("#subscribeButton").query();
-        if(subscribeButton.isVisible()) {
-            Platform.runLater(() -> {
-                subscribeButton.fireEvent(mouseClick);
-            });
-        }
-        WaitForAsyncUtils.waitForFxEvents();
-    }
-
-    private void pressButton(String buttonId) {
-        Button button = lookup(buttonId + "").query();
-        //Platform.runLater(button::fire);
-        Platform.runLater(() -> button.fireEvent(mouseClick));
-        WaitForAsyncUtils.waitForFxEvents();
-    }
-
-    private void openPost() {
-        VBox postsContainer = lookup("#postsContainer").query();
-        assertFalse(postsContainer.getChildren().isEmpty());
-        VBox post = (VBox) postsContainer.getChildren().getFirst();
-        Button postPage = from(post).lookup("#postButton").query();
-        Platform.runLater(postPage::fire);
-        WaitForAsyncUtils.waitForFxEvents();
     }
 
 }

@@ -568,6 +568,12 @@ public class SetDB {
 
         adminDAO.save(Map.of("user_id", userId,"community_id", communityId));
         System.out.println("Admin added to News Community");
+
+        communityId = communityDAO.save(Map.of("title", "sport", "description", "community for sport"));
+        System.out.println("Sports community created");
+
+        moderatorDAO.save(Map.of("user_id", userId, "community_id", communityId));
+        System.out.println("Moderator added to Sport Community");
     }
 
     public static void generateFakeWarningsForSpecificCommunity(int noOfWarnings,int communityId,int numberOfPost,int numberOfUsers) throws SQLException {

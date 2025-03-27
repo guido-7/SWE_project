@@ -55,7 +55,7 @@ public class ScenarioTest  extends ApplicationTest {
         DBConnection.changeDBPath(url);
         File dbFile = new File(url);
         if (dbFile.exists()) {
-            Boolean isDeleted = dbFile.delete();
+            boolean isDeleted = dbFile.delete();
             if(isDeleted)
                 System.out.println("Database deleted successfully");
             else
@@ -75,8 +75,8 @@ public class ScenarioTest  extends ApplicationTest {
         uiTestUtils.login("admin", "12345678");
 
         // create community with rules
-        String comTitle = "Sport";
-        String comDescription = "Community about sport";
+        String comTitle = "Tennis";
+        String comDescription = "Community about tennis";
         ArrayList<Pair<String, String>> rules = new ArrayList<>();
         for(int i = 0; i < 3; i++) {
             rules.add(new Pair<>("title" + i, "content" + i));

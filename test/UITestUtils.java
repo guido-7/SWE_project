@@ -1,7 +1,6 @@
 package test;
 
 import javafx.application.Platform;
-
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -12,23 +11,14 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 import src.controllers.HomePageController;
 import src.controllers.PostCreationPageController;
-import src.domainmodel.Community;
-import src.domainmodel.Post;
-import src.orm.CommunityDAO;
 import src.servicemanager.GuestContext;
 
 import java.lang.reflect.Field;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class UITestUtils extends ApplicationTest {
-    CommunityDAO communityDAO = new CommunityDAO();
-
     public static MouseEvent mouseClick = new MouseEvent(
             MouseEvent.MOUSE_CLICKED,   // Tipo di evento
             0,                         // Coordinate X
@@ -66,7 +56,6 @@ public class UITestUtils extends ApplicationTest {
     }
 
     public void login(String username, String password) throws Exception {
-        //goToLoginPage();
         TextField usernameField = lookup("#usernameField").query();
         TextField passwordField = lookup("#passwordField").query();
         Button loginButton = lookup("#loginButton").query();
@@ -77,9 +66,10 @@ public class UITestUtils extends ApplicationTest {
             loginButton.fire();
         });
         WaitForAsyncUtils.waitForFxEvents();
+        sleep(500);
     }
 
-    public void register(String name, String surname, String nickname, String password) throws Exception {
+    public void register(String name, String surname, String nickname, String password) {
         TextField nameField = lookup("#name").query();
         TextField surnameField = lookup("#surname").query();
         TextField nicknameField = lookup("#nickname").query();
@@ -94,8 +84,6 @@ public class UITestUtils extends ApplicationTest {
             registerButton.fire();
         });
         WaitForAsyncUtils.waitForFxEvents();
-
-        //pressButton("#SignUpButton");
     }
 
     public void createCommunity(String title, String description, ArrayList<Pair<String, String>> rules) throws Exception {
@@ -126,13 +114,28 @@ public class UITestUtils extends ApplicationTest {
 
     public void openCommunityPage(String communityTitle) throws Exception {
         TextField searchField = lookup("#searchField").query();
-        Platform.runLater(() -> searchField.setText(communityTitle));
+        Platform.runLater(() -> {
+            searchField.fireEvent(mouseClick);
+            searchField.setText(communityTitle);
+        });
         WaitForAsyncUtils.waitForFxEvents();
 
         HomePageController homePageController = (HomePageController) GuestContext.getCurrentController();
         ContextMenu contextMenu = getPrivateField(homePageController.getCommunitySearchHelper(), "suggestionsPopup");
         CustomMenuItem firstItem = (CustomMenuItem) contextMenu.getItems().getFirst();
         Platform.runLater(firstItem::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+        sleep(500);
+    }
+
+    public void subscribeCommunity(String communityTitle) throws Exception {
+        openCommunityPage(communityTitle);
+        Button subscribeButton = lookup("#subscribeButton").query();
+        if(subscribeButton.isVisible()) {
+            Platform.runLater(() -> {
+                subscribeButton.fireEvent(mouseClick);
+            });
+        }
         WaitForAsyncUtils.waitForFxEvents();
     }
 
@@ -163,15 +166,38 @@ public class UITestUtils extends ApplicationTest {
         WaitForAsyncUtils.waitForFxEvents();
     }
 
+    public void openPost() {
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty());
+        VBox post = (VBox) postsContainer.getChildren().getFirst();
+        Button postPage = from(post).lookup("#postButton").query();
+        Platform.runLater(postPage::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+
+    //interaction with posts
+    public void like(VBox post) {
+        Button likeButton = from(post).lookup("#likeButton").query();
+        Platform.runLater(likeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+
+    public void dislike(VBox post) {
+        Button likeButton = from(post).lookup("#dislikeButton").query();
+        Platform.runLater(likeButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+
     public void pinPost(VBox post) {
         Button pinButton = from(post).lookup("#pinPostButton").query();
         Platform.runLater(() -> pinButton.fireEvent(mouseClick));
         WaitForAsyncUtils.waitForFxEvents();
     }
 
-    public void like(VBox post) {
-        Button likeButton = from(post).lookup("#likeButton").query();
-        Platform.runLater(() -> likeButton.fire());
+    // TODO: implement deletePost method
+    public void deletePost(VBox post) {
+        Button deleteButton = from(post).lookup("#deletePostButton").query();
+        Platform.runLater(() -> deleteButton.fireEvent(mouseClick));
         WaitForAsyncUtils.waitForFxEvents();
     }
 
@@ -183,17 +209,17 @@ public class UITestUtils extends ApplicationTest {
         return (VBox) postsContainer.getChildren().getFirst();
     }
 
-    private <T> T getPrivateField(Object object, String fieldName) throws Exception {
+    public void pressButton(String buttonId) {
+        Button button = lookup(buttonId + "").query();
+        Platform.runLater(() -> button.fireEvent(mouseClick));
+        WaitForAsyncUtils.waitForFxEvents();
+        sleep(200);
+    }
+
+    public <T> T getPrivateField(Object object, String fieldName) throws Exception {
         Field field = object.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
         return (T) field.get(object);
-    }
-
-    private void pressButton(String buttonId) {
-        Button button = lookup(buttonId + "").query();
-        //Platform.runLater(button::fire);
-        Platform.runLater(() -> button.fireEvent(mouseClick));
-        WaitForAsyncUtils.waitForFxEvents();
     }
 
 }
