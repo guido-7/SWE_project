@@ -26,6 +26,9 @@ import test.UITestUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -393,6 +396,37 @@ public class FunctionalTest extends ApplicationTest {
         double percentage = (double) targetCommunityPosts / totalPosts * 100;
         assertTrue(percentage >= 40, "I post delle community 1,2,3 devono essere almeno il 40% del totale, attualmente sono: " + percentage + "%");
 
+    }
+
+    @Test
+    public void testOpenPostInCommunity() throws Exception {
+        String communityTitle = "Community Title 1";
+        uiTestUtils.openCommunityPage(communityTitle);
+
+        Connection connection = DBConnection.open_connection();
+        String query = "SELECT * FROM Community WHERE title = ?";
+        PreparedStatement stm = connection.prepareStatement(query);
+        stm.setString(1, communityTitle);
+        ResultSet rs = stm.executeQuery();
+        assertNotNull(rs);
+        int id = rs.getInt("id");
+
+        uiTestUtils.openPost();
+
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty());
+        VBox post = (VBox) postsContainer.getChildren().getFirst();
+        Label title = from(post).lookup("#title").queryAs(Label.class);
+        Label content = from(post).lookup("#content").queryAs(Label.class);
+
+        connection = DBConnection.open_connection();
+        String query2 = "SELECT * FROM Post WHERE title = ? AND content = ?";
+        stm = connection.prepareStatement(query2);
+        stm.setString(1, title.getText());
+        stm.setString(2, content.getText());
+        rs = stm.executeQuery();
+        assertNotNull(rs);
+        assertEquals(id, rs.getInt("community_id"));
     }
 
     private void initializeApplication(Stage stage) throws IOException {
