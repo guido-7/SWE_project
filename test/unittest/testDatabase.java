@@ -612,8 +612,8 @@ class SetDBTest {
         CommunityService communityService = new CommunityService(communityId);
         communityService.promoteToModerator(reportedId);
         assertTrue(communityService.isModerator(reportedId));
-
     }
+
     @Test
     void testDismissUser() throws SQLException {
         int reportedId = userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));
@@ -623,6 +623,5 @@ class SetDBTest {
         assertTrue(communityService.isModerator(reportedId));
         communityService.downgradeModerator(reportedId);
         assertFalse(communityService.isModerator(reportedId));
-
     }
 }
