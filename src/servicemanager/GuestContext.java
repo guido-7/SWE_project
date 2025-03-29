@@ -18,7 +18,7 @@ public class GuestContext {
         return ctrl;
     }
 
-    public static void setPreviousContextController(Controller previousContextController) {
+    private static void setPreviousContextController(Controller previousContextController) {
         GuestContext.previousContextController.addLast(previousContextController);
     }
 
@@ -35,7 +35,7 @@ public class GuestContext {
         return previousContextGuest;
     }
 
-    public static void setPreviousContextGuest(Guest previousContextUser) {
+    private static void setPreviousContextGuest(Guest previousContextUser) {
        GuestContext.previousContextGuest = previousContextUser;
     }
 
@@ -56,6 +56,6 @@ public class GuestContext {
     public static void clearController() {
         previousContextController.clear();
         currentController = null;
-
     }
+
 }
