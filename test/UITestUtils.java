@@ -17,8 +17,6 @@ import src.servicemanager.GuestContext;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 public class UITestUtils extends ApplicationTest {
     public static MouseEvent mouseClick = new MouseEvent(
             MouseEvent.MOUSE_CLICKED,   // Tipo di evento
@@ -67,7 +65,7 @@ public class UITestUtils extends ApplicationTest {
             loginButton.fire();
         });
         WaitForAsyncUtils.waitForFxEvents();
-        sleep(500);
+        sleep(300);
     }
 
     public void register(String name, String surname, String nickname, String password) {
@@ -111,6 +109,7 @@ public class UITestUtils extends ApplicationTest {
             createButton.fireEvent(mouseClick);
         });
         WaitForAsyncUtils.waitForFxEvents();
+        sleep(500);
     }
 
     public void openCommunityPage(String communityTitle) throws Exception {
@@ -120,7 +119,7 @@ public class UITestUtils extends ApplicationTest {
             searchField.setText(communityTitle);
         });
         WaitForAsyncUtils.waitForFxEvents();
-        sleep(500);
+        sleep(150);
 
         HomePageController homePageController = (HomePageController) GuestContext.getCurrentController();
         ContextMenu contextMenu = getPrivateField(homePageController.getCommunitySearchHelper(), "suggestionsPopup");
@@ -147,7 +146,6 @@ public class UITestUtils extends ApplicationTest {
             unsubscribeButton.fireEvent(mouseClick);
         });
         WaitForAsyncUtils.waitForFxEvents();
-
     }
 
     public void createPost(String comTitle, String title, String content) throws Exception {
@@ -178,14 +176,13 @@ public class UITestUtils extends ApplicationTest {
     }
 
     public void openPost() {
-        VBox postsContainer = lookup("#postsContainer").query();
-        assertFalse(postsContainer.getChildren().isEmpty(), "No posts found");
-        VBox post = (VBox) postsContainer.getChildren().getFirst();
+        VBox post = getFirstPost();
         Button postPage = from(post).lookup("#postButton").query();
         Platform.runLater(postPage::fire);
         WaitForAsyncUtils.waitForFxEvents();
     }
-    //interaction with posts
+
+    //----- interaction with posts -----
 
     public void like(VBox post) {
         Button likeButton = from(post).lookup("#likeButton").query();
@@ -214,6 +211,7 @@ public class UITestUtils extends ApplicationTest {
     public VBox getFirstPost() {
         VBox postsContainer = lookup("#postsContainer").query();
         if (postsContainer.getChildren().isEmpty()) {
+            System.out.println("No posts found");
             return null;
         }
         return (VBox) postsContainer.getChildren().getFirst();
