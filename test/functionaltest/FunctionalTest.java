@@ -14,10 +14,8 @@ import javafx.util.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 import src.controllers.*;
@@ -27,6 +25,7 @@ import src.managerdatabase.DBConnection;
 import src.managerdatabase.SetDB;
 import src.orm.CommunityDAO;
 import src.orm.SubscriptionDAO;
+import src.orm.UserDAO;
 import src.servicemanager.GuestContext;
 import src.servicemanager.SceneManager;
 import test.UITestUtils;
@@ -42,7 +41,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FunctionalTest extends ApplicationTest {
     private HomePageController homePageController;
     private final UITestUtils uiTestUtils = new UITestUtils();
-
+    private final String AdminNickname = "admin";
+    private final String AdminPassword = "12345678";
 
     final MouseEvent mouseClick = new MouseEvent(
             MouseEvent.MOUSE_CLICKED,   // Tipo di evento
@@ -66,13 +66,6 @@ public class FunctionalTest extends ApplicationTest {
             false,                     // Still since press
             null                       // PickResult (puoi lasciare null, se non lo utilizzi)
     );
-
-    public static Stream<Arguments> provideTestFeedParameters() throws SQLException {
-        int maxCommunityId = getMaxCommunityId();
-        return Stream.iterate(1, i -> i + 1)
-                .limit(maxCommunityId)
-                .map(i -> Arguments.of(i, maxCommunityId));
-    }
 
     @Override
     public void start(Stage stage) throws IOException, SQLException {
@@ -114,12 +107,12 @@ public class FunctionalTest extends ApplicationTest {
         Button createCommunityButton = uiTestUtils.getPrivateField(homePageController, "createCommunityButton");
         Button login = uiTestUtils.getPrivateField(homePageController, "login");
 
-        // Test visibilità iniziale degli elementi
+        // Test initial visibility of elements
         assertFalse(userProfileAccess.isVisible());
         assertFalse(createCommunityButton.isVisible());
         assertTrue(login.isVisible());
 
-        // Test proprietà managed degli elementi
+        // Test managed propriety of elements
         assertFalse(userProfileAccess.isManaged());
         assertFalse(createCommunityButton.isManaged());
         assertTrue(login.isManaged());
@@ -135,7 +128,7 @@ public class FunctionalTest extends ApplicationTest {
     @Test
     void testLogin() throws Exception {
         uiTestUtils.goToLoginPage();
-        uiTestUtils.login("admin", "12345678");
+        uiTestUtils.login(AdminNickname, AdminPassword);
 
         assertEquals("home", SceneManager.getCurrentStageName());
 
@@ -149,7 +142,7 @@ public class FunctionalTest extends ApplicationTest {
     @Test
     void testSubscribeCommunity() throws Exception {
         uiTestUtils.goToLoginPage();
-        uiTestUtils.login("admin", "12345678");
+        uiTestUtils.login(AdminNickname, AdminPassword);
         uiTestUtils.subscribeCommunity("news");
 
         Text communityTitle = lookup("#community_title").queryAs(Text.class);
@@ -170,13 +163,10 @@ public class FunctionalTest extends ApplicationTest {
     @Test
     void testLikePost() throws Exception {
         uiTestUtils.goToLoginPage();
-        uiTestUtils.login("admin", "12345678");
+        uiTestUtils.login(AdminNickname, AdminPassword);
         uiTestUtils.openPost();
 
-        VBox postsContainer = lookup("#postsContainer").query();
-        assertFalse(postsContainer.getChildren().isEmpty());
-        VBox post = (VBox) postsContainer.getChildren().getFirst();
-
+        VBox post = uiTestUtils.getFirstPost();
         Label likeCount = from(post).lookup("#scoreLabel").query();
         int initialLikes = Integer.parseInt(likeCount.getText());
 
@@ -192,13 +182,10 @@ public class FunctionalTest extends ApplicationTest {
     @Test
     void testDislikePost() throws Exception {
         uiTestUtils.goToLoginPage();
-        uiTestUtils.login("admin", "12345678");
+        uiTestUtils.login(AdminNickname, AdminPassword);
         uiTestUtils.openPost();
 
-        VBox postsContainer = lookup("#postsContainer").query();
-        assertFalse(postsContainer.getChildren().isEmpty());
-        VBox post = (VBox) postsContainer.getChildren().getFirst();
-
+        VBox post = uiTestUtils.getFirstPost();
         Label dislikeCount = from(post).lookup("#scoreLabel").query();
         int initialDislikes = Integer.parseInt(dislikeCount.getText());
 
@@ -345,20 +332,13 @@ public class FunctionalTest extends ApplicationTest {
         assertEquals(Role.USER, GuestContext.getCurrentGuest().getRole());
     }
 
-    private static int getMaxCommunityId() throws SQLException {
-        String query = "SELECT MAX(id) FROM Community";
-        try (Connection connection = DBConnection.open_connection();
-             PreparedStatement stm = connection.prepareStatement(query);
-             ResultSet rs = stm.executeQuery()) {
-            assertNotNull(rs);
-            assertTrue(rs.next());
-            return rs.getInt(1);
-        }
-    }
-
     @ParameterizedTest(name = "Test feed with {0} subscriptions")
     @org.junit.jupiter.params.provider.MethodSource("provideTestFeedParameters")
-    public void testFeed(int numberOfSubscription,int totalCommunity) throws Exception {
+    public void testFeed(Object[] testUserInfo, int numberOfSubscription,int totalCommunity) throws Exception {
+        String nickname = (String) testUserInfo[0];
+        String password = (String) testUserInfo[1];
+        int userId = (int) testUserInfo[2];
+
         SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
         CommunityDAO communityDAO = new CommunityDAO();
         Set<String> titles = new HashSet<>();
@@ -369,13 +349,14 @@ public class FunctionalTest extends ApplicationTest {
             uniqueIndexes.add(randomIndex);
         }
         for (int index : uniqueIndexes) {
-            System.out.println("Iscritto a community"+index);
-            subscriptionDAO.subscribe(101, index);
+            System.out.println("Subscibed to Community "+index);
+            subscriptionDAO.subscribe(userId, index);
             String commTitle = (String) communityDAO.retrieveSingleAttribute("Community", "title", "id = ?", index);
             titles.add("r/"+ commTitle);
         }
+
         uiTestUtils.goToLoginPage();
-        uiTestUtils.login("admin", "12345678");
+        uiTestUtils.login(nickname, password);
 
         // Retrieve posts container
         VBox postsContainer = lookup("#postsContainer").query();
@@ -395,22 +376,19 @@ public class FunctionalTest extends ApplicationTest {
 
             if (titles.contains(communityName))
                 targetCommunityPosts++;
-
-            System.out.println("--------------------------------------------------------------------------");
-            System.out.println("Community label text: " + communityName);
-            System.out.println("--------------------------------------------------------------------------");
         }
         for( var string : communityPostCount.entrySet()){
             System.out.println("Community: "+string.getKey()+" Posts: "+string.getValue());
         }
-        //verify that posts from your communities are at least 30% of the total
+
+        //verify that posts from your communities are at least 20%(and increasing) of the total
         double percentage = (double) targetCommunityPosts / totalPosts * 100;
         System.out.println("Percentage: " + percentage);
         double threshold = 15 + 2.1 *numberOfSubscription;
-        assertTrue(percentage >= threshold, "I post delle community 1,2,3 devono essere almeno il "+threshold+" del totale, attualmente sono: " + percentage + "%" + "alla iterazione"+numberOfSubscription+"isema");
+        assertTrue(percentage >= threshold, "Post from your communty should be at least "+threshold+" Actual percentage " + percentage + "%" + "("+numberOfSubscription+"ith iteraton");
 
         for (int index : uniqueIndexes) {
-            subscriptionDAO.unsubscribe(101, index);
+            subscriptionDAO.unsubscribe(userId, index);
         }
 
     }
@@ -420,14 +398,11 @@ public class FunctionalTest extends ApplicationTest {
         String communityTitle = "Community Title 1";
         uiTestUtils.openCommunityPage(communityTitle);
 
-        //Db(q)   re = db(rt,e,4,5))
         Connection connection = DBConnection.open_connection();
-        String query = "SELECT * FROM Community WHERE title = ?";
-        PreparedStatement stm = connection.prepareStatement(query);
-        stm.setString(1, communityTitle);
-        ResultSet rs = stm.executeQuery();
+        ResultSet rs = executeQuery(connection,"SELECT * FROM Community WHERE title = ?", communityTitle);
         assertTrue(rs.next());
         int id = rs.getInt("id");
+        connection.close();
 
         uiTestUtils.openPost();
 
@@ -438,32 +413,27 @@ public class FunctionalTest extends ApplicationTest {
         Label content = from(post).lookup("#content").queryAs(Label.class);
 
         connection = DBConnection.open_connection();
-        String query2 = "SELECT * FROM Post WHERE title = ? AND content = ?";
-        stm = connection.prepareStatement(query2);
-        stm.setString(1, title.getText());
-        stm.setString(2, content.getText());
-        rs = stm.executeQuery();
+        rs = executeQuery(connection,"SELECT * FROM Post WHERE title = ? AND content = ?", title.getText(), content.getText());
         assertTrue(rs.next());
         assertEquals(id, rs.getInt("community_id"));
+        connection.close();
     }
 
     @Test
     public void testCreateAndDeletePost() throws Exception {
-        String username = "admin";
-        String password = "12345678";
         String communityTitle = "news";
         String postTitle = "Test Post";
         String postContent = "Test content";
 
         uiTestUtils.goToLoginPage();
-        uiTestUtils.login(username, password);
+        uiTestUtils.login(AdminNickname, AdminPassword);
         uiTestUtils.subscribeCommunity(communityTitle);
 
         Connection connection = DBConnection.open_connection();
         ResultSet rs = executeQuery(connection,"SELECT * FROM Community WHERE  title = ?", communityTitle);
         assertTrue(rs.next());
         int communityId = rs.getInt("id");
-        closeConnection(connection);
+        connection.close();
 
         uiTestUtils.createPost(communityTitle, postTitle, postContent);
         sleep(500);
@@ -474,7 +444,7 @@ public class FunctionalTest extends ApplicationTest {
         assertEquals(communityId, rs.getInt("community_id"));
         assertEquals(postTitle, rs.getString("title"));
         assertEquals(postContent, rs.getString("content"));
-        closeConnection(connection);
+        connection.close();
 
         VBox post = uiTestUtils.getFirstPost();
         uiTestUtils.deletePost(post);
@@ -482,7 +452,7 @@ public class FunctionalTest extends ApplicationTest {
         connection = DBConnection.open_connection();
         rs = executeQuery(connection, "SELECT * FROM Post WHERE  community_id = ? AND title = ? AND content = ?", communityId, postTitle, postContent);
         assertFalse(rs.next(), "Post not correctly deleted");
-        closeConnection(connection);
+        connection.close();
     }
 
     private void initializeApplication(Stage stage) throws IOException {
@@ -501,9 +471,48 @@ public class FunctionalTest extends ApplicationTest {
         return stmt.executeQuery();
     }
 
-    public void closeConnection(Connection connection) throws SQLException {
-       connection.close();
+    public static Stream<Arguments> provideTestFeedParameters() throws SQLException {
+        Object[] testUserInfo = createTestUser();
+        int maxCommunityId = getMaxCommunityId();
+        return Stream.iterate(1, i -> i + 1)
+                .limit(maxCommunityId)
+                .map(i -> Arguments.of(testUserInfo,i, maxCommunityId));
+    }
 
+    private static Object[] createTestUser() throws SQLException {
+        String nickname = "nicknameTest";
+        String name = "userTest";
+        Object[] testUserInfo = new Object[3];
+        testUserInfo[0] = nickname;
+        testUserInfo[1] = "passwordTest";
+        String surname = "surnameTest";
+        String password = "passwordTest";
+        UserDAO userDAO = new UserDAO();
+        userDAO.save(Map.of("nickname", nickname, "name", name, "surname", surname));
+        int id = userDAO.getUserId(nickname);
+        testUserInfo[2] = id;
+        userDAO.registerUserAccessInfo(id, nickname, password);
+        return testUserInfo;
+    }
+
+    private static int getMaxCommunityId() throws SQLException {
+        String query = "SELECT MAX(id) FROM Community";
+        try (Connection connection = DBConnection.open_connection();
+             PreparedStatement stm = connection.prepareStatement(query);
+             ResultSet rs = stm.executeQuery()) {
+            assertNotNull(rs);
+            assertTrue(rs.next());
+            return rs.getInt(1);
+        }
+    }
+    private VBox getPostVboxAfterLogin() throws Exception {
+        uiTestUtils.goToLoginPage();
+        uiTestUtils.login(AdminNickname, AdminPassword);
+        uiTestUtils.openPost();
+
+        VBox postsContainer = lookup("#postsContainer").query();
+        assertFalse(postsContainer.getChildren().isEmpty());
+        return (VBox) postsContainer.getChildren().getFirst();
     }
 
 

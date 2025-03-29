@@ -29,19 +29,20 @@ class SetDBTest {
     private static final UserDAO userDAO = new UserDAO();
     private static final ModeratorDAO moderatorDAO = new ModeratorDAO();
 
-
     @BeforeAll
     static void setUp() {
+        DBConnection.changeDBPath(url);
         File dbFile = new File(url);
         if (dbFile.exists()) {
-            dbFile.delete();
-            System.out.println("Database successfully deleted.");
+            boolean isDeleted = dbFile.delete();
+            if(isDeleted)
+                System.out.println("Database deleted successfully");
+            else
+                System.out.println("Database not deleted successfully");
         } else {
             System.out.println("The database does not exist.");
         }
-        DBConnection.changeDBPath(url);
         conn = DBConnection.open_connection();
-        //conn = DBConnection.open_connection(url);
         SetDB.createDB();
     }
 
@@ -52,7 +53,9 @@ class SetDBTest {
 
     @BeforeEach
     void clearAllTable() throws SQLException {
-        conn = DBConnection.open_connection();
+        if (conn == null || conn.isClosed()) {
+            conn = DBConnection.open_connection();
+        }
         conn.setAutoCommit(true);
         try (Statement stmt = conn.createStatement()) {
             stmt.executeUpdate("PRAGMA foreign_keys = OFF;");
@@ -68,7 +71,7 @@ class SetDBTest {
                 stmt.executeUpdate("DELETE FROM " + t + ";");
             }
 
-            // Resetta la sequenza per tutte le tabelle con AUTOINCREMENT
+            // Reset the sequence for all tables with AUTOINCREMENT
             stmt.executeUpdate("DELETE FROM sqlite_sequence WHERE name = 'User';");
             stmt.executeUpdate("DELETE FROM sqlite_sequence WHERE name = 'Community';");
             stmt.executeUpdate("DELETE FROM sqlite_sequence WHERE name = 'Post';");
@@ -82,7 +85,7 @@ class SetDBTest {
             vacuumStmt.executeUpdate("VACUUM;");
         }
 
-        conn = DBConnection.open_connection(url);
+        conn = DBConnection.open_connection();
     }
 
     @Test
