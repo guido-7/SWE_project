@@ -1,6 +1,5 @@
-package test.integrationtest;
+package test.unittest;
 
-import javafx.scene.control.Label;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +21,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class IntegrationTest {
+public class UnitTest {
     // Connection
     private static Connection conn;
     static String url = "database/bigDBTest.db";
