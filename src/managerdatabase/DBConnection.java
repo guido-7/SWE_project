@@ -24,7 +24,6 @@ public class DBConnection {
         } catch (SQLException e) {
             System.out.println("Failed to connect to database");
             e.printStackTrace();
-
         }
     }
 
@@ -81,7 +80,11 @@ public class DBConnection {
         try {
             if (conn != null && !conn.isClosed()) {
                 conn.close();
+                conn = null;
                 System.out.println("Disconnected from database");
+            }
+            else {
+                System.out.println("Already disconnected from database");
             }
         } catch (SQLException e) {
             System.out.println("Failed to disconnect from database");
