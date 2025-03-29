@@ -130,9 +130,6 @@ public class CommunityService {
     }
 
     public void addRule(String title, String content, int priority) {
-        //change priority to other Rule i.e. if I add a rule of priority 1 ; the actual rule with
-        // priority 1 will be changed to 2
-        //maybe add a trigger for that in the database
         communityDAO.addRule(communityId, title, content, priority);
     }
 
@@ -179,12 +176,6 @@ public class CommunityService {
         return subsIds;
     }
 
-//    public Pair<Integer, Object[]> getMoreSubs() {
-//        SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
-//
-//        return subscriptionDAO.getSubs(, communityId);
-//    }
-
     public void promoteToModerator(int subscriberId) throws SQLException {
         moderatorDAO.save(Map.of("user_id",subscriberId,"community_id",communityId));
     }
@@ -205,7 +196,6 @@ public class CommunityService {
         noOfPostsTaken = 0;
         int maxnumberOfSubsShown = 10;
         return subscriptionDAO.getFilteredSubs(communityId, searchTerm, maxnumberOfSubsShown, 0);
-
     }
 
     public boolean isModerator(int moderatorId) {
