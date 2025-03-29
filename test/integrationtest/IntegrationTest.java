@@ -121,7 +121,7 @@ public class IntegrationTest {
         PostService postService = new PostService(postDAO.findById(POST_ID).orElse(null));
         postService.toggleLike(user);
 
-        assertEquals(1, userDAO.getPostVote(USER_ID, POST_ID), "Post like not inserted correctly");
+        assertEquals(LIKE, userDAO.getPostVote(USER_ID, POST_ID), "Post like not inserted correctly");
 
         // Remove like from the Post
         postService.toggleLike(user);
@@ -141,7 +141,7 @@ public class IntegrationTest {
         PostService postService = new PostService(postDAO.findById(POST_ID).orElse(null));
         postService.toggleDislike(user);
 
-        assertEquals(-1, userDAO.getPostVote(USER_ID, POST_ID), "Post dislike not inserted correctly");
+        assertEquals(DISLIKE, userDAO.getPostVote(USER_ID, POST_ID), "Post dislike insert not correctly");
 
         postService.toggleDislike(user);
 
