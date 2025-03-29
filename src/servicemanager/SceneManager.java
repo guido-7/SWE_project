@@ -208,4 +208,12 @@ public class SceneManager {
         return null;
     }
 
+    public static void clearPreviousScenes(){
+        previousScene.clear();
+        primarySceneCache.clear();
+        secondaryControllers.clear();
+        primaryControllers.clear();
+        secondarySceneCache.clear();
+    }
+
 }

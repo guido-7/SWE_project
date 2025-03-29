@@ -10,9 +10,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
@@ -29,11 +32,9 @@ import test.UITestUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,7 +42,8 @@ public class FunctionalTest extends ApplicationTest {
     private HomePageController homePageController;
     private final UITestUtils uiTestUtils = new UITestUtils();
 
-    MouseEvent mouseClick = new MouseEvent(
+
+    final MouseEvent mouseClick = new MouseEvent(
             MouseEvent.MOUSE_CLICKED,   // Tipo di evento
             0,                         // Coordinate X
             0,                         // Coordinate Y
@@ -64,11 +66,20 @@ public class FunctionalTest extends ApplicationTest {
             null                       // PickResult (puoi lasciare null, se non lo utilizzi)
     );
 
+    public static Stream<Arguments> provideTestFeedParameters() throws SQLException {
+        int maxCommunityId = getMaxCommunityId();
+        return Stream.iterate(1, i -> i + 1)
+                .limit(maxCommunityId)
+                .map(i -> Arguments.of(i, maxCommunityId));
+    }
+
     @Override
     public void start(Stage stage) throws IOException, SQLException {
+        SceneManager.clearPreviousScenes();
+        GuestContext.clearController();
         Platform.runLater(() -> {
             try {
-                initializeApplication(new Stage());
+                initializeApplication(stage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -95,7 +106,6 @@ public class FunctionalTest extends ApplicationTest {
         SetDB.generatefakedata(40, 10, 100, 40);
         DBConnection.disconnect();
     }
-
 
     @Test
     void testVisibilityGuest() throws Exception {
@@ -147,6 +157,8 @@ public class FunctionalTest extends ApplicationTest {
 
         assertTrue(lookup("#unsubscribeButton").query().isVisible());
         assertFalse(lookup("#subscribeButton").query().isVisible());
+        uiTestUtils.unsubscribeCommunity();
+
     }
 
     @Test
@@ -352,17 +364,7 @@ public class FunctionalTest extends ApplicationTest {
         assertEquals(Role.USER, GuestContext.getCurrentGuest().getRole());
     }
 
-    @Test
-    public void testFeedPerNoOfCommunity() throws Exception {
-        //int maxCommunityId =  getMaxCommunityId();
-        for (int i = 2 ; i < 6; i++){
-            assertTrue(testFeed(i,10));
-
-        }
-        //assertTrue(testFeed(6));
-    }
-
-    private int getMaxCommunityId() throws SQLException {
+    private static int getMaxCommunityId() throws SQLException {
         String query = "SELECT MAX(id) FROM Community";
         try (Connection connection = DBConnection.open_connection();
              PreparedStatement stm = connection.prepareStatement(query);
@@ -372,23 +374,13 @@ public class FunctionalTest extends ApplicationTest {
             return rs.getInt(1);
         }
     }
-    private boolean testFeed(int numberOfSubscription,int totalCommunity) throws Exception {
-//        uiTestUtils.goToLoginPage();
-//        uiTestUtils.login("admin", "12345678");
 
-        // todo iscriversi con UI
-        // mi iscrivo a 3 community
-//        uiTestUtils.subscribeCommunity("Community Title 1");
-//        uiTestUtils.subscribeCommunity("Community Title 2");
-//        uiTestUtils.subscribeCommunity("Community Title 3");
+    @ParameterizedTest(name = "Test feed with {0} subscriptions")
+    @org.junit.jupiter.params.provider.MethodSource("provideTestFeedParameters")
+    public void testFeed(int numberOfSubscription,int totalCommunity) throws Exception {
         SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
         CommunityDAO communityDAO = new CommunityDAO();
         Set<String> titles = new HashSet<>();
-//        for (int i = 1; i < numberOfSubscription+1; i++) {
-//            subscriptionDAO.subscribe(101, i);
-//            String commTitle = (String) communityDAO.retrieveSingleAttribute("Community", "title", "id = ?", i);
-//            titles.add("r/"+commTitle);
-//        }
         Set<Integer> uniqueIndexes = new HashSet<>();
         Random random = new Random();
         while (uniqueIndexes.size() < numberOfSubscription) {
@@ -403,12 +395,8 @@ public class FunctionalTest extends ApplicationTest {
         }
         uiTestUtils.goToLoginPage();
         uiTestUtils.login("admin", "12345678");
-        //subscriptionDAO.subscribe(101, 1);
-        //subscriptionDAO.subscribe(101, 2);
-        //subscriptionDAO.subscribe(101, 3);
-        //subscriptionDAO.subscribe(101, 4);
 
-        // Recupero i post dalla homepage
+        // Retrieve posts container
         VBox postsContainer = lookup("#postsContainer").query();
         assertFalse(postsContainer.getChildren().isEmpty(), "Il feed non dovrebbe essere vuoto");
 
@@ -419,14 +407,11 @@ public class FunctionalTest extends ApplicationTest {
         for (Node postNode : postsContainer.getChildren()) {
             VBox post = (VBox) postNode;
 
-            // Label che indica la community del post
+            // Label that contains the community name
             Label communityLabel = from(post).lookup("#community").query();
             String communityName = communityLabel.getText();
-
-            // Incrementa il contatore per questa community
             communityPostCount.put(communityName, communityPostCount.getOrDefault(communityName, 0) + 1);
 
-            // Conta i post provenienti dalle community 1, 2, 3
             if (titles.contains(communityName))
                 targetCommunityPosts++;
 
@@ -437,21 +422,15 @@ public class FunctionalTest extends ApplicationTest {
         for( var string : communityPostCount.entrySet()){
             System.out.println("Community: "+string.getKey()+" Posts: "+string.getValue());
         }
-        // Verifica che i post delle community 1,2,3 siano almeno il 40% del totale
+        //verify that posts from your communities are at least 30% of the total
         double percentage = (double) targetCommunityPosts / totalPosts * 100;
         System.out.println("Percentage: " + percentage);
-        double threshold = 10 + 2.1 *numberOfSubscription;
+        double threshold = 15 + 2.1 *numberOfSubscription;
         assertTrue(percentage >= threshold, "I post delle community 1,2,3 devono essere almeno il "+threshold+" del totale, attualmente sono: " + percentage + "%" + "alla iterazione"+numberOfSubscription+"isema");
 
-
-//        for (int i = 1; i < numberOfSubscription+1; i++) {
-//            subscriptionDAO.unsubscribe(101, i);
-//        }
         for (int index : uniqueIndexes) {
             subscriptionDAO.unsubscribe(101, index);
         }
-
-        return true;
 
     }
 
@@ -460,6 +439,7 @@ public class FunctionalTest extends ApplicationTest {
         String communityTitle = "Community Title 1";
         uiTestUtils.openCommunityPage(communityTitle);
 
+        //Db(q)   re = db(rt,e,4,5))
         Connection connection = DBConnection.open_connection();
         String query = "SELECT * FROM Community WHERE title = ?";
         PreparedStatement stm = connection.prepareStatement(query);
@@ -499,39 +479,33 @@ public class FunctionalTest extends ApplicationTest {
         uiTestUtils.subscribeCommunity(communityTitle);
 
         Connection connection = DBConnection.open_connection();
-        String query = "SELECT * FROM Community WHERE  title = ?";
-        PreparedStatement stm = connection.prepareStatement(query);
-        stm.setString(1, communityTitle);
-        ResultSet rs = stm.executeQuery();
+        ResultSet rs = executeQuery(connection,"SELECT * FROM Community WHERE  title = ?", communityTitle);
+        assert rs != null;
         assertTrue(rs.next());
         int communityId = rs.getInt("id");
+        closeConnection(connection);
 
         uiTestUtils.createPost(communityTitle, postTitle, postContent);
         sleep(500);
 
         connection = DBConnection.open_connection();
-        String query2 = "SELECT * FROM Post WHERE  community_id = ? AND title = ? AND content = ?";
-        stm = connection.prepareStatement(query2);
-        stm.setInt(1, communityId);
-        stm.setString(2, postTitle);
-        stm.setString(3, postContent);
-        rs = stm.executeQuery();
+        rs = executeQuery(connection,"SELECT * FROM Post WHERE  community_id = ? AND title = ? AND content = ?", communityId, postTitle, postContent);
+        assert rs != null;
         assertTrue(rs.next(), "Post not correctly created");
         assertEquals(communityId, rs.getInt("community_id"));
         assertEquals(postTitle, rs.getString("title"));
         assertEquals(postContent, rs.getString("content"));
+        closeConnection(connection);
 
         VBox post = uiTestUtils.getFirstPost();
         uiTestUtils.deletePost(post);
 
+
         connection = DBConnection.open_connection();
-        String query3 = "SELECT * FROM Post WHERE  community_id = ? AND title = ? AND content = ?";
-        stm = connection.prepareStatement(query3);
-        stm.setInt(1, communityId);
-        stm.setString(2, postTitle);
-        stm.setString(3, postContent);
-        rs = stm.executeQuery();
+        rs = executeQuery(connection, "SELECT * FROM Post WHERE  community_id = ? AND title = ? AND content = ?", communityId, postTitle, postContent);
+        assert rs != null;
         assertFalse(rs.next(), "Post not correctly deleted");
+        closeConnection(connection);
     }
 
     private void initializeApplication(Stage stage) throws IOException {
@@ -541,5 +515,20 @@ public class FunctionalTest extends ApplicationTest {
         this.homePageController = PageControllerFactory.createHomePageController(guest);
         SceneManager.loadPrimaryScene("home", "/src/view/fxml/HomePage.fxml", homePageController);
     }
+
+    public static ResultSet executeQuery(Connection connection,String sqlQuery, Object... params) throws SQLException {
+
+        PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+        for (int i = 0; i < params.length; i++) {
+            stmt.setObject(i + 1, params[i]);
+        }
+        return stmt.executeQuery();
+    }
+
+    public void closeConnection(Connection connection) throws SQLException {
+       connection.close();
+
+    }
+
 
 }

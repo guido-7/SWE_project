@@ -53,4 +53,9 @@ public class GuestContext {
         previousContextGuest = null;
     }
 
+    public static void clearController() {
+        previousContextController.clear();
+        currentController = null;
+
+    }
 }

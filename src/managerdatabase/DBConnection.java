@@ -36,7 +36,7 @@ public class DBConnection {
 
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
-            System.out.println("Connected to database");
+            //System.out.println("Connected to database");
             try (PreparedStatement stmt = conn.prepareStatement("PRAGMA foreign_keys = ON")) {
                 stmt.executeUpdate();
             }
@@ -62,7 +62,7 @@ public class DBConnection {
 
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:" + dbPathTest);
-            System.out.println("Connected to database");
+            //System.out.println("Connected to database");
             conn.prepareStatement("PRAGMA foreign_keys = ON").executeUpdate();
 
         } catch (ClassNotFoundException e) {

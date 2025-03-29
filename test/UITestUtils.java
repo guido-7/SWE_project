@@ -120,6 +120,7 @@ public class UITestUtils extends ApplicationTest {
             searchField.setText(communityTitle);
         });
         WaitForAsyncUtils.waitForFxEvents();
+        sleep(500);
 
         HomePageController homePageController = (HomePageController) GuestContext.getCurrentController();
         ContextMenu contextMenu = getPrivateField(homePageController.getCommunitySearchHelper(), "suggestionsPopup");
@@ -138,6 +139,15 @@ public class UITestUtils extends ApplicationTest {
             });
         }
         WaitForAsyncUtils.waitForFxEvents();
+    }
+
+    public void unsubscribeCommunity() {
+        Button unsubscribeButton = lookup("#unsubscribeButton").query();
+        Platform.runLater(() -> {
+            unsubscribeButton.fireEvent(mouseClick);
+        });
+        WaitForAsyncUtils.waitForFxEvents();
+
     }
 
     public void createPost(String comTitle, String title, String content) throws Exception {
@@ -175,8 +185,8 @@ public class UITestUtils extends ApplicationTest {
         Platform.runLater(postPage::fire);
         WaitForAsyncUtils.waitForFxEvents();
     }
-
     //interaction with posts
+
     public void like(VBox post) {
         Button likeButton = from(post).lookup("#likeButton").query();
         Platform.runLater(likeButton::fire);
@@ -221,5 +231,4 @@ public class UITestUtils extends ApplicationTest {
         field.setAccessible(true);
         return (T) field.get(object);
     }
-
 }
