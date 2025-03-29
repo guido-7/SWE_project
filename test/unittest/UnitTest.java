@@ -112,8 +112,8 @@ public class UnitTest {
 
     // Test to add and remove like from a post
     @Test
-    void AddRemovePostLike() throws SQLException {
-        USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
+    void testAddRemovePostLike() throws SQLException {
+        USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
         COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
         POST_ID = createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
 
@@ -132,8 +132,8 @@ public class UnitTest {
 
     // Test to add and remove dislike from a post
     @Test
-    void AddRemovePostDislike() throws SQLException {
-        USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
+    void testAddRemovePostDislike() throws SQLException {
+        USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
         COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
         POST_ID = createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
 
@@ -152,8 +152,8 @@ public class UnitTest {
 
     // Test to check the user's vote on a post
     @Test
-    void checkUserVote() throws SQLException {
-        USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
+    void testCheckUserVote() throws SQLException {
+        USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
         COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
         POST_ID = createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
 
@@ -171,8 +171,8 @@ public class UnitTest {
 
     // Test to add and remove like from a comment
     @Test
-    void AddRemoveCommentLike() throws SQLException {
-        USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
+    void testAddRemoveCommentLike() throws SQLException {
+        USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
         COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
         POST_ID = createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
         COMMENT_ID = createComment(POST_ID, LEVEL_0, USER_ID, COMMENT_CONTENT, COMMUNITY_ID);
@@ -189,8 +189,8 @@ public class UnitTest {
 
     // Test to add and remove dislike from a comment
     @Test
-    void addRemoveCommentDislike() throws SQLException {
-        USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
+    void testAddRemoveCommentDislike() throws SQLException {
+        USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
         COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
         POST_ID = createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
         COMMENT_ID = createComment(POST_ID, LEVEL_0, USER_ID, COMMENT_CONTENT, COMMUNITY_ID);
@@ -207,8 +207,8 @@ public class UnitTest {
 
     // Test for checking user's vote on a comment
     @Test
-    void checkUserVoteComment() throws SQLException {
-        USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
+    void testCheckUserVoteComment() throws SQLException {
+        USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
         COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
         POST_ID = createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
         COMMENT_ID = createComment(POST_ID, LEVEL_0, USER_ID, COMMENT_CONTENT, COMMUNITY_ID);
@@ -227,28 +227,24 @@ public class UnitTest {
 
     // Test for user registration
     @Test
-    void registerUserTest() throws SQLException {
-        // Creo User ma senza registrazione
+    void testRegisterUser() throws SQLException {
+        // Create User without registration
         userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
 
         // Attempt login with an unregistered user
         assertFalse(userDAO.isValidUser(USER_NICKNAME, USER_PASSWORD));
 
-        // Register the user
         userDAO.registerUserAccessInfo(USER_ID, USER_NICKNAME, USER_PASSWORD);
 
-        // Check if the user is successfully registered
-        assertTrue(userDAO.isRegisteredUser(USER_NICKNAME));
+        assertTrue(userDAO.isRegisteredUser(USER_NICKNAME), "User not registered correctly");
     }
 
     // Test for subscribing to a community
     @Test
-    void subscribeCommunityTest() throws SQLException {
-        // Register a user
+    void testSubscribeCommunity() throws SQLException {
         registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
-
-        // Create a community and initialize the service
-        CommunityService communityService = new CommunityService(COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
+        COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
+        CommunityService communityService = new CommunityService(COMMUNITY_ID);
 
         // Verify that the user is not subscribed
         assertFalse(communityService.isSubscribed());
@@ -264,12 +260,10 @@ public class UnitTest {
 
     // Test for checking if a user is banned
     @Test
-    void checkBannedUserTest() throws SQLException {
-        // Register a user
+    void testCheckBannedUser() throws SQLException {
         USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
-
-        // Create a community and initialize the service
-        CommunityService communityService = new CommunityService(createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
+        COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
+        CommunityService communityService = new CommunityService(COMMUNITY_ID);
 
         // Verify that the user is not banned
         assertFalse(communityService.checkBannedUser());
@@ -281,12 +275,10 @@ public class UnitTest {
 
     // Test for checking if a user is a moderator
     @Test
-    void checkModeratorTest() throws SQLException {
-        // Register a user
+    void testCheckModerator() throws SQLException {
         USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
-
-        // Create a community and initialize the service
-        CommunityService communityService = new CommunityService(createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
+        COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
+        CommunityService communityService = new CommunityService(COMMUNITY_ID);
 
         // Verify that the user is not a moderator
         assertFalse(communityService.isModerator(USER_ID));
@@ -302,12 +294,10 @@ public class UnitTest {
 
     // Test for checking if a user is an admin
     @Test
-    void checkAdminTest() throws SQLException {
-        // Register a user
+    void testCheckAdmin() throws SQLException {
         USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
-
-        // Create a community and initialize the service
-        CommunityService communityService = new CommunityService(createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
+        COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
+        CommunityService communityService = new CommunityService(COMMUNITY_ID);
 
         // Verify that the user is not an admin
         assertNull(communityService.getAdmin(USER_ID));
@@ -323,8 +313,7 @@ public class UnitTest {
 
     // Test for creating and deleting a community
     @Test
-    void createDeleteCommunityTest() throws SQLException {
-        // Register a user
+    void testCreateDeleteCommunity() throws SQLException {
         registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
 
         // Create the community
@@ -344,11 +333,8 @@ public class UnitTest {
 
     // Test for creating and deleting a post
     @Test
-    void createDeletePostTest() throws SQLException {
-        // Register a user
+    void testCreateDeletePost() throws SQLException {
         USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
-
-        // Create a community
         COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
 
         // Create a post
@@ -367,9 +353,10 @@ public class UnitTest {
         assertNull(postDAO.findById(POST_ID).orElse(null));
     }
 
-    private int createUser(String nickname, String name, String surname, String password) throws SQLException {
+    private int registerUser(String nickname, String name, String surname, String password) throws SQLException {
         int id = userDAO.save(Map.of("nickname", nickname, "name", name, "surname", surname));
         userDAO.registerUserAccessInfo(id, nickname, password);
+        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
         return id;
     }
 
@@ -383,13 +370,6 @@ public class UnitTest {
 
     private int createComment(int postId, int level, int userId, String content, int communityId) throws SQLException {
         return commentDAO.save(Map.of("post_id", postId, "level", level, "user_id", userId, "content", content, "community_id", communityId));
-    }
-
-    private int registerUser(String nickname, String name, String surname, String password) throws SQLException {
-        int id = userDAO.save(Map.of("nickname", nickname, "name", name, "surname", surname));
-        userDAO.registerUserAccessInfo(id, nickname, password);
-        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
-        return id;
     }
 
 }
