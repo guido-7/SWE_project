@@ -1,11 +1,11 @@
 package test.integrationtest;
 
+import javafx.scene.control.Label;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import src.businesslogic.*;
-import src.domainmodel.Comment;
 import src.domainmodel.User;
 import src.managerdatabase.DBConnection;
 import src.managerdatabase.SetDB;
@@ -34,6 +34,7 @@ public class IntegrationTest {
     final int DISLIKE = 0;
     int POST_ID = 1;
     int COMMENT_ID = 1;
+    int LEVEL_0 = 0;
     String USER_NAME = "Luigi";
     String USER_SURNAME = "Bianchi";
     String USER_NICKNAME = "user_test";
@@ -42,6 +43,7 @@ public class IntegrationTest {
     String COMMUNITY_DESCRIPTION = "Test Description";
     String POST_TITLE = "Test Title";
     String POST_CONTENT = "Test Content";
+    String COMMENT_CONTENT = "Test Comment Content";
 
     // DAO
     PostDAO postDAO = new PostDAO();
@@ -113,8 +115,8 @@ public class IntegrationTest {
     @Test
     void AddRemovePostLike() throws SQLException {
         USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
-        COMMUNITY_ID = communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
-        POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
+        COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
+        POST_ID = createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
 
         // Insert the like to the Post
         User user = userDAO.findById(USER_ID).orElse(null);
@@ -129,319 +131,241 @@ public class IntegrationTest {
         assertNull(userDAO.getPostVote(USER_ID, POST_ID), "Post like not removed correctly");
     }
 
-    // Test to add and remove like from a post
+    // Test to add and remove dislike from a post
     @Test
     void AddRemovePostDislike() throws SQLException {
         USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
-        COMMUNITY_ID = communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
-        POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
+        COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
+        POST_ID = createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
 
-        // Insert the like to the Post
+        // Insert the dislike to the Post
         User user = userDAO.findById(USER_ID).orElse(null);
         PostService postService = new PostService(postDAO.findById(POST_ID).orElse(null));
         postService.toggleDislike(user);
 
-        assertEquals(DISLIKE, userDAO.getPostVote(USER_ID, POST_ID), "Post dislike insert not correctly");
+        assertEquals(DISLIKE, userDAO.getPostVote(USER_ID, POST_ID), "Post dislike not inserted correctly");
 
+        // Remove dislike from the Post
         postService.toggleDislike(user);
 
         assertNull(userDAO.getPostVote(USER_ID, POST_ID), "Post dislike not removed correctly");
     }
 
-    // Test per il controllo del voto del post dell'utente
+    // Test to check the user's vote on a post
     @Test
     void checkUserVote() throws SQLException {
         USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
-        COMMUNITY_ID = communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
-        POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
+        COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
+        POST_ID = createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
 
-        // inserisco il like al Post
         User user = userDAO.findById(USER_ID).orElse(null);
         PostService postService = new PostService(postDAO.findById(POST_ID).orElse(null));
         postService.toggleLike(user);
 
-        // controllo se il like è stato inserito
         assertTrue(postService.isLiked(USER_ID));
         assertFalse(postService.isDisliked(USER_ID));
 
-        // inserisco il dislike e controllo se è stato inserito
         postService.toggleDislike(user);
         assertFalse(postService.isLiked(USER_ID));
         assertTrue(postService.isDisliked(USER_ID));
     }
 
-    // Test per aggiungere e rimuovere il like al commento
+    // Test to add and remove like from a comment
     @Test
     void AddRemoveCommentLike() throws SQLException {
-        // creo User
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+        USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
+        COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
+        POST_ID = createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
+        COMMENT_ID = createComment(POST_ID, LEVEL_0, USER_ID, COMMENT_CONTENT, COMMUNITY_ID);
 
-        // creo Community
-        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
-
-        // creo Post
-        POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
-
-        // creo Comment
-        COMMENT_ID = commentDAO.save(Map.of("post_id", POST_ID, "level", 0, "user_id", USER_ID, "content", "Test Content", "community_id", COMMUNITY_ID));
-
-        // Inserisco il like al Comment
         User user = userDAO.findById(USER_ID).orElse(null);
-        Comment comment = commentDAO.findById(List.of(POST_ID, COMMENT_ID)).orElse(null);
-        CommentService commentService = new CommentService(comment);
+        CommentService commentService = new CommentService(commentDAO.findById(List.of(POST_ID, COMMENT_ID)).orElse(null));
         commentService.toggleLike(user);
-        // controllo se il like è stato inserito
-        assertEquals(LIKE, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
 
-        // rimuovo il like al Comment
+        assertEquals(LIKE, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID), "Comment like not inserted correctly");
+
         commentService.toggleLike(user);
-        // controllare se il like è stato rimosso
-        assertNull(userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
+        assertNull(userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID), "Comment like not removed correctly");
     }
 
-    // Test per aggiungere e rimuovere il dislike al commento
+    // Test to add and remove dislike from a comment
     @Test
-    void AddRemoveCommentDislike() throws SQLException {
-        // creo User
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+    void addRemoveCommentDislike() throws SQLException {
+        USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
+        COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
+        POST_ID = createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
+        COMMENT_ID = createComment(POST_ID, LEVEL_0, USER_ID, COMMENT_CONTENT, COMMUNITY_ID);
 
-        // creo Community
-        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
-
-        // creo Post
-        POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
-
-        // creo Comment
-        COMMENT_ID = commentDAO.save(Map.of("post_id", POST_ID, "level", 0, "user_id", USER_ID, "content", "Test Content", "community_id", COMMUNITY_ID));
-
-        // Inserisco il like al comment
         User user = userDAO.findById(USER_ID).orElse(null);
-        Comment comment = commentDAO.findById(List.of(POST_ID, COMMENT_ID)).orElse(null);
-        CommentService commentService = new CommentService(comment);
+        CommentService commentService = new CommentService(commentDAO.findById(List.of(POST_ID, COMMENT_ID)).orElse(null));
         commentService.toggleDislike(user);
-        // controllare se il like è stato inserito
-        assertEquals(DISLIKE, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
 
-        // Rimuovo il dislike al comment
+        assertEquals(DISLIKE, userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID), "Comment dislike not inserted correctly");
+
         commentService.toggleDislike(user);
-        // controllare se il dislike è stato rimosso
-        assertNull(userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID));
+        assertNull(userDAO.getCommentVote(USER_ID, COMMENT_ID, POST_ID), "Comment dislike not removed correctly");
     }
 
-    // Test per il controllo del voto del commento dell'utente
+    // Test for checking user's vote on a comment
     @Test
     void checkUserVoteComment() throws SQLException {
-        // Creo User
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+        USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
+        COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
+        POST_ID = createPost(POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
+        COMMENT_ID = createComment(POST_ID, LEVEL_0, USER_ID, COMMENT_CONTENT, COMMUNITY_ID);
 
-        // Creo Community
-        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
-
-        // Creo Post
-        POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
-
-        // Creo Comment
-        COMMENT_ID = commentDAO.save(Map.of("post_id", POST_ID, "level", 0, "user_id", USER_ID, "content", "Test Content", "community_id", COMMUNITY_ID));
-
-        // Inserisco il like al comment
         User user = userDAO.findById(USER_ID).orElse(null);
-        Comment comment = commentDAO.findById(List.of(POST_ID, COMMENT_ID)).orElse(null);
-        CommentService commentService = new CommentService(comment);
+        CommentService commentService = new CommentService(commentDAO.findById(List.of(POST_ID, COMMENT_ID)).orElse(null));
         commentService.toggleLike(user);
 
-        // Controllo se il like è stato inserito
         assertTrue(commentService.isLiked(USER_ID));
         assertFalse(commentService.isDisliked(USER_ID));
 
-        // inserisco il dislike e controllo se è stato inserito
         commentService.toggleDislike(user);
         assertFalse(commentService.isLiked(USER_ID));
         assertTrue(commentService.isDisliked(USER_ID));
     }
 
-
-    // Test per la registrazione dell'utente
+    // Test for user registration
     @Test
     void registerUserTest() throws SQLException {
         // Creo User ma senza registrazione
         userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
 
-        // Eseguo login con utente non registrato
+        // Attempt login with an unregistered user
         assertFalse(userDAO.isValidUser(USER_NICKNAME, USER_PASSWORD));
 
-        // Registrazione dell'utente
-        int id = userDAO.getUserId(USER_NICKNAME);
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+        // Register the user
+        userDAO.registerUserAccessInfo(USER_ID, USER_NICKNAME, USER_PASSWORD);
 
-        // Controllo se l'utente è stato registrato
+        // Check if the user is successfully registered
         assertTrue(userDAO.isRegisteredUser(USER_NICKNAME));
     }
 
-    // Test per l'iscrizione ad una community
+    // Test for subscribing to a community
     @Test
     void subscribeCommunityTest() throws SQLException {
-        // Creo User
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
+        // Register a user
+        registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
 
-        // Creo Community
-        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
+        // Create a community and initialize the service
+        CommunityService communityService = new CommunityService(COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
 
-        // Controllo se l'utente è iscritto alla community
-        CommunityService communityService = new CommunityService(COMMUNITY_ID);
+        // Verify that the user is not subscribed
         assertFalse(communityService.isSubscribed());
 
-        // Iscrizione dell'utente alla community
+        // Subscribe the user to the community
         assertTrue(communityService.subscribe());
         assertTrue(communityService.isSubscribed());
 
-        // L'utente si disiscrive dalla community
+        // Unsubscribe the user from the community
         assertTrue(communityService.unsubscribe());
         assertFalse(communityService.isSubscribed());
     }
 
-    // Test per il controllo dell'utente bannato
+    // Test for checking if a user is banned
     @Test
     void checkBannedUserTest() throws SQLException {
-        // Creo User
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
+        // Register a user
+        USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
 
-        // Creo Community
-        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
+        // Create a community and initialize the service
+        CommunityService communityService = new CommunityService(createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
 
-        // Controllo se l'utente è bannato dalla community
-        CommunityService communityService = new CommunityService(COMMUNITY_ID);
+        // Verify that the user is not banned
         assertFalse(communityService.checkBannedUser());
 
-        // Banno l'utente dalla community
-        communityService.banUser(id, "Reason");
+        // Ban the user from the community
+        communityService.banUser(USER_ID, "Violation of rules");
         assertTrue(communityService.checkBannedUser());
     }
 
-    // Test controllo moderator
+    // Test for checking if a user is a moderator
     @Test
     void checkModeratorTest() throws SQLException {
-        // Creo User
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
+        // Register a user
+        USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
 
-        // Creo Community
-        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
+        // Create a community and initialize the service
+        CommunityService communityService = new CommunityService(createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
 
-        // Controllo se l'utente è un moderatore della community
-        CommunityService communityService = new CommunityService(COMMUNITY_ID);
-        assertFalse(communityService.isModerator(id));
+        // Verify that the user is not a moderator
+        assertFalse(communityService.isModerator(USER_ID));
 
-        // Nomino l'utente come moderatore della community
-        communityService.promoteToModerator(id);
-        assertTrue(communityService.isModerator(id));
+        // Promote the user to moderator
+        communityService.promoteToModerator(USER_ID);
+        assertTrue(communityService.isModerator(USER_ID));
 
-        // Rimuovo l'utente come moderatore della community
-        communityService.downgradeModerator(id);
-        assertFalse(communityService.isModerator(id));
+        // Downgrade the user from moderator
+        communityService.downgradeModerator(USER_ID);
+        assertFalse(communityService.isModerator(USER_ID));
     }
 
-    // Test controllo admin
+    // Test for checking if a user is an admin
     @Test
     void checkAdminTest() throws SQLException {
-        // Creo User
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
+        // Register a user
+        USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
 
-        // Creo Community
-        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
+        // Create a community and initialize the service
+        CommunityService communityService = new CommunityService(createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
 
-        // Controllo se l'utente è un admin della community
-        CommunityService communityService = new CommunityService(COMMUNITY_ID);
-        assertNull(communityService.getAdmin(id));
+        // Verify that the user is not an admin
+        assertNull(communityService.getAdmin(USER_ID));
 
-        // Nomino l'utente come admin
-        communityService.promoteToAdmin(id);
-        assertTrue(communityService.isAdmin(id));
+        // Promote the user to admin
+        communityService.promoteToAdmin(USER_ID);
+        assertTrue(communityService.isAdmin(USER_ID));
 
-        // Rimuovo l'utente come admin della community
-        communityService.downgradeAdmin(id);
-        assertFalse(communityService.isAdmin(id));
+        // Downgrade the user from admin
+        communityService.downgradeAdmin(USER_ID);
+        assertFalse(communityService.isAdmin(USER_ID));
     }
 
-    // Test per la creazione ed eliminazione di una community
+    // Test for creating and deleting a community
     @Test
     void createDeleteCommunityTest() throws SQLException {
-        // Creo User
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
+        // Register a user
+        registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
 
-        // Creo Community
+        // Create the community
         CommunityCreationService communityCreationService = new CommunityCreationService();
 
-        // Controllo se la community è stata creata
-        assertEquals(COMMUNITY_ID,communityCreationService.createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
+        // Verify the community is created
+        assertEquals(COMMUNITY_ID, communityCreationService.createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
         assertNotNull(communityDAO.findById(COMMUNITY_ID).orElse(null));
 
-        // Elimino la community
+        // Delete the community
         CommunityService communityService = new CommunityService(COMMUNITY_ID);
         communityService.deleteCommunity();
 
-        // Controllo se la community è stata eliminata
+        // Verify the community is deleted
         assertNull(communityDAO.findById(COMMUNITY_ID).orElse(null));
     }
 
-    // Test per la creazione di un post
+    // Test for creating and deleting a post
     @Test
     void createDeletePostTest() throws SQLException {
-        // Creo User
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
+        // Register a user
+        USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
 
-        // Creo Community
-        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
+        // Create a community
+        COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
 
-        // Creo Post
+        // Create a post
         PostCreationService postCreationService = new PostCreationService();
-        postCreationService.createPost(COMMUNITY_TITLE, POST_TITLE, POST_CONTENT, COMMUNITY_ID, id);
+        postCreationService.createPost(COMMUNITY_TITLE, POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
 
-        // Controllo se il post è stato creato
+        // Verify the post is created
         assertNotNull(postDAO.findById(POST_ID).orElse(null));
         assertEquals(POST_ID, postDAO.findById(POST_ID).orElse(null).getId());
 
-        // Elimino il post
+        // Delete the post
         PostService postService = new PostService(postDAO.findById(POST_ID).orElse(null));
         postService.deletePost(POST_ID);
 
-        // Controllo se il post è stato eliminato
+        // Verify the post is deleted
         assertNull(postDAO.findById(POST_ID).orElse(null));
-    }
-
-    // Test per creare community già esistente
-    @Test
-    void createExistingCommunity() throws SQLException {
-        // Creo User
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
-
-        // Creo Community
-        CommunityCreationService communityCreationService = new CommunityCreationService();
-
-        // Controllo se la community è stata creata
-        assertEquals(COMMUNITY_ID,communityCreationService.createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
-        assertNotNull(communityDAO.findById(COMMUNITY_ID).orElse(null));
-
-        //todo da finire
-        // Provo a ricrearla
-        //assertThrows(SQLException.class, () -> communityCreationService.createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
-        //assertEquals(-1,communityCreationService.createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
-
     }
 
     private int createUser(String nickname, String name, String surname, String password) throws SQLException {
@@ -449,4 +373,24 @@ public class IntegrationTest {
         userDAO.registerUserAccessInfo(id, nickname, password);
         return id;
     }
+
+    private int createCommunity(String title, String description) throws SQLException {
+        return communityDAO.save(Map.of("title", title, "description", description));
+    }
+
+    private int createPost(String title, String content, int communityId, int userId) throws SQLException {
+        return postDAO.save(Map.of("title", title, "content", content, "community_id", communityId, "user_id", userId));
+    }
+
+    private int createComment(int postId, int level, int userId, String content, int communityId) throws SQLException {
+        return commentDAO.save(Map.of("post_id", postId, "level", level, "user_id", userId, "content", content, "community_id", communityId));
+    }
+
+    private int registerUser(String nickname, String name, String surname, String password) throws SQLException {
+        int id = userDAO.save(Map.of("nickname", nickname, "name", name, "surname", surname));
+        userDAO.registerUserAccessInfo(id, nickname, password);
+        GuestContext.setCurrentGuest(userDAO.findById(id).orElse(null));
+        return id;
+    }
+
 }

@@ -10,6 +10,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -338,7 +339,7 @@ public class FunctionalTest extends ApplicationTest {
 
         ImageView goToHomePage2 = lookup("#homePageButton").query();
         Platform.runLater(() -> goToHomePage2.fireEvent(mouseClick));
-        sleep(2000);
+        sleep(3000);
 
         uiTestUtils.openCommunityPage("Community Title 1");
         assertEquals(Role.USER, GuestContext.getCurrentGuest().getRole());
