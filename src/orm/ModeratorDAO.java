@@ -61,11 +61,11 @@ public class ModeratorDAO extends BaseDAO<Moderator, Integer> {
         int id = resultSet.getInt("user_id");
         LocalDateTime assigned_date = LocalDateTime.parse(resultSet.getString("assigned_date"));
         String nickname = resultSet.getString("nickname");
-        String name =resultSet.getString("name");
+        String name = resultSet.getString("name");
         String surname = resultSet.getString("surname");
         int community_id = resultSet.getInt("community_id");
-        Set<Permits> permits =PermitsManager.createModeratorPermits();
-        return new Moderator(id, nickname, name, surname,permits, community_id, assigned_date);
+        Set<Permits> permits = PermitsManager.createModeratorPermits();
+        return new Moderator(id, nickname, name, surname, permits, community_id, assigned_date);
     }
 
     public boolean isModerator(int moderatorId, int communityId){
