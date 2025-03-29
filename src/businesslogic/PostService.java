@@ -133,12 +133,12 @@ public class PostService {
 
     public void signalPost() {
         User currentUser = (User) GuestContext.getCurrentGuest();
-        postDAO.signalPost(currentUser.getId(),post.getId(),post.getCommunityId());
+        postDAO.signalPost(currentUser.getId(), post.getId(), post.getCommunityId());
     }
 
     public boolean isReported() {
         User currentUser = (User) GuestContext.getCurrentGuest();
-        return postDAO.isReported(currentUser.getId(),post.getId());
+        return postDAO.isReported(currentUser.getId(), post.getId());
     }
 
     public boolean addReply(String reply) throws SQLException {
