@@ -1,7 +1,6 @@
-package test.UnitTest.DBTest;
+package test.unittest;
 
 import org.junit.jupiter.api.*;
-import src.businesslogic.CommentService;
 import src.businesslogic.CommunityService;
 import src.managerdatabase.DBConnection;
 import src.managerdatabase.SetDB;
