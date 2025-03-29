@@ -23,14 +23,13 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class IntegrationTest {
-
-    // Connessione
+    // Connection
     private static Connection conn;
     static String url = "database/bigDBTest.db";
 
-    // Parametri
-    final int USER_ID = 1;
-    final int COMMUNITY_ID = 1;
+    // Parameters
+    int USER_ID = 1;
+    int COMMUNITY_ID = 1;
     final int LIKE = 1;
     final int DISLIKE = 0;
     int POST_ID = 1;
@@ -49,19 +48,21 @@ public class IntegrationTest {
     CommentDAO commentDAO = new CommentDAO();
     CommunityDAO communityDAO = new CommunityDAO();
     UserDAO userDAO = new UserDAO();
-    AdminDAO adminDAO = new AdminDAO();
 
     @BeforeAll
     static void setUp() {
         DBConnection.changeDBPath(url);
         File dbFile = new File(url);
         if (dbFile.exists()) {
-            dbFile.delete();
-            System.out.println("Database successfully deleted.");
+            boolean isDeleted = dbFile.delete();
+            if(isDeleted)
+                System.out.println("Database deleted successfully");
+            else
+                System.out.println("Database not deleted successfully");
         } else {
             System.out.println("The database does not exist.");
         }
-        conn = DBConnection.open_connection(url);
+        conn = DBConnection.open_connection();
         SetDB.createDB();
     }
 
@@ -73,102 +74,85 @@ public class IntegrationTest {
     @BeforeEach
     void clearAllTable() throws SQLException {
         if (conn == null || conn.isClosed()) {
-            conn = DBConnection.open_connection(url);
+            conn = DBConnection.open_connection();
         }
-
         conn.setAutoCommit(true);
-
         try (Statement stmt = conn.createStatement()) {
             stmt.executeUpdate("PRAGMA foreign_keys = OFF;");
 
             List<String> tables = Arrays.asList(
-                    "User", "Community", "UserAccess", "Admin", "Rules",
-                    "Post", "Comment", "CommentHierarchy", "BannedUsers",
-                    "Moderator", "Subscription", "PostVotes", "PostWarnings",
-                    "CommentWarnings"
+                    "Admin", "BannedUsers", "Comment", "CommentHierarchy",
+                    "CommentVotes", "CommentWarnings", "Community",
+                    "Moderator", "Post", "PostVotes", "PostWarnings",
+                    "Rules", "SavedPost", "Subscription", "TimeOut",
+                    "User", "UserAccess", "UserDescription"
             );
 
             for (String t : tables) {
                 stmt.executeUpdate("DELETE FROM " + t + ";");
             }
 
-            // Resetta la sequenza per tutte le tabelle con AUTOINCREMENT
-            stmt.executeUpdate("DELETE FROM sqlite_sequence;");
+            // Reset the sequence for all tables with AUTOINCREMENT
+            stmt.executeUpdate("DELETE FROM sqlite_sequence WHERE name = 'User';");
+            stmt.executeUpdate("DELETE FROM sqlite_sequence WHERE name = 'Community';");
+            stmt.executeUpdate("DELETE FROM sqlite_sequence WHERE name = 'Post';");
 
             stmt.executeUpdate("PRAGMA foreign_keys = ON;");
         }
+        conn.close();
 
-        // Esegui VACUUM per ridurre lo spazio del database
-        try (Statement vacuumStmt = conn.createStatement()) {
+        try (Connection connVacuum = DBConnection.open_connection();
+             Statement vacuumStmt = connVacuum.createStatement()) {
             vacuumStmt.executeUpdate("VACUUM;");
         }
+
+        conn = DBConnection.open_connection();
     }
 
-    // Test per aggiungere e rimuovere il like al commento
+    // Test to add and remove like from a post
     @Test
     void AddRemovePostLike() throws SQLException {
-        // Creo User
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-
-        // Creo Community
-        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
-
-        // Creo Post
+        USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
+        COMMUNITY_ID = communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
         POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
 
-        // Inserisco il like al Post
+        // Insert the like to the Post
         User user = userDAO.findById(USER_ID).orElse(null);
         PostService postService = new PostService(postDAO.findById(POST_ID).orElse(null));
         postService.toggleLike(user);
 
-        // Controllare se il like è stato inserito
-        assertEquals(LIKE, userDAO.getPostVote(USER_ID, POST_ID));
+        assertEquals(LIKE, userDAO.getPostVote(USER_ID, POST_ID), "Post like not inserted correctly");
 
-        // Rimuovo il like al Post
+        // Remove like from the Post
         postService.toggleLike(user);
 
-        // Controllare se il like è stato rimosso
-        assertNull(userDAO.getPostVote(USER_ID, POST_ID));
+        assertNull(userDAO.getPostVote(USER_ID, POST_ID), "Post like not removed correctly");
     }
 
-    // Test per aggiungere e rimuovere il dislike al post
+    // Test to add and remove like from a post
     @Test
     void AddRemovePostDislike() throws SQLException {
-        // creo User
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-
-        // creo Community
-        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
-
-        // creo Post
+        USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
+        COMMUNITY_ID = communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
         POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
 
-        // inserisco il like al Post
+        // Insert the like to the Post
         User user = userDAO.findById(USER_ID).orElse(null);
         PostService postService = new PostService(postDAO.findById(POST_ID).orElse(null));
         postService.toggleDislike(user);
-        // controllare se il like è stato inserito
-        assertEquals(DISLIKE, userDAO.getPostVote(USER_ID, POST_ID));
 
-        // rimuovo il dislike al Post
+        assertEquals(DISLIKE, userDAO.getPostVote(USER_ID, POST_ID), "Post dislike insert not correctly");
+
         postService.toggleDislike(user);
-        // controllare se il dislike è stato rimosso
-        assertNull(userDAO.getPostVote(USER_ID, POST_ID));
+
+        assertNull(userDAO.getPostVote(USER_ID, POST_ID), "Post dislike not removed correctly");
     }
 
     // Test per il controllo del voto del post dell'utente
     @Test
     void checkUserVote() throws SQLException {
-        // creo User
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
-
-        // creo Community
-        communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
-
-        // creo Post
+        USER_ID = createUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
+        COMMUNITY_ID = communityDAO.save(Map.of("title", COMMUNITY_TITLE, "description", COMMUNITY_DESCRIPTION));
         POST_ID = postDAO.save(Map.of("title", POST_TITLE, "content", POST_CONTENT, "community_id", COMMUNITY_ID, "user_id", USER_ID));
 
         // inserisco il like al Post
@@ -460,9 +444,9 @@ public class IntegrationTest {
 
     }
 
-    private int createUser() throws SQLException {
-        int id = userDAO.save(Map.of("nickname", USER_NICKNAME, "name", USER_NAME, "surname", USER_SURNAME));
-        userDAO.registerUserAccessInfo(id, USER_NICKNAME, USER_PASSWORD);
+    private int createUser(String nickname, String name, String surname, String password) throws SQLException {
+        int id = userDAO.save(Map.of("nickname", nickname, "name", name, "surname", surname));
+        userDAO.registerUserAccessInfo(id, nickname, password);
         return id;
     }
 }
