@@ -603,8 +603,8 @@ class SetDBTest {
         int communityId = communityDAO.save(Map.of("title", "Tech Community", "description", "A community dedicated to technology"));
         communityDAO.timeOutUser(reportedId,communityId, LocalDateTime.now());
         assertTrue(communityDAO.isTimedOut(reportedId, communityId));
-
     }
+
     @Test
     void testPromoteUser() throws SQLException {
         int reportedId = userDAO.save(Map.of("nickname", "Luigi1", "name", "luigi", "surname", "bianchi"));

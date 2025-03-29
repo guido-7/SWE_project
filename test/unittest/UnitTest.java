@@ -22,6 +22,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -278,6 +279,10 @@ public class UnitTest {
         // Ban the user from the community
         communityService.banUser(USER_ID, "Violation of rules");
         assertTrue(communityService.checkBannedUser());
+
+        // Verify time out
+        communityDAO.timeOutUser(USER_ID,COMMUNITY_ID, LocalDateTime.now());
+        assertTrue(communityDAO.isTimedOut(USER_ID, COMMUNITY_ID));
     }
 
     // Test for checking if a user is a moderator
