@@ -23,7 +23,7 @@ public class CommunityCreationService {
             showError(errorLabel, validationMessage);
             return -1;
         }
-        int communityId =communityDAO.save(Map.of("title",title,"description",description));
+        int communityId = communityDAO.save(Map.of("title",title,"description",description));
         System.out.println(communityId);
         subscribeToCommunity(communityId);
         addAdmin(communityId);
@@ -60,4 +60,5 @@ public class CommunityCreationService {
     public void setErrorLabel(Label errorLabel) {
         this.errorLabel = errorLabel;
     }
+
 }

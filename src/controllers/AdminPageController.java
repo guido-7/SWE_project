@@ -67,9 +67,6 @@ public class AdminPageController implements Initializable, Controller {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-
-
         PromoteButton.setVisible(false);
         PromoteButton.setManaged(false);
         DismissButton.setVisible(false);
@@ -276,8 +273,6 @@ public class AdminPageController implements Initializable, Controller {
         }
     }
 
-
-
     private Pair<AnchorPane, SubInfoComponentController> loadUserInfoComponent(Object[] subInfo,int subId) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/UserInfoComponent.fxml"));
         // TODO: review!!!
@@ -299,7 +294,6 @@ public class AdminPageController implements Initializable, Controller {
         removeFromGrid();
         DismissButton.setVisible(false);
         DismissButton.setManaged(false);
-
     }
 
     private void handlePromoteButtonClick(){
@@ -338,9 +332,9 @@ public class AdminPageController implements Initializable, Controller {
     public void setDismissText(String text){
          DismissButton.setText("Dismiss "+ text);
     }
+
     public void setDeletingPair(Pair<AnchorPane, SubInfoComponentController> deletingPair) {
         this.deletingPair = deletingPair;
     }
-
 
 }

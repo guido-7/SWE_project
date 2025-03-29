@@ -52,6 +52,7 @@ public class BannedController implements Initializable, Controller {
     private void handleCloseButtonClick(){
         ((Stage) closeButton.getScene().getWindow()).close();
     }
+
     private void setLabels() {
         Map<String, String> bannedInfo = bannedService.getBannedInfo();
         if (bannedInfo != null) {
