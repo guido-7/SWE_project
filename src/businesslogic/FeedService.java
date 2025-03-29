@@ -38,22 +38,22 @@ public class FeedService {
             //takes the ids of the communities to which the user is subscribed
             ArrayList<Integer> subscription_C_ids = subscriptionDAO.getCommunityIds(((User)guest).getId(),(int)(numberofCommunities * 0.4));
             community_ids.add(subscription_C_ids);
-            System.out.println("Length of sub : " + subscription_C_ids.size());
+            //System.out.println("Length of sub : " + subscription_C_ids.size());
 
             // uses PostVotes table and use aggregate operator to get the community ids
             ArrayList<Integer> votes_C_ids = userDAO.getMostLikedCommunityIds(((User)guest).getId(),(int)(numberofCommunities * 0.3));
             community_ids.add(votes_C_ids);
-            System.out.println("Length of votes: " + votes_C_ids.size());
+            //System.out.println("Length of votes: " + votes_C_ids.size());
 
             //takes the ids of the communities to which the user has commented
             ArrayList<Integer> comment_C_ids = commentDAO.getCommunityIds(((User)guest).getId(),(int)(numberofCommunities * 0.2 ));
             community_ids.add(comment_C_ids);
-            System.out.println("Length of commentc: " + comment_C_ids.size());
+            //System.out.println("Length of commentc: " + comment_C_ids.size());
 
             // utilize scores and visits of all communities
             ArrayList<Integer> community_C_ids = communityDAO.getCommunityIds((int)(numberofCommunities * 0.1 ));
             community_ids.add(community_C_ids);
-            System.out.println("Length of community : " + community_C_ids.size());
+            //System.out.println("Length of community : " + community_C_ids.size());
 
 
             //merge
@@ -62,7 +62,7 @@ public class FeedService {
             for ( ArrayList<Integer> list : community_ids){
                 mergedList.addAll(list);
             }
-            System.out.println("Length of merged list : " + mergedList.size());
+            //System.out.println("Length of merged list : " + mergedList.size());
 
             // 1, 2, 3, 2, 3, 5, 7, 1
             // 1 : 1 , 2 : 1 ,3:1,
@@ -71,7 +71,7 @@ public class FeedService {
             for (Integer id : mergedList) {
                 idCountMap.put(id, idCountMap.getOrDefault(id, 0) + 1);
             }
-            System.out.println("Length of idCount: " + idCountMap.size());
+            //System.out.println("Length of idCount: " + idCountMap.size());
             // we take all necessary information from the database about the weights of the communities
             Map<Integer, Double> scores = communityDAO.getScore(idCountMap);
 
@@ -79,7 +79,7 @@ public class FeedService {
             double sum = scores.values().stream().mapToDouble(Double::doubleValue).sum();
             scores.replaceAll((k, v) -> v / sum);
 
-            System.out.println("Length of scores: " + scores.size());
+            //System.out.println("Length of scores: " + scores.size());
             // we obtain the partition of the posts in the following form (community_id,number of posts from that community)
             getPartition(scores);
 

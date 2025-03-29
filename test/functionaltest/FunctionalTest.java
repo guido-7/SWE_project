@@ -303,7 +303,7 @@ public class FunctionalTest extends ApplicationTest {
 
         ImageView goToHomePage2 = lookup("#homePageButton").query();
         Platform.runLater(() -> goToHomePage2.fireEvent(mouseClick));
-        sleep(3000);
+        sleep(2000);
 
         uiTestUtils.openCommunityPage("Community Title 1");
         assertEquals(Role.USER, GuestContext.getCurrentGuest().getRole());
