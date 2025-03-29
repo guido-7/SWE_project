@@ -157,8 +157,6 @@ public class FunctionalTest extends ApplicationTest {
 
         assertTrue(lookup("#unsubscribeButton").query().isVisible());
         assertFalse(lookup("#subscribeButton").query().isVisible());
-        uiTestUtils.unsubscribeCommunity();
-
     }
 
     @Test
@@ -267,34 +265,16 @@ public class FunctionalTest extends ApplicationTest {
     void testCreateCommunity() throws Exception {
         uiTestUtils.goToLoginPage();
         uiTestUtils.login("admin", "12345678");
-        uiTestUtils.pressButton("#createCommunityButton");
 
-        TextField titleField = lookup("#titleField").query();
-        TextArea descriptionField = lookup("#descriptionArea").query();
-        TextField ruleTitle1 = lookup("#RuleTitle1").query();
-        TextArea ruleDescription1 = lookup("#rule1").query();
-        TextField ruleTitle2 = lookup("#RuleTitle2").query();
-        TextArea ruleDescription2 = lookup("#rule2").query();
-        TextField ruleTitle3 = lookup("#RuleTitle3").query();
-        TextArea ruleDescription3 = lookup("#rule3").query();
-        Button createButton = lookup("#createButton").query();
-        Platform.runLater(() -> {
-            titleField.setText("Test Community");
-            descriptionField.setText("Test description");
-            ruleTitle1.setText("Test rule 1");
-            ruleDescription1.setText("Test rule description 1");
-            ruleTitle2.setText("Test rule 2");
-            ruleDescription2.setText("Test rule description 2");
-            ruleTitle3.setText("Test rule 3");
-            ruleDescription3.setText("Test rule description 3");
-            createButton.fireEvent(mouseClick);
-        });
-        WaitForAsyncUtils.waitForFxEvents();
-
+        ArrayList<Pair<String, String>> rules = new ArrayList<>();
+        for(int i = 0; i < 3; i++) {
+            rules.add(new Pair<>("title" + i, "content" + i));
+        }
+        uiTestUtils.createCommunity("Test Community", "Test description", rules);
         uiTestUtils.openCommunityPage("Test Community");
 
         Text communityTitle = lookup("#community_title").queryAs(Text.class);
-        assertEquals("Test Community", communityTitle.getText());
+        assertEquals("Test Community", communityTitle.getText(), "Opened correctly community's page");
     }
 
     @Test
@@ -480,7 +460,6 @@ public class FunctionalTest extends ApplicationTest {
 
         Connection connection = DBConnection.open_connection();
         ResultSet rs = executeQuery(connection,"SELECT * FROM Community WHERE  title = ?", communityTitle);
-        assert rs != null;
         assertTrue(rs.next());
         int communityId = rs.getInt("id");
         closeConnection(connection);
@@ -490,7 +469,6 @@ public class FunctionalTest extends ApplicationTest {
 
         connection = DBConnection.open_connection();
         rs = executeQuery(connection,"SELECT * FROM Post WHERE  community_id = ? AND title = ? AND content = ?", communityId, postTitle, postContent);
-        assert rs != null;
         assertTrue(rs.next(), "Post not correctly created");
         assertEquals(communityId, rs.getInt("community_id"));
         assertEquals(postTitle, rs.getString("title"));
@@ -500,10 +478,8 @@ public class FunctionalTest extends ApplicationTest {
         VBox post = uiTestUtils.getFirstPost();
         uiTestUtils.deletePost(post);
 
-
         connection = DBConnection.open_connection();
         rs = executeQuery(connection, "SELECT * FROM Post WHERE  community_id = ? AND title = ? AND content = ?", communityId, postTitle, postContent);
-        assert rs != null;
         assertFalse(rs.next(), "Post not correctly deleted");
         closeConnection(connection);
     }
@@ -517,7 +493,6 @@ public class FunctionalTest extends ApplicationTest {
     }
 
     public static ResultSet executeQuery(Connection connection,String sqlQuery, Object... params) throws SQLException {
-
         PreparedStatement stmt = connection.prepareStatement(sqlQuery);
         for (int i = 0; i < params.length; i++) {
             stmt.setObject(i + 1, params[i]);
