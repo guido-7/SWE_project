@@ -70,7 +70,7 @@ public class ScenarioTest  extends ApplicationTest {
     }
 
     @Test
-    public void createCommunityAndPinPost() throws Exception {
+    public void testCreateCommunityAndPinPost() throws Exception {
         uiTestUtils.goToLoginPage();
         uiTestUtils.login("admin", "12345678");
 
@@ -148,7 +148,7 @@ public class ScenarioTest  extends ApplicationTest {
     }
 
     @Test
-    public void registerAndLoginAndLikePost() throws Exception {
+    public void testRegisterAndLoginAndLikePost() throws Exception {
         String name = "Luca";
         String surname = "Bianchi";
         String nickname = "LucaBianchi";
