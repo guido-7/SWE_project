@@ -10,9 +10,9 @@ import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import src.controllers.HomePageController;
-import src.controllers.PostCreationPageController;
-import src.servicemanager.GuestContext;
+import src.controllers.pagecontrollers.HomePageController;
+import src.controllers.pagecontrollers.PostCreationPageController;
+import src.usersession.GuestContext;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

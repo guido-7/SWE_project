@@ -1,10 +1,10 @@
 package test.unittest;
 
 import org.junit.jupiter.api.*;
-import src.businesslogic.CommunityService;
-import src.managerdatabase.DBConnection;
-import src.managerdatabase.SetDB;
-import src.orm.*;
+import src.services.CommunityService;
+import src.persistence.dbmanager.DBConnection;
+import src.persistence.dbmanager.SetDB;
+import src.persistence.DAOs.*;
 
 import java.io.File;
 import java.sql.Connection;

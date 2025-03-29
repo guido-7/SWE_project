@@ -4,12 +4,19 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import src.businesslogic.*;
+import src.services.*;
+import src.services.componentservices.CommentService;
+import src.services.componentservices.PostService;
+import src.services.pageservices.CommunityCreationPageService;
+import src.services.pageservices.PostCreationPageService;
 import src.domainmodel.User;
-import src.managerdatabase.DBConnection;
-import src.managerdatabase.SetDB;
-import src.orm.*;
-import src.servicemanager.GuestContext;
+import src.persistence.dbmanager.DBConnection;
+import src.persistence.dbmanager.SetDB;
+import src.persistence.DAOs.CommentDAO;
+import src.persistence.DAOs.CommunityDAO;
+import src.persistence.DAOs.PostDAO;
+import src.persistence.DAOs.UserDAO;
+import src.usersession.GuestContext;
 
 import java.io.File;
 import java.sql.Connection;
@@ -333,10 +340,10 @@ public class UnitTest {
         registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
 
         // Create the community
-        CommunityCreationService communityCreationService = new CommunityCreationService();
+        CommunityCreationPageService communityCreationPageService = new CommunityCreationPageService();
 
         // Verify the community is created
-        assertEquals(COMMUNITY_ID, communityCreationService.createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
+        assertEquals(COMMUNITY_ID, communityCreationPageService.createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION));
         assertNotNull(communityDAO.findById(COMMUNITY_ID).orElse(null));
 
         // Delete the community
@@ -354,8 +361,8 @@ public class UnitTest {
         COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
 
         // Create a post
-        PostCreationService postCreationService = new PostCreationService();
-        postCreationService.createPost(COMMUNITY_TITLE, POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
+        PostCreationPageService postCreationPageService = new PostCreationPageService();
+        postCreationPageService.createPost(COMMUNITY_TITLE, POST_TITLE, POST_CONTENT, COMMUNITY_ID, USER_ID);
 
         // Verify the post is created
         assertNotNull(postDAO.findById(POST_ID).orElse(null));
