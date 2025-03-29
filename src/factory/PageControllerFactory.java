@@ -1,8 +1,9 @@
-package src.controllers.factory;
-
-import src.businesslogic.*;
-import src.businesslogic.pageservices.CommunityCreationPageService;
-import src.businesslogic.pageservices.UserProfilePageService;
+package src.factory;
+import src.services.*;
+import src.services.componentservices.PostService;
+import src.services.pageservices.CommunityCreationPageService;
+import src.services.pageservices.PostCreationPageService;
+import src.services.pageservices.UserProfilePageService;
 import src.controllers.pagecontrollers.*;
 import src.controllers.pagecontrollers.HomePageController;
 import src.domainmodel.*;
@@ -14,7 +15,7 @@ public class PageControllerFactory {
     }
 
     public static PostCreationPageController createPostCreationPageController() {
-        return new PostCreationPageController(new PostCreationService());
+        return new PostCreationPageController(new PostCreationPageService());
     }
 
     public static PostPageController createPostPageController(Post post) {

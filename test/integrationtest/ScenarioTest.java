@@ -12,17 +12,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import src.controllers.HomePageController;
-import src.controllers.factory.PageControllerFactory;
+import src.controllers.pagecontrollers.HomePageController;
+import src.factory.PageControllerFactory;
 import src.domainmodel.Guest;
 import src.domainmodel.PermitsManager;
 import src.domainmodel.Role;
 import src.domainmodel.User;
-import src.managerdatabase.DBConnection;
-import src.managerdatabase.SetDB;
-import src.orm.CommunityDAO;
-import src.servicemanager.GuestContext;
-import src.servicemanager.SceneManager;
+import src.persistence.dbmanager.DBConnection;
+import src.persistence.dbmanager.SetDB;
+import src.persistence.DAOs.CommunityDAO;
+import src.usersession.GuestContext;
+import src.usersession.SceneManager;
 import test.UITestUtils;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class ScenarioTest  extends ApplicationTest {
     UITestUtils uiTestUtils = new UITestUtils();
     CommunityDAO communityDAO = new CommunityDAO();
     public static Connection connection;
-    private static String url = "database/bigDBTest.db";
+    private final static String url = "database/bigDBTest.db";
 
     @Override
     public void start(Stage stage) throws IOException, SQLException {
@@ -46,7 +46,7 @@ public class ScenarioTest  extends ApplicationTest {
                 e.printStackTrace();
             }
         });
-        WaitForAsyncUtils.waitForFxEvents(); // Attendi che l'azione venga eseguita
+        WaitForAsyncUtils.waitForFxEvents();
         connection = DBConnection.open_connection(url);
     }
 
@@ -94,7 +94,7 @@ public class ScenarioTest  extends ApplicationTest {
         VBox postsContainer = lookup("#postsContainer").query();
         assertTrue(postsContainer.getChildren().isEmpty());
 
-        //crea post
+        //create post
         String title = "Post title";
         String content = "Post content";
         uiTestUtils.createPost(comTitle, title, content);

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="122.0" prefWidth="317.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controllers.ConfirmationDialogPageController">
+<AnchorPane prefHeight="122.0" prefWidth="317.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controllers.popupcontrollers.ConfirmationDialogController">
    <children>
       <VBox alignment="CENTER" layoutX="10.0" layoutY="6.0" spacing="20" styleClass="dialog-root" stylesheets="@../css/ConfirmationDialog.css">
       

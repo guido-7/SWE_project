@@ -4,9 +4,8 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import src.businesslogic.PostService;
-import src.controllers.PostController;
-import src.controllers.factory.ComponentFactory;
+import src.controllers.componentcontrollers.PostController;
+import src.factory.ComponentFactory;
 import src.domainmodel.Post;
 
 import java.io.IOException;
