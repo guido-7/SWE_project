@@ -45,17 +45,17 @@ public class CommunityService {
         return communityPosts;
     }
 
-    public List<Post> getFilteredPosts(String searchTerm) {
-        // Resetta il contatore quando si fa una nuova ricerca
-        noOfPostsTaken = 0;
-        return postDao.getFilteredPosts(communityId, searchTerm, numberOfPosts, 0);
-    }
+//    public List<Post> getFilteredPosts(String searchTerm) {
+//        // Resetta il contatore quando si fa una nuova ricerca
+//        noOfPostsTaken = 0;
+//        return postDao.getFilteredPosts(communityId, searchTerm, numberOfPosts, 0);
+//    }
 
-    public List<Post> getNextFilteredPosts(String searchTerm) {
-        List<Post> filteredPosts = postDao.getFilteredPosts(communityId, searchTerm, numberOfPosts, noOfPostsTaken);
-        noOfPostsTaken += filteredPosts.size();
-        return filteredPosts;
-    }
+//    public List<Post> getNextFilteredPosts(String searchTerm) {
+//        List<Post> filteredPosts = postDao.getFilteredPosts(communityId, searchTerm, numberOfPosts, noOfPostsTaken);
+//        noOfPostsTaken += filteredPosts.size();
+//        return filteredPosts;
+//    }
 
     public ArrayList<PostWarnings> getPostWarnings() {
         return communityDAO.getPostWarnings(communityId);
@@ -225,15 +225,31 @@ public class CommunityService {
             return null;
         return adminDAO.findById(userId).orElse(null);
     }
-    public List<Post>  getFilterednewPosts(String searchTerm){
+    public List<Post>  getFilteredPosts(String searchTerm){
         ArrayList<Post> filteredPost = new ArrayList<>();
-        for (int i = 0; i < numberOfPosts; i++) {
+        int size = community.getPosts().size();
+        for (int i = 0; i < numberOfPosts && i < size; i++) {
             Post post = community.getPosts().get(i);
             if (post.getTitle().contains(searchTerm)) {
                 filteredPost.add(post);
                 System.out.println("Post title: " + post.getTitle());
             }
         }
+        noOfPostsTaken = filteredPost.size();
+        return filteredPost;
+
+    }
+    public List<Post>  getNextFilteredPosts(String searchTerm){
+        ArrayList<Post> filteredPost = new ArrayList<>();
+        int size = community.getPosts().size();
+        for (int i = noOfPostsTaken; i < noOfPostsTaken + numberOfPosts && i < size; i++) {
+            Post post = community.getPosts().get(i);
+            if (post.getTitle().contains(searchTerm)) {
+                filteredPost.add(post);
+                System.out.println("Post title: " + post.getTitle());
+            }
+        }
+        noOfPostsTaken += filteredPost.size();
         return filteredPost;
 
     }
