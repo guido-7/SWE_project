@@ -1,5 +1,6 @@
 package src.services;
 
+import javafx.geometry.Pos;
 import src.domainmodel.*;
 import src.persistence.DAOs.*;
 import src.usersession.GuestContext;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CommunityService {
+    Community community;
     int communityId;
     int noOfPostsTaken;
     int numberOfPosts = 30;
@@ -28,7 +30,8 @@ public class CommunityService {
     }
 
     public List<Post> getPosts() {
-        List<Post> communityPosts = postDao.getPosts(communityId, numberOfPosts, 0);
+        ArrayList<Post> communityPosts = postDao.getPosts(communityId, numberOfPosts, 0);
+        community.setCommunityPosts(communityPosts);
         System.out.println("Community ID: " + communityId + ", Number of Posts: " + communityPosts.size());
         noOfPostsTaken = communityPosts.size();
         return communityPosts;
@@ -36,6 +39,7 @@ public class CommunityService {
 
     public List<Post> getNextPosts() {
         List<Post> communityPosts = postDao.getPosts(communityId, numberOfPosts, noOfPostsTaken);
+        community.getPosts().addAll(communityPosts);
         System.out.println("Community ID: " + communityId + ", Number of Posts: " + communityPosts.size());
         noOfPostsTaken += communityPosts.size();
         return communityPosts;
@@ -75,7 +79,8 @@ public class CommunityService {
     }
 
     public Community getCommunity() throws SQLException {
-        return communityDAO.findById(communityId).orElse(null);
+        community = communityDAO.findById(communityId).orElse(null);
+        return community;
     }
 
     public List<Rule> getCommunityRules() {
@@ -219,6 +224,18 @@ public class CommunityService {
         if (!isAdmin)
             return null;
         return adminDAO.findById(userId).orElse(null);
+    }
+    public List<Post>  getFilterednewPosts(String searchTerm){
+        ArrayList<Post> filteredPost = new ArrayList<>();
+        for (int i = 0; i < numberOfPosts; i++) {
+            Post post = community.getPosts().get(i);
+            if (post.getTitle().contains(searchTerm)) {
+                filteredPost.add(post);
+                System.out.println("Post title: " + post.getTitle());
+            }
+        }
+        return filteredPost;
+
     }
 
 }

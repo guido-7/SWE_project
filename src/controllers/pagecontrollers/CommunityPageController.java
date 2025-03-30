@@ -86,7 +86,7 @@ public class CommunityPageController implements Initializable, PageController {
     @FXML
     private VBox pinnedPostsContainer;
 
-    private List<Post> posts;
+    //private List<Post> posts;
     private final CommunityService communityService;
     private boolean isLoading = false;
     private boolean allPostsLoaded = false;
@@ -219,8 +219,8 @@ public class CommunityPageController implements Initializable, PageController {
         Guest guest = retriveRightGuest();
         GuestContext.setCurrentGuest(guest);
 
-        posts = new ArrayList<>(communityService.getPosts());
-        loadPosts(posts);
+        //posts = new ArrayList<>(communityService.getPosts());
+        loadPosts(communityService.getPosts());
 
         List<Integer> pinnedPosts = communityService.getPinnedPosts();
         Map<Integer, String> pinnedPostsTitle = new HashMap<>();
@@ -297,8 +297,8 @@ public class CommunityPageController implements Initializable, PageController {
         postsContainer.getChildren().clear();
         allPostsLoaded = false;
         try {
-            posts = new ArrayList<>(communityService.getPosts());
-            loadPosts(posts);
+            //posts = new ArrayList<>(communityService.getPosts());
+            loadPosts(communityService.getPosts());
         } catch (Exception e) {
             e.printStackTrace();
         }

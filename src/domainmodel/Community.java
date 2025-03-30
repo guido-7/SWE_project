@@ -46,6 +46,9 @@ public class Community {
         return id;
     }
 
+    public void setCommunityPosts(ArrayList<Post> posts) {
+        this.posts = posts;
+    }
     public void addPostToCommunity(Post post) {
         posts.add(post);
     }
