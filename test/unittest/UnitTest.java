@@ -280,6 +280,17 @@ public class UnitTest {
         communityService.banUser(USER_ID, "Violation of rules");
         assertTrue(communityService.checkBannedUser());
 
+    }
+
+    // Test for checking if a user is timed out
+    @Test
+    void testCheckUserTimeOut() throws SQLException {
+        USER_ID = registerUser(USER_NICKNAME, USER_NAME, USER_SURNAME, USER_PASSWORD);
+        COMMUNITY_ID = createCommunity(COMMUNITY_TITLE, COMMUNITY_DESCRIPTION);
+
+        // Verify that the user is not timed out
+        assertFalse(communityDAO.isTimedOut(USER_ID, COMMUNITY_ID));
+
         // Verify time out
         communityDAO.timeOutUser(USER_ID,COMMUNITY_ID, LocalDateTime.now());
         assertTrue(communityDAO.isTimedOut(USER_ID, COMMUNITY_ID));
