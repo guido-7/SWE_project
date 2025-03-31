@@ -49,7 +49,7 @@ public class testfeed {
         }
         means.add(calculateMean(percentages));
         variances.add(calculateVariance(percentages, means.getFirst()));
-        double[][] samples = ContinuousPDFChart.computeKDE(percentages, 0.05, 50);
+        double[][] samples = ContinuousPDFChart.computeKDE(percentages, 0.08, 50);
         ContinuousPDFChart.createPDFChart("testfeed_"+ iteration, samples);
         }
         saveStatsToCSVfile(means,variances);
