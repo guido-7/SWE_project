@@ -1,6 +1,7 @@
 package src.services.authenservices;
 
 import javafx.scene.control.Label;
+import src.factory.PageControllerFactory;
 import src.services.FeedService;
 import src.controllers.pagecontrollers.HomePageController;
 import src.domainmodel.User;
@@ -52,12 +53,15 @@ public class LoginPageService {
     private void initializeUserSession(User user) {
         GuestContext.setCurrentGuest(user);
 
+
         FeedService feedService = new FeedService(user);
 
-        HomePageController homePageController = (HomePageController)SceneManager.changeScene("home", "/src/view/fxml/Homepage.fxml", null);
+        SceneManager.replaceFeed(feedService);
 
-        homePageController.setFeedService(feedService);
-        homePageController.LoadUserPosts();
+        HomePageController homePageController = (HomePageController) SceneManager.changeScene("home", "/src/view/fxml/Homepage.fxml", null);
+
+        //homePageController.setFeedService(feedService);
+        //homePageController.LoadUserPosts();
         homePageController.setLoginButtonVisibility(false);
         homePageController.setUserProfileAccessVisibility(true);
 

@@ -6,16 +6,16 @@ import src.persistence.DAOs.*;
 import java.util.*;
 
 public class FeedService {
-    Map<Integer, Integer> community_partition = new LinkedHashMap<>();// at the end of the loading of feed this should be in
+    private final Map<Integer, Integer> community_partition = new LinkedHashMap<>();// at the end of the loading of feed this should be in
                                                                         // the form of community_id,number of posts from that community
     private final PostDAO postDAO = new PostDAO();
     private final CommunityDAO communityDAO = new CommunityDAO();
     private final SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
     private final UserDAO userDAO = new UserDAO();
     private final CommentDAO commentDAO = new CommentDAO();
-    Map<Integer,Integer> noOfPostsTaken = new LinkedHashMap<>();
-    // TODO: review and remove this
-    Set<Integer> seenPosts = new HashSet<>();
+    private final Map<Integer,Integer> noOfPostsTaken = new LinkedHashMap<>();
+    private final Set<Integer> seenPosts = new HashSet<>();
+
     Guest guest;
 
     int numberofPosts = 30;
@@ -26,8 +26,7 @@ public class FeedService {
     }
 
     public List<Post> getFeed() {
-        List<Post> posts = new ArrayList<>();
-
+        community_partition.clear();
         if (guest.getRole() == Role.GUEST){
             return GuestFeed();
         } else {
@@ -83,7 +82,8 @@ public class FeedService {
             // we obtain the partition of the posts in the following form (community_id,number of posts from that community)
             getPartition(scores);
 
-            posts = getPostsFromCommunity();
+            List<Post>posts = getPostsFromCommunity();
+            System.out.println("Total Posts from original feed: " + posts.size());
             return posts;
         }
     }

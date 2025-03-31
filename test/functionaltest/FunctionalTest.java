@@ -27,11 +27,14 @@ import src.persistence.dbmanager.SetDB;
 import src.persistence.DAOs.CommunityDAO;
 import src.persistence.DAOs.SubscriptionDAO;
 import src.persistence.DAOs.UserDAO;
+import src.testfeed;
 import src.usersession.GuestContext;
 import src.usersession.SceneManager;
 import test.UITestUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
@@ -40,6 +43,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FunctionalTest extends ApplicationTest {
+    ArrayList<Double> means = getMeansOrVarianceFromCSV(1);
+    ArrayList<Double> variances = getMeansOrVarianceFromCSV(2);
     private HomePageController homePageController;
     private final UITestUtils uiTestUtils = new UITestUtils();
     private final String AdminNickname = "admin";
@@ -320,12 +325,8 @@ public class FunctionalTest extends ApplicationTest {
         SubscriptionDAO subscriptionDAO = new SubscriptionDAO();
         CommunityDAO communityDAO = new CommunityDAO();
         Set<String> titles = new HashSet<>();
-        Set<Integer> uniqueIndexes = new HashSet<>();
-        Random random = new Random();
-        while (uniqueIndexes.size() < numberOfSubscription) {
-            int randomIndex = random.nextInt(totalCommunity) + 1;
-            uniqueIndexes.add(randomIndex);
-        }
+        Set<Integer> uniqueIndexes = testfeed.getUniqueCommunityIndexes(numberOfSubscription, totalCommunity);
+
         for (int index : uniqueIndexes) {
             System.out.println("Subscibed to Community "+index);
             subscriptionDAO.subscribe(userId, index);
@@ -355,18 +356,26 @@ public class FunctionalTest extends ApplicationTest {
             if (titles.contains(communityName))
                 targetCommunityPosts++;
         }
+
         for( var string : communityPostCount.entrySet()){
             System.out.println("Community: "+string.getKey()+" Posts: "+string.getValue());
         }
 
-        //verify that posts from your communities are at least 20%(and increasing) of the total
-        double percentage = (double) targetCommunityPosts / totalPosts * 100;
+        double percentage = (double) targetCommunityPosts / totalPosts ;
         System.out.println("Percentage: " + percentage);
-        double threshold = 12.9 + 2.1 *numberOfSubscription;
-        assertTrue(percentage >= threshold, "Post from your communty should be at least "+threshold+" Actual percentage " + percentage + "%" + "("+numberOfSubscription+"ith iteraton");
-
-        for (int index : uniqueIndexes) {
-            subscriptionDAO.unsubscribe(userId, index);
+        double mean = means.get(numberOfSubscription - 1);
+        double variance = variances.get(numberOfSubscription - 1);
+        double lowerBound = mean - variance;
+        double upperBound = mean + variance;
+        try {
+            assertTrue(percentage >= lowerBound && percentage <= upperBound,
+                    "Post from your community should be between " + lowerBound +
+                            " and " + upperBound + ". Actual percentage: " + percentage +
+                            "% (" + numberOfSubscription + "th iteration)");
+        } finally {
+            for (int index : uniqueIndexes) {
+                subscriptionDAO.unsubscribe(userId, index);
+            }
         }
     }
 
@@ -455,7 +464,7 @@ public class FunctionalTest extends ApplicationTest {
                 .map(i -> Arguments.of(testUserInfo, i, maxCommunityId));
     }
 
-    private static Object[] createTestUser() throws SQLException {
+    public static Object[] createTestUser() throws SQLException {
         String nickname = "nicknameTest";
         String name = "userTest";
         Object[] testUserInfo = new Object[3];
@@ -480,6 +489,26 @@ public class FunctionalTest extends ApplicationTest {
             assertTrue(rs.next());
             return rs.getInt(1);
         }
+    }
+
+    private ArrayList<Double> getMeansOrVarianceFromCSV(int index) {
+        ArrayList<Double> means = new ArrayList<>();
+        String csvFile = "charts/stats.csv";
+        String line;
+        String csvSplitBy = ",";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(csvSplitBy);
+                if (values.length > 0) {
+                    means.add(Double.parseDouble(values[index-1]));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return means;
     }
 
 }

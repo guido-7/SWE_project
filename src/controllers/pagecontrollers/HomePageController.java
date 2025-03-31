@@ -167,12 +167,13 @@ public class HomePageController implements Initializable, PageController {
         createPostButton.setManaged(isUser);
         createCommunityButton.setVisible(isUser);
         createCommunityButton.setManaged(isUser);
+
         System.out.println("Initializing data...");
         searchField.clear();
         searchField.setEditable(false);
-        List<Post> post = feedService.getFeed();
-        if (!(post == null)) {
-            posts = new ArrayList<>(feedService.getFeed());
+        List<Post> taken_post = feedService.getFeed();
+        if (!(taken_post == null)) {
+            posts = taken_post;
             loadPosts(posts);
         }
     }

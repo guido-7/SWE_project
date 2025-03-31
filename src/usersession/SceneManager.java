@@ -7,6 +7,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import src.controllers.Controller;
 import src.controllers.PageController;
+import src.controllers.pagecontrollers.HomePageController;
+import src.services.FeedService;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -237,5 +239,13 @@ public class SceneManager {
             e.printStackTrace();
         }
     }
-
+    public static void replaceFeed(FeedService feedService) {
+        if(primarySceneCache.containsKey("home")){
+            Scene scene = primarySceneCache.get("home");
+            PageController controller = primaryControllers.get(scene);
+            if(controller instanceof HomePageController){
+                ((HomePageController) controller).setFeedService(feedService);
+            }
+        }
+    }
 }

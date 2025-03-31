@@ -2,6 +2,8 @@ package test.testutils;
 
 import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
+import org.knowm.xchart.style.XYStyler;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -79,9 +81,11 @@ public class ContinuousPDFChart {
                 .build();
 
         // Stile del grafico
-        chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNE);
-        chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Line);
-
+        XYStyler styler = chart.getStyler();
+        styler.setLegendPosition(Styler.LegendPosition.InsideNE);
+        styler.setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Line);
+        styler.setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Line);
+        styler.setxAxisTickLabelsFormattingFunction(value -> String.format("%.1f", value));
         // Aggiungi la curva di densità
         chart.addSeries("PDF", samples[0], samples[1]);
 
