@@ -2,7 +2,6 @@ package src.controllers.popupcontrollers;
 
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
-import src.controllers.Controller;
 
 public class WarningsPopUpController{
     @FXML

@@ -1,6 +1,5 @@
-package src.services;
+package src.services.pageservices;
 
-import javafx.geometry.Pos;
 import src.domainmodel.*;
 import src.persistence.DAOs.*;
 import src.usersession.GuestContext;

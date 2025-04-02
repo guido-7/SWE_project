@@ -17,6 +17,7 @@ import src.controllers.PageController;
 import src.controllers.authenpagecontrollers.LoginPageController;
 import src.controllers.popupcontrollers.BannedController;
 import src.factory.PageControllerFactory;
+import src.services.pageservices.CommunityService;
 import src.utils.CommunitySearchHelper;
 import src.domainmodel.*;
 import src.services.*;
@@ -112,11 +113,9 @@ public class HomePageController implements Initializable, PageController {
 
     private void loadCommunityPage(Community community){
         CommunityService communityService = new CommunityService(community.getId());
-        // TODO: review
         if(!communityService.checkBannedUser()) {
             CommunityPageController communityPageController = PageControllerFactory.createCommunityPageController(community.getId());
             SceneManager.changeScene("community " + community.getId(), "/src/view/fxml/CommunityPage.fxml", communityPageController);
-            //SceneManager.changeScene("community " + community.getId(), "/src/view/fxml/CommunityPage.fxml", new CommunityPageController(communityService));
         } else {
             Stage stage = (Stage) searchField.getScene().getWindow();
             BannedService bannedService = new BannedService(community.getId());

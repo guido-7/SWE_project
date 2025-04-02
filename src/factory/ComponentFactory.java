@@ -1,7 +1,7 @@
 package src.factory;
 
 import src.services.componentservices.CommentService;
-import src.services.CommunityService;
+import src.services.pageservices.CommunityService;
 import src.services.componentservices.PostService;
 import src.controllers.componentcontrollers.*;
 import src.domainmodel.Comment;
@@ -32,7 +32,6 @@ public class  ComponentFactory {
         return new SubInfoComponentController(communityService);
     }
 
-    // TODO: review this method with attention
     public static PostReplyController createPostReplyController(PostController postController) {
         return new PostReplyController(postController);
     }
@@ -40,4 +39,5 @@ public class  ComponentFactory {
     public static RulesController createRulesController(int communityId, int rulesId) {
         return new RulesController( new CommunityService(communityId), rulesId);
     }
+
 }

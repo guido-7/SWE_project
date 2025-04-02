@@ -6,7 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.ImageView;
 
-import src.services.CommunityService;
+import src.services.pageservices.CommunityService;
 import src.controllers.pagecontrollers.CommunityPageController;
 import src.domainmodel.Role;
 import src.usersession.GuestContext;
@@ -36,6 +36,7 @@ public class RulesController{
         if (GuestContext.getCurrentGuest().getRole() == Role.ADMIN)
             handleAdminIsWatching();
     }
+
     private void handleDeleteRule() throws SQLException {
         CommunityPageController communityPageController = (CommunityPageController) GuestContext.getCurrentController();
         communityPageController.getPostsContainer().getChildren().remove(RuleContainer);

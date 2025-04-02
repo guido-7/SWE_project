@@ -11,7 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import src.controllers.BanUserCallback;
-import src.services.CommunityService;
+import src.services.pageservices.CommunityService;
 
 public class BanReasonController implements Initializable {
     @FXML
@@ -41,7 +41,6 @@ public class BanReasonController implements Initializable {
         String banReason = banReasonTextArea.getText();
         communityService.banUser(reportedId,banReason);
         banUserCallback.execute();
-
 
         ((Stage) banButton.getScene().getWindow()).close(); // Chiude la finestra
     }

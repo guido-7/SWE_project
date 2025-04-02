@@ -15,7 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
-import src.services.CommunityService;
+import src.services.pageservices.CommunityService;
 import src.services.SearchService;
 import src.controllers.*;
 import src.controllers.componentcontrollers.PinnedPostController;

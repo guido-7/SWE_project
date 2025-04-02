@@ -5,7 +5,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
-import src.services.CommunityService;
+import src.services.pageservices.CommunityService;
 import src.controllers.pagecontrollers.AdminPageController;
 import src.usersession.GuestContext;
 

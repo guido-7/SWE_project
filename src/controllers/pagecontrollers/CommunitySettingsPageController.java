@@ -14,7 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import src.services.CommunityService;
+import src.services.pageservices.CommunityService;
 import src.controllers.PageController;
 import src.controllers.popupcontrollers.WarningsPopUpController;
 import src.controllers.componentcontrollers.ModeratorDecisionController;
@@ -242,7 +242,6 @@ public class CommunitySettingsPageController implements Initializable, PageContr
                 ModeratorChoiceContainer.getChildren().add(pane);
 
             } catch (IOException e) {
-
                 e.printStackTrace();
             }
         }

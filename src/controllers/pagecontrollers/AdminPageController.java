@@ -10,7 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Pair;
-import src.services.CommunityService;
+import src.services.pageservices.CommunityService;
 import src.controllers.PageController;
 import src.controllers.componentcontrollers.SubInfoComponentController;
 import src.factory.ComponentFactory;
@@ -114,7 +114,6 @@ public class AdminPageController implements Initializable, PageController {
                 }
                 buildGrid();
             }
-
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -278,8 +277,6 @@ public class AdminPageController implements Initializable, PageController {
 
     private Pair<AnchorPane, SubInfoComponentController> loadUserInfoComponent(Object[] subInfo,int subId) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/view/fxml/UserInfoComponent.fxml"));
-        // TODO: review!!!
-        //SubInfoComponentController userInfoController = new SubInfoComponentController();
         SubInfoComponentController userInfoController = ComponentFactory.createSubInfoComponentController(communityService);
         loader.setController(userInfoController);
         AnchorPane pane = loader.load();

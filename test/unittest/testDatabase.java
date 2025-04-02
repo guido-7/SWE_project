@@ -1,7 +1,7 @@
 package test.unittest;
 
 import org.junit.jupiter.api.*;
-import src.services.CommunityService;
+import src.services.pageservices.CommunityService;
 import src.persistence.dbmanager.DBConnection;
 import src.persistence.dbmanager.SetDB;
 import src.persistence.DAOs.*;

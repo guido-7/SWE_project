@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import src.services.CommunityService;
+import src.services.pageservices.CommunityService;
 import src.controllers.Controller;
 import src.factory.PageControllerFactory;
 import src.controllers.pagecontrollers.PostPageController;
@@ -36,7 +36,6 @@ public class PinnedPostController implements Controller, Initializable {
     @Override
     public void setOnEvent(){
         openPostButton.setOnMouseClicked(e -> openPostPage());
-
     }
 
     private void openPostPage() {

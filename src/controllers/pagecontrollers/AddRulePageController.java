@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import src.services.CommunityService;
+import src.services.pageservices.CommunityService;
 import src.controllers.PageController;
 
 import java.net.URL;

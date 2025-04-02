@@ -12,7 +12,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import src.controllers.BanUserCallback;
-import src.services.CommunityService;
+import src.services.pageservices.CommunityService;
 import src.controllers.popupcontrollers.BanReasonController;
 import src.controllers.pagecontrollers.CommunitySettingsPageController;
 import src.controllers.Controller;
@@ -66,9 +66,6 @@ public class ModeratorDecisionController implements Controller, Initializable {
         warningsText.setVisible(false);
         UserText.setText(reportedNickname);
         setOnEvent();
-
-
-
     }
 
     @Override
@@ -87,8 +84,8 @@ public class ModeratorDecisionController implements Controller, Initializable {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
         });
+
         IgnoreButton.setOnMouseClicked(event -> ignoreReport());
 
         TimeOutButton.setOnMouseClicked(event -> {
@@ -101,9 +98,11 @@ public class ModeratorDecisionController implements Controller, Initializable {
         });
 
     }
+
     private void ignoreReport() {
         removeDecidedReport();
     }
+
     private LocalDateTime getTime() {
         try {
             int days = dayfield.getText().isEmpty() ? 0 : Integer.parseInt(dayfield.getText());
@@ -122,6 +121,7 @@ public class ModeratorDecisionController implements Controller, Initializable {
             return null;
         }
     }
+
     public void removeDecidedReport() {
         CommunitySettingsPageController ctrl = (CommunitySettingsPageController)GuestContext.getCurrentController();
         ctrl.removeReport(pane);
@@ -131,4 +131,5 @@ public class ModeratorDecisionController implements Controller, Initializable {
     public void setNumber(int number) {
         ReportNoText.setText(String.valueOf(number));
     }
+
 }

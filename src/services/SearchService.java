@@ -24,7 +24,6 @@ public class SearchService {
         return postDAO.searchByTitle(query, communityId);
     }
 
-    // TODO: review
     public List<Community> searchSubscribedCommunities(String query) {
         User user = (User) GuestContext.getCurrentGuest();
         return SubscriptionDAO.getSubscribedCommunities(query,user.getId());

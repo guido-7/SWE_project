@@ -7,7 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import src.services.CommunityService;
+import src.services.pageservices.CommunityService;
 import src.domainmodel.Community;
 import src.domainmodel.Role;
 import src.usersession.GuestContext;
