@@ -140,12 +140,15 @@ public class UITestUtils extends ApplicationTest {
         WaitForAsyncUtils.waitForFxEvents();
     }
 
-    public void unsubscribeCommunity() {
+    public void unsubscribeCommunity(String communityTitle) throws Exception {
+        openCommunityPage(communityTitle);
         Button unsubscribeButton = lookup("#unsubscribeButton").query();
-        Platform.runLater(() -> {
-            unsubscribeButton.fireEvent(mouseClick);
-        });
-        WaitForAsyncUtils.waitForFxEvents();
+        if(unsubscribeButton.isVisible()) {
+            Platform.runLater(() -> {
+                unsubscribeButton.fireEvent(mouseClick);
+            });
+            WaitForAsyncUtils.waitForFxEvents();
+        }
     }
 
     public void createPost(String comTitle, String title, String content) throws Exception {
