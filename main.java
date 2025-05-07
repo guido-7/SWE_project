@@ -1,14 +1,11 @@
 import javafx.application.Application;
 import javafx.stage.Stage;
-
 import src.domainmodel.Guest;
 import src.domainmodel.PermitsManager;
 import src.domainmodel.Role;
-import src.servicemanager.GuestContext;
-import src.servicemanager.SceneManager;
-
-import src.controllers.factory.PageControllerFactory;
-
+import src.usersession.GuestContext;
+import src.usersession.SceneManager;
+import src.factory.PageControllerFactory;
 public class main extends Application {
 
     @Override

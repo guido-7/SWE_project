@@ -10,10 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 
 <!-- Questa card mostra il post con titolo, autore, orario, contenuto e area di reazione in basso a destra -->
-
 <VBox fx:id="myVBox" minHeight="180.0" prefWidth="450.0" spacing="15" styleClass="post-container" stylesheets="@../css/Post.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
 
-    <!-- Header: titolo, autore e orario -->
+    <!-- Header: titolo, autore e orario; e pulsanti controllo -->
     <HBox fx:id="HboxContainer" alignment="CENTER_LEFT" spacing="10">
         <Label fx:id="community" text="Community" />
         <Label text="·" />
@@ -23,40 +22,41 @@
         <Pane prefHeight="0.0" prefWidth="20.0" HBox.hgrow="ALWAYS">
             <VBox fx:id="SignalTextContainer" layoutX="45.0" layoutY="7.0" prefHeight="0.0" prefWidth="70.0" />
         </Pane>
+
+        <!-- Pulsanti per eliminare, segnalare, pinnare e salvare il post -->
         <ImageView fx:id="deletePostButton" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
             <HBox.margin>
                 <Insets />
             </HBox.margin>
             <Image url="@../images/delete.png" />
         </ImageView>
+
         <ImageView fx:id="reportPostButton" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
             <Image url="@../images/WarningPostIcon.png" />
             <HBox.margin>
                 <Insets left="5.0" />
             </HBox.margin>
         </ImageView>
+
         <Button fx:id="pinPostButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;">
          <graphic>
-            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/PinIcon.png" />
-               </image>
-            </ImageView>
+             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                 <Image url="@../images/PinIcon.png"/>
+             </ImageView>
          </graphic>
         </Button>
+
       <Button fx:id="savePostButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;">
          <graphic>
-            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/SavedIcon.png" />
-               </image>
-            </ImageView>
+             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                 <Image url="@../images/SavedIcon.png"/>
+             </ImageView>
          </graphic>
       </Button>
     </HBox>
-    <Label fx:id="title" maxWidth="540.0" styleClass="post-title" text="Post Title" wrapText="true" VBox.vgrow="ALWAYS" />
 
     <!-- Contenuto del post -->
+    <Label fx:id="title" maxWidth="540.0" styleClass="post-title" text="Post Title" wrapText="true" VBox.vgrow="ALWAYS" />
     <Label fx:id="content" maxWidth="540.0" styleClass="post-content" text="Contenuto del post..." wrapText="true" VBox.vgrow="ALWAYS" />
 
     <!-- Area delle reazioni: like, punteggio, dislike -->

@@ -9,10 +9,10 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="910.0" styleClass="background" stylesheets="@../css/HomePage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="910.0" styleClass="background" stylesheets="@../css/Login.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TextField fx:id="SearchSubsBar" layoutX="295.0" layoutY="78.0" prefHeight="35.0" prefWidth="260.0" promptText="Search subscriber" stylesheets="@../css/SearchField.css" />
-      <Text layoutX="380.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Search among subscribers" wrappingWidth="149.60000000000002" />
+      <Text layoutX="354.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold; -fx-font-size: 16px;" text="Search among subscribers" wrappingWidth="210.93337402343752" />
       <AnchorPane fx:id="SubInfoContainer" layoutX="69.0" layoutY="195.0" prefHeight="300.0" prefWidth="780.0">
          <children>
             <Pane fx:id="BCPane" layoutX="260.0" layoutY="200.0" prefHeight="100.0" prefWidth="260.0" />

@@ -28,8 +28,9 @@ TextArea {
 }
 
 Button {
-    -fx-background-color: #0079D3;
-    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #C27933;
+    -fx-text-fill: white;
+    -fx-border-color: #C27933;
     -fx-font-weight: bold;
     -fx-padding: 10px 20px;
     -fx-border-radius: 5px;
@@ -37,8 +38,9 @@ Button {
 }
 
 Button:hover {
-    -fx-background-color: #005fa3;
-}
+    -fx-background-color: #7D3F0F;
+    -fx-text-fill: white;
+    -fx-border-color: #7D3F0F;}
 
 Text {
     -fx-font-size: 14px;
@@ -47,4 +49,13 @@ Text {
 #title{
     -fx-font-size: 20px;
     -fx-font-weight: bold;
+}
+
+#errorLabel{
+    -fx-font-size: 14px;
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial", sans-serif;
+    -fx-alignment: center;
+    -fx-opacity: 0;
 }

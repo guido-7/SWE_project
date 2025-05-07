@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -38,6 +39,7 @@
 
         <!-- Title Input -->
         <TextField fx:id="titleField" maxWidth="580.0" promptText="Community Title" />
+      <Label fx:id="errorLabel" text="COMMUNITY GIÀ ESISTENTE" />
 
         <!-- Description Input -->
         <TextArea fx:id="descriptionArea" maxWidth="580" prefHeight="132.0" prefRowCount="4" prefWidth="580.0" promptText="Community Description..." wrapText="true">
